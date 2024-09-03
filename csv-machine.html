@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Excel File</title>
+  </head>
+  <body>
+    <h1>Upload Excel File</h1>
+    <input type="file" id="fileUpload" accept=".xlsx, .xls" />
+    <button id="upload">Upload and Save to Firebase</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        push,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      function excelSerialDateToJSDate(serial) {
+        if (serial < 60) {
+          serial += 1;
+        }
+
+        const date = new Date(Math.round((serial - 25569) * 86400 * 1000));
+        return date.toISOString().split("T")[0];
+      }
+
+      function uploadFile() {
+        const fileUpload = document.getElementById("fileUpload");
+        const file = fileUpload.files[0];
+
+        if (!file) {
+          alert("Please select an Excel file first.");
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+            raw: true,
+          });
+
+          const equipmentsRef = ref(db, "machine");
+
+          const dateColumns = ["Date 1ère mise en circulation", "Date achat"];
+
+          jsonData.forEach((entry) => {
+            for (const key in entry) {
+              if (dateColumns.includes(key)) {
+                if (typeof entry[key] === "number") {
+                  entry[key] = excelSerialDateToJSDate(entry[key]);
+                }
+              }
+            }
+
+            const newEntryRef = push(equipmentsRef);
+            set(newEntryRef, entry)
+              .then(() => console.log("Data uploaded successfully:", entry))
+              .catch((error) => console.error("Error uploading data:", error));
+          });
+        };
+
+        reader.readAsArrayBuffer(file);
+      }
+
+      document.getElementById("upload").addEventListener("click", uploadFile);
+    </script>
+  </body>
+</html>

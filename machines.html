@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style-top.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <style>
+      #dashboardContainer,
+      #visiteReglementaireContainer,
+      #ordreReparationContainer,
+      #entretiensContainer {
+        display: none;
+      }
+
+      #dashboardTable,
+      #visiteTable,
+      #ordreReparationTable,
+      #entretiensTable {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      #dashboardTable th,
+      #dashboardTable td,
+      #visiteTable th,
+      #visiteTable td,
+      #ordreReparationTable th,
+      #ordreReparationTable td,
+      #entretiensTable th,
+      #entretiensTable td {
+        text-align: center;
+        padding: 12px;
+        vertical-align: middle;
+        border: 1px solid #dee2e6;
+      }
+
+      #dashboardTable thead th,
+      #visiteTable thead th,
+      #ordreReparationTable thead th,
+      #entretiensTable thead th {
+        background-color: #007bff;
+        color: white;
+        font-weight: bold;
+      }
+
+      #dashboardTable tbody tr:nth-child(even),
+      #visiteTable tbody tr:nth-child(even),
+      #ordreReparationTable tbody tr:nth-child(even),
+      #entretiensTable tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      #dashboardTable tbody tr:hover,
+      #visiteTable tbody tr:hover,
+      #ordreReparationTable tbody tr:hover,
+      #entretiensTable tbody tr:hover {
+        background-color: #e2e6ea;
+      }
+
+      .checkbox-column {
+        text-align: center;
+      }
+
+      #dashboardTable tbody tr,
+      #visiteTable tbody tr,
+      #ordreReparationTable tbody tr,
+      #entretiensTable tbody tr {
+        transition: background-color 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Select Machine Dropdown -->
+    <div class="tableau-de-bord position-absolute bottom-0 start-0">
+      <div class="mx-2 my-2">
+        <select
+          class="form-select select-machine border border-2 border-dark"
+          id="machineSelect"
+          required
+        >
+          <option value="0" class="machine-option">Choisir une machine</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Top Menu -->
+    <div class="top-menu position-absolute top-0 end-0">
+      <div class="top-menu-1 position-absolute top-0 end-0">
+        <div class="dropdown text-center position-absolute top-0 end-0 mt-3">
+          <button
+            class="btn dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="symbole-de-menu-pour-android.png"
+              alt="bouton de menu"
+              class="custom-height-menu"
+            />
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark custom-menu text-center">
+            <li>
+              <a class="dropdown-item" href="accueil.html"
+                >Retourner à l'accueil</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
+            <li>
+              <a class="dropdown-item" href="liste-rapport.html"
+                >Liste des Rapports</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="attachement.html">Attachements</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="liste-attachement.html"
+                >Liste des attachements</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="signalement.html">Signalement</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="liste-intervention.html"
+                >Liste des interventions</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="historique-intervention.html"
+                >Historique des interventions</a
+              >
+            </li>
+            <li><hr class="dropdown-divider menu-item-admin" /></li>
+            <li><hr class="dropdown-divider menu-item-admin" /></li>
+            <li class="menu-item-admin">
+              <div class="dropdown-header" style="font-size: 2rem">
+                Administrateur
+              </div>
+            </li>
+            <li class="menu-item-admin">
+              <a class="dropdown-item" href="ajout-utilisateur.html"
+                >Gestion des Utilisateurs</a
+              >
+            </li>
+            <li class="menu-item-admin">
+              <a class="dropdown-item" href="ajout-client.html"
+                >Gestion des Clients</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Menu Buttons -->
+      <div
+        class="top-menu-2 position-absolute bottom-0 end-0 border border-2 border-primary d-flex justify-content-center align-items-center"
+      >
+        <button
+          id="dashboardButton"
+          class="text-center border border-2 border-primary p-2 btn-menu me-5"
+        >
+          <strong class="h4">Tableau de bord</strong>
+        </button>
+        <button
+          id="visiteReglementaireButton"
+          class="text-center border border-2 border-primary p-2 btn-menu me-5"
+        >
+          <strong class="h4">Visite Réglementaire</strong>
+        </button>
+        <button
+          id="entretiensButton"
+          class="text-center border border-2 border-primary p-2 btn-menu me-5"
+        >
+          <strong class="h4">Entretiens périodique</strong>
+        </button>
+        <button
+          id="ordreReparationButton"
+          class="text-center border border-2 border-primary p-2 btn-menu"
+        >
+          <strong class="h4">Ordre Réparation</strong>
+        </button>
+      </div>
+    </div>
+
+    <!-- Logo -->
+    <div class="logo-M position-absolute top-0 start-0">
+      <img src="logo techmine.svg" alt="" />
+    </div>
+
+    <!-- Visite Réglementaire Table Container -->
+    <div
+      id="visiteReglementaireContainer"
+      class="mt-4 text-center position-absolute bottom-0 end-0 bloc-bas"
+    >
+      <h3>Visite Réglementaire</h3>
+      <div class="table-responsive">
+        <table
+          id="visiteTable"
+          class="table table-striped table-bordered table-hover"
+        >
+          <thead class="thead-dark">
+            <tr>
+              <th>Date Dernière Visite</th>
+              <th>Date Prochaine Visite</th>
+              <th>Validation</th>
+            </tr>
+          </thead>
+          <tbody id="visiteTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Ordre Réparation Table Container -->
+    <div
+      id="ordreReparationContainer"
+      class="mt-4 text-center position-absolute bottom-0 end-0 bloc-bas"
+    >
+      <h3>Ordre Réparation</h3>
+      <div class="table-responsive">
+        <button id="selectSignalementsButton">Select Signalements</button>
+        <table
+          id="ordreReparationTable"
+          class="table table-striped table-bordered table-hover"
+        >
+          <thead class="thead-dark">
+            <tr>
+              <th>Commentaire</th>
+              <th id="HFTH2">H Foreuse</th>
+              <th id="HMTH2">H marteau</th>
+              <th id="KTH2">compteur</th>
+            </tr>
+          </thead>
+          <tbody id="ordreReparationTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div
+      id="entretiensContainer"
+      class="mt-4 text-center position-absolute bottom-0 end-0 bloc-bas"
+    >
+      <h3>Entretiens Périodique</h3>
+      <div class="table-responsive">
+        <table
+          id="entretiensTable"
+          class="table table-striped table-bordered table-hover"
+        >
+          <thead class="thead-dark">
+            <tr>
+              <th>Entretien</th>
+              <th>Prochain Entretiens Foreuse</th>
+              <th>Effectué</th>
+              <th>Compteur</th>
+            </tr>
+          </thead>
+          <tbody id="entretiensTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div
+      id="dashboardContainer"
+      class="mt-4 text-center position-absolute bottom-0 end-0 bloc-bas"
+    >
+      <h3>Tableau de bord</h3>
+      <div class="table-responsive">
+        <table
+          id="dashboardTable"
+          class="table table-striped table-bordered table-hover"
+        >
+          <thead class="thead-dark">
+            <tr>
+              <th>Date</th>
+              <th>Source</th>
+              <th>Effectué</th>
+              <th>Commentaire</th>
+              <th id="HFTH">H Foreuse</th>
+              <th id="HMTH">H marteau</th>
+              <th id="KTH">compteur</th>
+            </tr>
+          </thead>
+          <tbody id="dashboardTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        update,
+        query,
+        orderByChild,
+        equalTo,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase();
+      const auth = getAuth();
+
+      let selectedMachineData = {};
+      let selectedMachineReports = [];
+      let isMachineSelected = false;
+      let selectedMachineKey = null; // Added to keep track of the selected machine key
+      let selectedSignalementId = null;
+
+      function fetchSignalements() {
+        const signalementsRef = ref(db, "signalement/");
+        onValue(signalementsRef, (snapshot) => {
+          const signalementsData = snapshot.val();
+          if (signalementsData) {
+            // Iterate over each signalement and retrieve its ID
+            Object.keys(signalementsData).forEach((signalementId) => {
+              const signalement = signalementsData[signalementId];
+
+              // Access individual fields
+              const machineId = signalement.machineId;
+              const commentaire = signalement.commentaire;
+              const compteur = signalement.compteur;
+              const isFinished = signalement.isFinished;
+
+              // Use signalementId and data as needed
+            });
+          } else {
+            console.log("No signalements found.");
+          }
+        });
+      }
+      function fetchMachines() {
+        const machinesRef = ref(db, "machine/");
+        get(machinesRef).then((snapshot) => {
+          const data = snapshot.val();
+          const machineSelect = document.getElementById("machineSelect");
+          machineSelect.innerHTML =
+            '<option value="">Sélectionnez une machine</option>';
+          for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+              const machine = data[key];
+              const option = document.createElement("option");
+              option.value = key; // Store machine ID
+              option.textContent = machine.Nmatériel;
+              option.classList.add("machine-option");
+              machineSelect.appendChild(option);
+            }
+          }
+
+          machineSelect.addEventListener("change", (event) => {
+            selectedMachineKey = event.target.value;
+            isMachineSelected = true;
+            if (selectedMachineKey) {
+              selectedMachineData = data[selectedMachineKey];
+              fetchReports(selectedMachineKey);
+            }
+          });
+        });
+      }
+
+      function fetchReports(machineId) {
+        if (!machineId) {
+          console.error("ID de machine invalide ou non défini");
+          return;
+        }
+
+        const reportsRef = ref(db, "signalement/");
+        const reportsQuery = query(
+          reportsRef,
+          orderByChild("machine"),
+          equalTo(machineId)
+        );
+
+        onValue(reportsQuery, (snapshot) => {
+          selectedMachineReports = [];
+          snapshot.forEach((childSnapshot) => {
+            const report = childSnapshot.val();
+            report.id = childSnapshot.key; // Store the signalement ID for later use
+            selectedMachineReports.push(report);
+          });
+          populateTable();
+          populateOrdreReparationTable();
+          populateEntretiensPeriodiquesTable();
+          populateDashBoardTable();
+        });
+      }
+
+      function populateOrdreReparationTable() {
+        const tableBody = document.getElementById("ordreReparationTableBody");
+        tableBody.innerHTML = ""; // Clear existing table content
+
+        const signalementsRef = ref(db, "signalement/");
+        onValue(signalementsRef, (snapshot) => {
+          const signalementsData = snapshot.val();
+          if (signalementsData) {
+            // Convert the object into an array and sort it in descending order based on IDs
+            const sortedSignalements = Object.keys(signalementsData)
+              .map((signalementId) => ({
+                id: signalementId,
+                data: signalementsData[signalementId],
+              }))
+              .sort((a, b) => b.id - a.id);
+
+            sortedSignalements.forEach(
+              ({ id: signalementId, data: signalement }) => {
+                if (
+                  signalement.machine == selectedMachineKey &&
+                  signalement.isFinished === "non"
+                ) {
+                  // Create a new row for each signalement
+                  const row = document.createElement("tr");
+
+                  if (selectedMachineData.Nmatériel.startsWith("15")) {
+                    document.getElementById("KTH2").style.display = "none";
+                    row.innerHTML = `
+                <td>${signalement.commentaire || "N/A"}</td>
+                <td>${signalement.HeuresForreuse || "N/A"}</td>
+                <td>${signalement.HeuresMarteau || "N/A"}</td>
+              `;
+                  } else {
+                    document.getElementById("HFTH2").style.display = "none";
+                    document.getElementById("HMTH2").style.display = "none";
+                    row.innerHTML = `
+                <td><input type="checkbox" class="validation-checkbox" ${
+                  signalement.isFinished === "oui" ? "checked" : ""
+                } data-signalement-id="${signalementId}" /></td>
+                <td>${signalement.commentaire || "N/A"}</td>
+                <td>${signalement.kilometrage || "N/A"}</td>
+              `;
+                  }
+                  const checkboxCell = document.createElement("td");
+                  const checkbox = document.createElement("input");
+                  checkbox.type = "checkbox";
+                  checkbox.classList.add("signalement-checkbox");
+                  checkbox.dataset.signalementId = signalementId;
+                  checkboxCell.appendChild(checkbox);
+                  row.appendChild(checkboxCell);
+
+                  tableBody.appendChild(row); // Append row to the table body
+                }
+              }
+            );
+          } else {
+            tableBody.innerHTML = `<tr><td colspan="3">No signalements found. 2</td></tr>`;
+          }
+        });
+      }
+
+      function populateDashBoardTable() {
+        const tableBody = document.getElementById("dashboardTableBody");
+        tableBody.innerHTML = ""; // Clear existing table content
+
+        // Fetch data from "signalement" node
+        const signalementsRef = ref(db, "signalement/");
+        const signalementsPromise = get(signalementsRef).then((snapshot) => {
+          const signalementsData = snapshot.val();
+          if (signalementsData) {
+            return Object.keys(signalementsData).map((signalementId) => ({
+              id: signalementId,
+              type: "signalement",
+              data: signalementsData[signalementId],
+            }));
+          }
+          return [];
+        });
+
+        // Fetch data from "ordreReparation" node
+        const ordresReparationRef = ref(db, "ordreReparation/");
+        const ordresReparationPromise = get(ordresReparationRef).then(
+          (snapshot) => {
+            const ordresReparationData = snapshot.val();
+            if (ordresReparationData) {
+              return Object.keys(ordresReparationData).map(
+                (ordreReparationId) => ({
+                  id: ordreReparationId,
+                  type: "ordreReparation",
+                  data: ordresReparationData[ordreReparationId],
+                })
+              );
+            }
+            return [];
+          }
+        );
+
+        // Merge data from both sources and sort it
+        Promise.all([signalementsPromise, ordresReparationPromise]).then(
+          ([signalements, ordresReparation]) => {
+            const mergedData = [...signalements, ...ordresReparation].sort(
+              (a, b) => new Date(b.data.date) - new Date(a.data.date)
+            );
+
+            // Display the merged data in the table
+            mergedData.forEach((item) => {
+              const row = document.createElement("tr");
+
+              if (item.type === "signalement") {
+                const signalement = item.data;
+                if (signalement.machine == selectedMachineKey) {
+                  if (selectedMachineData.Nmatériel.startsWith("15")) {
+                    document.getElementById("KTH").style.display = "none";
+                    row.innerHTML = `
+                <td>${signalement.date || "N/A"}</td>
+                <td>Signalement</td>
+                <td><input id="valid4" type="checkbox" class="validation-checkbox" ${
+                  signalement.isFinished === "oui" ? "checked" : ""
+                } data-signalement-id="${item.id}" /></td>
+                <td> ${signalement.commentaire || "N/A"}</td>
+                <td> ${signalement.HeuresForreuse || "N/A"}</td>
+                <td>< ${signalement.HeuresMarteau || "N/A"}</td>
+              `;
+                  } else {
+                    document.getElementById("HFTH").style.display = "none";
+                    document.getElementById("HMTH").style.display = "none";
+                    row.innerHTML = `
+                <td>${signalement.date || "N/A"}</td>
+                <td>Signalemenent</td>
+                <td><input id="valid4" type="checkbox" class="validation-checkbox" ${
+                  signalement.isFinished === "oui" ? "checked" : ""
+                } data-signalement-id="${item.id}" /></td>
+                <td> ${signalement.commentaire || "N/A"}</td>
+                <td> ${signalement.kilometrage || "N/A"}</td>
+              `;
+                  }
+                }
+              } else if (item.type === "ordreReparation") {
+                const ordreReparation = item.data;
+                if (ordreReparation.machine == selectedMachineKey) {
+                  // Display ordre de réparation data in the table
+                  // Customize the row content based on your ordre de réparation data structure
+                  row.innerHTML = `
+              <td>${ordreReparation.date || "N/A"}</td>
+              <td>Ordre de réparation</td>
+              <td><input id="valid4" type="checkbox" class="validation-checkbox" checked /></td>
+              <td>${ordreReparation.commentaire || "N/A"}</td>
+              <td>${ordreReparation.HeuresForreuse || "N/A"}</td>
+              <td>${ordreReparation.HeuresMarteau || "N/A"}</td>
+            `;
+                }
+              }
+
+              // Add event listener to the checkbox (if applicable)
+              const checkbox = row.querySelector(".validation-checkbox");
+              if (checkbox) {
+                checkbox.addEventListener("change", (event) => {
+                  const signalementId = event.target.getAttribute(
+                    "data-signalement-id"
+                  );
+                  const isFinished = event.target.checked ? "oui" : "non";
+                  updateSignalementStatus(signalementId, isFinished);
+                });
+              }
+
+              tableBody.appendChild(row); // Append row to the table body
+            });
+          }
+        );
+      }
+
+      function populateEntretiensPeriodiquesTable() {
+        const tableBody = document.getElementById("entretiensTableBody");
+        tableBody.innerHTML = ""; // Clear existing table content
+
+        if (selectedMachineData.Nmatériel.startsWith("15")) {
+          // Display existing entretiens schedule
+          const entretiensSchedule = [
+            { entretien: "250H", compteur: 250 },
+            { entretien: "500H", compteur: 500 },
+            { entretien: "1000H", compteur: 1000 },
+            { entretien: "2000H", compteur: 2000 },
+          ];
+
+          const compteurActuel = selectedMachineData.compteur || 0;
+
+          entretiensSchedule.forEach((entretien) => {
+            const nextEntretien =
+              Math.ceil(compteurActuel / entretien.compteur) *
+              entretien.compteur;
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>${entretien.entretien}</td>
+        <td>${nextEntretien}H</td>
+        <td><input type="checkbox" class="entretien-checkbox" data-compteur="${entretien.compteur}" /></td>
+        <td>${compteurActuel}H</td>
+      `;
+
+            const checkbox = row.querySelector(".entretien-checkbox");
+            checkbox.addEventListener("change", (event) => {
+              const checked = event.target.checked;
+              const compteurEntretien =
+                event.target.getAttribute("data-compteur");
+
+              updateEntretienStatus(compteurEntretien, checked);
+            });
+
+            tableBody.appendChild(row);
+          });
+        } else {
+          // Display PVidange for the next oil change
+          const nextOilChange = selectedMachineData.PVidange || "N/A";
+
+          const row = document.createElement("tr");
+          row.innerHTML = `
+      <td>Prochaine Vidange</td>
+      <td>${nextOilChange}</td>
+      <td><input type="checkbox" class="entretien-checkbox" data-compteur="vidange" /></td>
+      <td>N/A</td>
+    `;
+
+          const checkbox = row.querySelector(".entretien-checkbox");
+          checkbox.addEventListener("change", (event) => {
+            const checked = event.target.checked;
+            const compteurEntretien =
+              event.target.getAttribute("data-compteur");
+
+            updateEntretienStatus(compteurEntretien, checked);
+          });
+
+          tableBody.appendChild(row);
+        }
+
+        $("#entretiensTable").DataTable({
+          paging: true,
+          searching: true,
+          order: [[0, "asc"]],
+        });
+      }
+
+      // Function to update the isFinished status in the database
+      function updateSignalementStatus(signalementId, status) {
+        const signalementRef = ref(db, `signalement/${signalementId}`);
+        update(signalementRef, { isFinished: status })
+          .then(() => {
+            console.log(`Signalement ${signalementId} updated successfully.`);
+          })
+          .catch((error) => {
+            console.error(
+              `Error updating signalement ${signalementId}:`,
+              error
+            );
+          });
+      }
+
+      function populateTable() {
+        const tableBody = document.getElementById("visiteTableBody");
+        tableBody.innerHTML = "";
+
+        if (Object.keys(selectedMachineData).length > 0) {
+          // If the selected item is a machine
+          if (selectedMachineData.Nmatériel.startsWith("15")) {
+            // Machine starts with '15', display VGP
+            const nextVisitDate = selectedMachineData.PVGP || "N/A";
+
+            // Calculate last visit date based on next visit date
+            const [day, month, year] = nextVisitDate.split("/").map(Number);
+            const nextDate = new Date(year, month - 1, day);
+            const lastDate = new Date(nextDate);
+            lastDate.setFullYear(lastDate.getFullYear() - 1);
+            const lastVisitDate = `${String(lastDate.getDate()).padStart(
+              2,
+              "0"
+            )}/${String(lastDate.getMonth() + 1).padStart(
+              2,
+              "0"
+            )}/${lastDate.getFullYear()}`;
+
+            // Create the table row
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>${lastVisitDate}</td>
+        <td>${nextVisitDate}</td>
+        <td><input id="valid2" type="checkbox" class="validation-checkbox" /></td>
+      `;
+
+            tableBody.appendChild(row);
+          } else {
+            // If the selected item is not a machine, display last control technique and last control anti-pollution
+            const nextControlTechnique = selectedMachineData.PCT || "N/A";
+            const nextControlAntiPollution = selectedMachineData.PCAP || "N/A";
+
+            // Calculate last visit dates based on next visit dates
+            const [dayCT, monthCT, yearCT] = nextControlTechnique
+              .split("/")
+              .map(Number);
+            const [dayCAP, monthCAP, yearCAP] = nextControlAntiPollution
+              .split("/")
+              .map(Number);
+            const lastControlTechniqueDate = new Date(
+              yearCT,
+              monthCT - 1,
+              dayCT
+            );
+            lastControlTechniqueDate.setFullYear(
+              lastControlTechniqueDate.getFullYear() - 1
+            );
+            const lastControlAntiPollutionDate = new Date(
+              yearCAP,
+              monthCAP - 1,
+              dayCAP
+            );
+            lastControlAntiPollutionDate.setFullYear(
+              lastControlAntiPollutionDate.getFullYear() - 1
+            );
+
+            // Format the last visit dates to "dd/mm/yyyy"
+            const formattedLastControlTechniqueDate = `${String(
+              lastControlTechniqueDate.getDate()
+            ).padStart(2, "0")}/${String(
+              lastControlTechniqueDate.getMonth() + 1
+            ).padStart(2, "0")}/${lastControlTechniqueDate.getFullYear()}`;
+            const formattedLastControlAntiPollutionDate = `${String(
+              lastControlAntiPollutionDate.getDate()
+            ).padStart(2, "0")}/${String(
+              lastControlAntiPollutionDate.getMonth() + 1
+            ).padStart(2, "0")}/${lastControlAntiPollutionDate.getFullYear()}`;
+
+            // Create the table rows
+            const row1 = document.createElement("tr");
+            row1.innerHTML = `
+        <td>${formattedLastControlTechniqueDate}</td>
+        <td>${nextControlTechnique}</td>
+        <td><input id="valid2" type="checkbox" class="validation-checkbox" /></td>
+      `;
+
+            const row2 = document.createElement("tr");
+            row2.innerHTML = `
+        <td>${formattedLastControlAntiPollutionDate}</td>
+        <td>${nextControlAntiPollution}</td>
+        <td><input id="valid3" type="checkbox" class="validation-checkbox" /></td>
+      `;
+
+            tableBody.appendChild(row1);
+            tableBody.appendChild(row2);
+          }
+        } else {
+          tableBody.innerHTML = `<tr><td colspan="3">Aucune machine sélectionnée</td></tr>`;
+        }
+
+        $("#visiteTable").DataTable({
+          paging: true,
+          searching: true,
+          order: [[0, "asc"]],
+        });
+      }
+
+      function handleValidation() {
+        // Get current date and calculate next visit date (1 year from today)
+        const currentDate = new Date();
+        const nextVisitDate = new Date(currentDate);
+        nextVisitDate.setFullYear(nextVisitDate.getFullYear() + 1);
+
+        // Format the next visit date to "dd/mm/yyyy"
+        const formattedNextVisitDate = `${String(
+          nextVisitDate.getDate()
+        ).padStart(2, "0")}/${String(nextVisitDate.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}/${nextVisitDate.getFullYear()}`;
+
+        // Update Firebase with the new next visit date
+        const machineRef = ref(db, `machine/${selectedMachineKey}`);
+        update(machineRef, {
+          PVGP: formattedNextVisitDate,
+        })
+          .then(() => {
+            console.log(
+              "Next visit date updated successfully:",
+              formattedNextVisitDate
+            );
+            // Update the table with the new dates
+            populateTable();
+          })
+          .catch((error) => {
+            console.error("Error updating next visit date:", error);
+          });
+      }
+      document
+        .getElementById("visiteReglementaireButton")
+        .addEventListener("click", () => {
+          if (!isMachineSelected) {
+            alert(
+              "Veuillez sélectionner une machine pour afficher les visites réglementaires."
+            );
+            return;
+          }
+          document.getElementById("dashboardContainer").style.display = "none";
+          document.getElementById(
+            "visiteReglementaireContainer"
+          ).style.display = "block";
+          document.getElementById("ordreReparationContainer").style.display =
+            "none";
+          document.getElementById("entretiensContainer").style.display = "none";
+        });
+      document
+        .getElementById("ordreReparationButton")
+        .addEventListener("click", () => {
+          if (!isMachineSelected) {
+            alert(
+              "Veuillez sélectionner une machine pour afficher les ordres de réparation."
+            );
+            return;
+          }
+          document.getElementById(
+            "visiteReglementaireContainer"
+          ).style.display = "none";
+          document.getElementById(
+            "visiteReglementaireContainer"
+          ).style.display = "none";
+          document.getElementById("entretiensContainer").style.display = "none";
+          document.getElementById("ordreReparationContainer").style.display =
+            "block";
+        });
+      document
+        .getElementById("entretiensButton")
+        .addEventListener("click", () => {
+          if (!isMachineSelected) {
+            alert(
+              "Veuillez sélectionner une machine pour afficher les entretiens."
+            );
+            return;
+          }
+          document.getElementById(
+            "visiteReglementaireContainer"
+          ).style.display = "none";
+          document.getElementById(
+            "visiteReglementaireContainer"
+          ).style.display = "none";
+          document.getElementById("ordreReparationContainer").style.display =
+            "none";
+          document.getElementById("entretiensContainer").style.display =
+            "block";
+        });
+      document
+        .getElementById("dashboardButton")
+        .addEventListener("click", () => {
+          if (!isMachineSelected) {
+            alert(
+              "Veuillez sélectionner une machine pour afficher le tableau de bord."
+            );
+            return;
+          }
+          document.getElementById("dashboardContainer").style.display = "block";
+          document.getElementById(
+            "visiteReglementaireContainer"
+          ).style.display = "none";
+          document.getElementById("ordreReparationContainer").style.display =
+            "none";
+          document.getElementById("entretiensContainer").style.display = "none";
+        });
+      document.addEventListener("change", (event) => {
+        if (event.target.classList.contains("signalement-checkbox")) {
+          const checkbox = event.target;
+          const signalementId = checkbox.dataset.signalementId;
+          if (checkbox.checked) {
+            console.log("Selected signalement ID:", signalementId);
+          } else {
+            console.log("Deselected signalement ID:", signalementId);
+          }
+        }
+      });
+      document
+        .getElementById("selectSignalementsButton")
+        .addEventListener("click", () => {
+          const selectedSignalements = Array.from(
+            document.querySelectorAll(".signalement-checkbox:checked")
+          ).map((checkbox) => checkbox.dataset.signalementId);
+
+          // Redirect to ordreReparation.html with selected signalement IDs and machine ID as query parameters
+          if (selectedSignalements.length > 0) {
+            const queryParams = selectedSignalements
+              .map((id) => `id=${id}`)
+              .join("&");
+            const machineIdParam = `machineId=${selectedMachineKey}`;
+            window.location.href = `ordreReparation.html?${queryParams}&${machineIdParam}`;
+          } else {
+            alert("Please select at least one signalement.");
+          }
+        });
+
+      fetchMachines();
+      fetchSignalements();
+    </script>
+  </body>
+</html>

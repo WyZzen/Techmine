@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Excel File</title>
+  </head>
+  <body>
+    <h1>Upload Excel File</h1>
+    <input type="file" id="fileUpload" accept=".xlsx, .xls" />
+    <button id="upload">Upload and Save to Firebase</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        push,
+        get,
+        query,
+        orderByChild,
+        equalTo,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
+
+      function uploadFile() {
+        const fileUpload = document.getElementById("fileUpload");
+        const file = fileUpload.files[0];
+
+        if (!file) {
+          alert("Please select an Excel file first.");
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+
+          const jsonData = XLSX.utils.sheet_to_json(worksheet, { raw: true });
+
+          const clientsMap = new Map();
+
+          jsonData.forEach((entry) => {
+            const clientName = entry["client"];
+            const chantierCode = entry["code chantier"];
+            const chantierName = entry["chantier"];
+
+            if (!clientsMap.has(clientName)) {
+              const newClientRef = push(ref(db, "clients"));
+              clientsMap.set(clientName, newClientRef.key);
+
+              set(newClientRef, {
+                id: newClientRef.key,
+                name: clientName,
+              })
+                .then(() => console.log("Client added:", clientName))
+                .catch((error) => console.error("Error adding client:", error));
+            }
+
+            const clientId = clientsMap.get(clientName);
+            const newChantierRef = push(ref(db, "chantiers"));
+
+            set(newChantierRef, {
+              code: chantierCode,
+              name: chantierName,
+              clientId: clientId,
+            })
+              .then(() =>
+                console.log("Chantier added:", chantierName, clientName)
+              )
+              .catch((error) => console.error("Error adding chantier:", error));
+          });
+        };
+
+        reader.readAsArrayBuffer(file);
+      }
+
+      document.getElementById("upload").addEventListener("click", uploadFile);
+    </script>
+  </body>
+</html>

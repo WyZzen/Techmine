@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+
+    <title>&ensp;</title>
+  </head>
+  <body>
+    <style>
+      input {
+        border: none;
+        border-bottom: 1px solid black;
+        width: 100%;
+      }
+      .signatureCanvas {
+        border: 1px solid black;
+        touch-action: auto;
+        width: 300px;
+        height: 150px;
+      }
+      @media (min-width: 1000px) {
+        .signatureCanvas {
+          border: 1px solid black;
+          touch-action: auto;
+          width: 300px;
+          height: 150px;
+        }
+      }
+    </style>
+    <div class="container-fluid">
+      <div class="modal" tabindex="-1" role="dialog" id="signatureModal">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content modal-custom">
+            <div class="modal-header">
+              <h5 class="modal-title">Sign Here</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <canvas id="signatureCanvas" class="signatureCanvas"></canvas>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-primary" id="saveSignature">
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4 text-start">
+          <img
+            src="logo techmine.svg"
+            alt=""
+            class="img"
+            style="height: 25vh; width: 100%"
+          />
+        </div>
+        <div class="col-8">
+          <h1 class="text-start">
+            <input
+              type="text"
+              id="num"
+              class="border-0 text-start m-1 text-dark"
+              disabled
+            />
+          </h1>
+        </div>
+      </div>
+      <div class="row text-center">
+        <div class="col-3 border border-dark"><h5>NOM CLIENT</h5></div>
+        <div class="col-6 border border-dark">
+          <h5>NOM CARRIERE / CHANTIER</h5>
+        </div>
+        <div class="col-3 border border-dark"><h5>OBSERVATION</h5></div>
+      </div>
+      <div class="row text-center">
+        <div class="col-3 border border-dark">
+          <input
+            type="text"
+            id="client"
+            class="border-0 text-center m-1 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-6 border border-dark">
+          <input
+            type="text"
+            id="carriere"
+            class="border-0 text-center m-1 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-3 border border-dark">
+          <input
+            type="text"
+            id="obs"
+            class="border-0 text-center m-1 text-dark"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">&ensp;</div>
+      </div>
+      <div class="row text-center">
+        <div class="col-3 border border-dark">
+          <h5>Date début et fin des travaux</h5>
+        </div>
+        <div class="col-7 border border-dark">
+          <h5>Désignation des travaux</h5>
+        </div>
+        <div class="col-1 border border-dark"><h5>Quantités</h5></div>
+        <div class="col-1 border border-dark"><h5>Unités</h5></div>
+      </div>
+      <div class="row text-center align-self-center" id="ligneForage">
+        <div class="col-3 border border-dark">
+          <input
+            type="text"
+            id="datesForage"
+            class="border-0 text-center text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-3 border border-dark text-start">
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input text-dark"
+              type="checkbox"
+              value=""
+              id="Forage"
+            />
+            <label class="form-check-label text-dark" for="flexCheckChecked">
+              Forage
+            </label>
+          </div>
+          <input
+            type="text"
+            id="NPlanForage"
+            class="border-0 text-start text-dark"
+            disabled
+          /><br />
+          <input
+            type="text"
+            id="DiametreForage"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <br />
+          <input
+            type="text"
+            id="transfert"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-4 border border-dark text-start">
+          <input
+            type="text"
+            id="HMFDebut"
+            class="border-0 text-start mt-2 text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="HMFFin"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="HeuresPanne"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="HeuresArret"
+            class="border-0 text-start mb-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="QuantiteForage"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="UniteForage"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+      </div>
+
+      <div class="row text-center align-self-center" id="ligneForage&1">
+        <div class="col-3 border border-dark">
+          <input
+            type="text"
+            id="datesForage&1"
+            class="border-0 text-center text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-7 border border-dark text-start">
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input text-dark"
+              type="checkbox"
+              value=""
+              id="Forage&1"
+            />
+            <label class="form-check-label text-dark" for="flexCheckChecked">
+              Forage
+            </label>
+          </div>
+          <input
+            type="text"
+            id="NPlanForage&1"
+            class="border-0 text-start text-dark"
+            disabled
+          /><br />
+          <input
+            type="text"
+            id="DiametreForage&1"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <br />
+          <input
+            type="text"
+            id="transfert&1"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="QuantiteForage&1"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="UniteForage&1"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+      </div>
+
+      <div class="row text-center align-self-center" id="ligneForage&2">
+        <div class="col-3 border border-dark"></div>
+
+        <div class="col-7 border border-dark text-start">
+          <input
+            type="text"
+            id="HMFDebut&1"
+            class="border-0 text-start mt-2 text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="HMFFin&1"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="HeuresPanne&1"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="HeuresArret&1"
+            class="border-0 text-start mb-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="QuantiteForage&1"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="UniteForage&1"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+      </div>
+
+      <div class="row text-center" id="ligneMinage">
+        <div class="col-3 border border-dark">
+          <input
+            type="text"
+            id="datesMinage"
+            class="border-0 text-center mt-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-7 text-start border border-dark">
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input text-dark"
+              type="checkbox"
+              value=""
+              id="Minage"
+            />
+            <label class="form-check-label text-dark" for="flexCheckChecked">
+              Minage
+            </label>
+          </div>
+          <input
+            type="text"
+            id="NPlanTir"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="implantation"
+            class="border-0 text-start text-dark"
+            disabled
+          />
+          <input
+            type="text"
+            id="NbSismographes"
+            class="border-0 text-start mb-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="QuantiteMinage"
+            class="border-0 text-start my-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark">
+          <input
+            type="text"
+            id="UniteMinage"
+            class="border-0 text-start my-2 text-dark"
+            disabled
+          />
+        </div>
+      </div>
+      <div class="row" id="ligneAutre">
+        <div class="col-3 border border-dark"></div>
+        <div class="col-7 border border-dark">
+          <input
+            type="text"
+            id="autre"
+            class="border-0 text-start my-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark"></div>
+        <div class="col-1 border border-dark"></div>
+      </div>
+      <div class="row">
+        <div class="col-3 border border-dark"></div>
+        <div class="col-7 border border-dark">
+          <input
+            type="text"
+            id="Gnr"
+            class="border-0 text-start my-2 text-dark"
+            disabled
+          />
+        </div>
+        <div class="col-1 border border-dark"></div>
+        <div class="col-1 border border-dark"></div>
+      </div>
+      <div class="row">
+        <div class="col-12">&ensp;</div>
+      </div>
+      <div class="row">
+        <div class="col-12 text-center border border-dark">
+          <h5>
+            ATTESTATION DE L'EXACTITUDE DES INSCRIPTIONS PORTEES SUR LE PRESENT
+            ATTACHEMENT
+          </h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3 border border-dark">POUR TECHMINE</div>
+        <div class="col-3 border border-dark">
+          DATE:
+          <input
+            type="text"
+            id="Date"
+            class="border-0 text-start my-2 text-dark text-center"
+            disabled
+          />
+        </div>
+        <div class="col-3 border border-dark">POUR LE CLIENT</div>
+        <div class="col-3 border border-dark">
+          DATE
+          <input
+            type="text"
+            id="DateClient"
+            class="border-0 text-start my-2 text-dark text-center"
+          />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-3 border border-dark">
+          NOM:
+          <input
+            type="text"
+            id="Nom"
+            class="border-0 text-start my-2 text-dark text-center"
+            disabled
+          />
+        </div>
+        <div class="col-3 border border-dark">
+          <p>SIGNATURE</p>
+          <canvas id="signature" class=""></canvas>
+        </div>
+        <div class="col-3 border border-dark">
+          NOM:
+          <input
+            type="text"
+            id="NomClient"
+            class="border-0 text-start my-2 text-dark text-center"
+          />
+        </div>
+        <div class="col-3 border border-dark">
+          <p>SIGNATURE</p>
+          <canvas id="signatureClient" class=""></canvas>
+        </div>
+      </div>
+    </div>
+    <button onclick="BtnPrint()" id="btnPrint" class="btn btn-primary mt-2">
+      Imprimer l'attachement
+    </button>
+    <script>
+      function BtnPrint() {
+        document.getElementById("btnPrint").style.display = "none";
+        window.print();
+        setTimeout(function () {
+          document.getElementById("btnPrint").style.display = "block";
+        }, 3000);
+      }
+
+      function setupCanvas() {
+        const canvas = document.getElementById("signatureCanvas");
+        const ctx = canvas.getContext("2d");
+        let drawing = false;
+
+        canvas.addEventListener("mousedown", () => (drawing = true));
+        canvas.addEventListener("mouseup", () => (drawing = false));
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          drawing = true;
+          const touch = e.touches[0];
+          draw(touch);
+        });
+        canvas.addEventListener("touchend", () => (drawing = false));
+        canvas.addEventListener("touchmove", (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          draw(touch);
+        });
+
+        function draw(event) {
+          if (!drawing) return;
+
+          const rect = canvas.getBoundingClientRect();
+          const x = (event.clientX || event.touches[0].clientX) - rect.left;
+          const y = (event.clientY || event.touches[0].clientY) - rect.top;
+
+          ctx.lineWidth = 2;
+          ctx.lineCap = "round";
+          ctx.strokeStyle = "#000";
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        }
+      }
+
+      setupCanvas("signature");
+      setupCanvas("signatureClient");
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        get,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+
+      function getURLParameter(name) {
+        return new URLSearchParams(window.location.search).get(name);
+      }
+      const number = getURLParameter("number");
+      async function getAttachement() {
+        const attachmentRef = ref(db, "Attachement/" + number);
+
+        try {
+          const snapshot = await get(attachmentRef);
+          const userRef = ref(db, "users/" + snapshot.val().user);
+          const snapshot2 = await get(userRef);
+          if (snapshot.exists()) {
+            document.getElementById("num").value = "ATTACHEMENT N°" + number;
+            document.getElementById("client").value =
+              snapshot.val().infos.client;
+            document.getElementById("carriere").value =
+              snapshot.val().infos.chantier;
+            document.getElementById("obs").value =
+              snapshot.val().infos.observation;
+            document.getElementById("datesForage").value =
+              snapshot.val().infos.datesForage;
+            document.getElementById("datesForage&1").value =
+              snapshot.val().infos.datesForage;
+            document.getElementById("NPlanForage").value =
+              "Plan de forage n°" + snapshot.val().infos.NPlanForage;
+            document.getElementById("NPlanForage&1").value =
+              "Plan de forage n°" + snapshot.val().infos.NPlanForage;
+            document.getElementById("DiametreForage").value =
+              "Diamètre de forage: " +
+              snapshot.val().infos.DiametreForage +
+              " mm";
+            document.getElementById("DiametreForage&1").value =
+              "Diamètre de forage: " +
+              snapshot.val().infos.DiametreForage +
+              " mm";
+            if (snapshot.val().infos.forage == "oui") {
+              document.getElementById("Forage").checked = true;
+              document.getElementById("Forage&1").checked = true;
+            } else {
+              console.log("Forage: ", snapshot.val().infos.forage);
+            }
+            if (snapshot.val().infos.minage == "oui") {
+              document.getElementById("Minage").checked = true;
+            } else {
+              console.log("Minage: ", snapshot.val().infos.minage);
+            }
+            document.getElementById("HMFDebut").value =
+              "Heures moteur foreuse début de travaux: " +
+              snapshot.val().infos.HMFDebut;
+            document.getElementById("HMFDebut&1").value =
+              "Heures moteur foreuse début de travaux: " +
+              snapshot.val().infos.HMFDebut;
+            document.getElementById("HMFFin").value =
+              "Heures moteur foreuse fin de travaux: " +
+              snapshot.val().infos.HMFFin;
+            document.getElementById("HMFFin&1").value =
+              "Heures moteur foreuse fin de travaux: " +
+              snapshot.val().infos.HMFFin;
+            document.getElementById("HeuresPanne").value =
+              "Heures de panne: " +
+              snapshot.val().infos.HeuresPanne +
+              " " +
+              snapshot.val().infos.CommP;
+            document.getElementById("HeuresPanne&1").value =
+              "Heures de panne: " +
+              snapshot.val().infos.HeuresPanne +
+              " " +
+              snapshot.val().infos.CommP;
+            document.getElementById("HeuresArret").value =
+              "Heures d'arrêt: " +
+              snapshot.val().infos.HeuresArret +
+              " " +
+              snapshot.val().infos.CommA;
+            document.getElementById("HeuresArret&1").value =
+              "Heures d'arrêt: " +
+              snapshot.val().infos.HeuresArret +
+              " " +
+              snapshot.val().infos.CommA;
+            console.log(
+              "Heures d'arrêt: " +
+                snapshot.val().infos.HeuresArret +
+                " " +
+                snapshot.val().infos.CommA
+            );
+            console.log(snapshot.val().infos.datesMinage);
+            document.getElementById("QuantiteForage").value =
+              snapshot.val().infos.QuantiteForage;
+            document.getElementById("QuantiteForage&1").value =
+              snapshot.val().infos.QuantiteForage;
+            document.getElementById("UniteForage").value =
+              snapshot.val().infos.UniteForage;
+            document.getElementById("UniteForage&1").value =
+              snapshot.val().infos.UniteForage;
+            document.getElementById("datesMinage").value =
+              snapshot.val().infos.datesMinage;
+            document.getElementById("NPlanTir").value =
+              "Plan de tir n°" + snapshot.val().infos.NPlanTir;
+            document.getElementById("implantation").value =
+              "Implantation: " + snapshot.val().infos.implantation;
+            document.getElementById("NbSismographes").value =
+              "Nombre de sismographes: " + snapshot.val().infos.NbSismographes;
+            document.getElementById("QuantiteMinage").value =
+              snapshot.val().infos.QuantiteMinage;
+            document.getElementById("UniteMinage").value =
+              snapshot.val().infos.UniteMinage;
+            document.getElementById("autre").value =
+              "autre :" + snapshot.val().infos.autre;
+            if (snapshot.val().infos.GNR == "Non") {
+              document.getElementById("Gnr").value =
+                "Gnr fourni par le client : " + snapshot.val().infos.GNR;
+            } else {
+              document.getElementById("Gnr").value =
+                "Gnr fourni par le client : " +
+                snapshot.val().infos.GNR +
+                " / " +
+                snapshot.val().infos.QuantiteGNR;
+            }
+            document.getElementById("transfert").value =
+              "Transfert: " + snapshot.val().infos.Transfert;
+            document.getElementById("transfert&1").value =
+              "Transfert: " + snapshot.val().infos.Transfert;
+            document.getElementById("Date").value = snapshot.val().date;
+            document.getElementById("Nom").value =
+              snapshot2.val().nom + " " + snapshot2.val().prenom;
+            if (
+              snapshot.val().infos.forage == "oui" &&
+              snapshot.val().infos.minage == "oui"
+            ) {
+              document.getElementById("ligneForage&1").style.display = "none";
+              document.getElementById("ligneForage&2").style.display = "none";
+            } else {
+              console.log(
+                "1 : Forage = " +
+                  snapshot.val().infos.forage +
+                  " Minage = " +
+                  snapshot.val().infos.minage
+              );
+            }
+
+            if (
+              snapshot.val().infos.forage == "oui" &&
+              snapshot.val().infos.minage == "non"
+            ) {
+              document.getElementById("ligneMinage").style.display = "none";
+              document.getElementById("ligneForage").style.display = "none";
+            } else {
+              console.log(
+                "2 : Forage = " +
+                  snapshot.val().infos.forage +
+                  " Minage = " +
+                  snapshot.val().infos.minage
+              );
+            }
+            if (
+              snapshot.val().infos.forage == "non" &&
+              snapshot.val().infos.minage == "oui"
+            ) {
+              document.getElementById("ligneForage").style.display = "none";
+              document.getElementById("ligneForage&1").style.display = "none";
+              document.getElementById("ligneForage&2").style.display = "none";
+            } else {
+              console.log(
+                "3 : Forage = " +
+                  snapshot.val().infos.forage +
+                  " Minage = " +
+                  snapshot.val().infos.minage
+              );
+            }
+            if (
+              snapshot.val().infos.forage == "non" &&
+              snapshot.val().infos.minage == "non"
+            ) {
+              document.getElementById("ligneForage").style.display = "none";
+              document.getElementById("ligneMinage").style.display = "none";
+              document.getElementById("ligneForage&1").style.display = "none";
+              document.getElementById("ligneForage&2").style.display = "none";
+            } else {
+              console.log(
+                "4 : Forage = " +
+                  snapshot.val().infos.forage +
+                  " Minage = " +
+                  snapshot.val().infos.minage
+              );
+            }
+            if (snapshot.val().infos.autre == "") {
+              document.getElementById("ligneAutre").style.display = "none";
+            } else {
+              console.log("Autre: ", snapshot.val().infos.autre);
+            }
+          } else {
+            console.log("No data available");
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching data: ", error);
+        }
+      }
+      function clearCanvas(canvas) {
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+
+      let activeCanvas;
+
+      document
+        .getElementById("signature")
+        .addEventListener("click", function () {
+          activeCanvas = this;
+          clearCanvas(document.getElementById("signatureCanvas"));
+          $("#signatureModal").modal("show");
+        });
+
+      document
+        .getElementById("signatureClient")
+        .addEventListener("click", function () {
+          activeCanvas = this;
+          clearCanvas(document.getElementById("signatureCanvas"));
+          $("#signatureModal").modal("show");
+        });
+
+      document
+        .getElementById("saveSignature")
+        .addEventListener("click", function () {
+          const signatureCanvas = document.getElementById("signatureCanvas");
+          const ctx = activeCanvas.getContext("2d");
+          ctx.drawImage(
+            signatureCanvas,
+            0,
+            0,
+            activeCanvas.width,
+            activeCanvas.height
+          );
+          $("#signatureModal").modal("hide");
+        });
+      getAttachement();
+    </script>
+  </body>
+</html>

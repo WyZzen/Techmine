@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style-top.css" />
+    <style>
+      @media print {
+        .container-fluid.align-items-center.custom-height-top {
+          display: none;
+        }
+        .btn-imp {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid align-items-center custom-height-top">
+      <div
+        class="row bg-gradient bg-primary p-4 align-items-center custom-height-top"
+      >
+        <div class="col col-2 text-start">
+          <img
+            src="logo techmine.svg"
+            alt="bouton de menu"
+            class="custom-height-logo"
+          />
+        </div>
+        <div class="col col-8">
+          <h1 class="custom-font-top ms-5 text-center">Ordre de réparation</h1>
+        </div>
+        <div class="col col-2 text-end h-20">
+          <div class="dropdown text-center">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="symbole-de-menu-pour-android.png"
+                alt="bouton de menu"
+                class="custom-height-menu"
+              />
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-dark custom-menu text-center"
+            >
+              <li>
+                <a class="dropdown-item" href="accueil.html"
+                  >Retourner à l'accueil</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
+              <li>
+                <a class="dropdown-item" href="liste-rapport.html"
+                  >Liste des Rapports</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="attachement.html"
+                  >Attachements</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="liste-attachement.html"
+                  >Liste des attachements</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="signalement.html">Signalement</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="liste-intervention.html"
+                  >Liste des Signalements</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="historique-intervention.html"
+                  >Historique des interventions</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="machines.html"
+                  >Gestion des Machines</a
+                >
+              </li>
+              <li><hr class="dropdown-divider menu-item-admin" /></li>
+              <li><hr class="dropdown-divider menu-item-admin" /></li>
+              <li class="menu-item-admin">
+                <div class="dropdown-header" style="font-size: 2rem">
+                  Administrateur
+                </div>
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-utilisateur.html"
+                  >Gestion des Utilisateurs</a
+                >
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-client.html"
+                  >Gestion des Clients</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <img
+      src="logo techmine.svg"
+      alt="bouton de menu"
+      class="custom-height-logo"
+    />
+    <div id="nOrdre" class="mt-4 ms-5 h2"></div>
+    <div id="engin" class="mt-4 ms-5 h2"></div>
+    <div id="currentDate" class="mt-4 ms-5 h2"></div>
+    <table id="signalementTable" class="table mt-4 border border-2 border-dark">
+      <thead>
+        <tr>
+          <th class="border border-2 border-dark">Signalement</th>
+          <th class="border border-2 border-dark">Commentaire</th>
+          <th class="border border-2 border-dark">
+            Commentaire Travaux Effectués
+          </th>
+          <th class="border border-2 border-dark">Heures Machine</th>
+          <th class="border border-2 border-dark">Heures Marteau</th>
+          <th class="border border-2 border-dark">Date</th>
+          <th class="border border-2 border-dark">Validation</th>
+        </tr>
+      </thead>
+      <form id="signalementForm" method="post">
+        <tbody class="border border-2 border-dark"></tbody>
+      </form>
+    </table>
+    <button id="addRowButton" class="btn btn-secondary btn-imp">
+      Ajouter une ligne
+    </button>
+    <button id="validateButton" class="btn btn-success btn-imp">Valider</button>
+
+    <button id="printButton" class="btn btn-primary btn-imp">Imprimer</button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        update,
+        query,
+        orderByChild,
+        equalTo,
+        onValue,
+        push,
+        set,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase();
+      const auth = getAuth();
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedMachineId = urlParams.get("machineId");
+
+      let newNumber = 0;
+
+      const machineRef = ref(db, `machine/${selectedMachineId}`);
+      get(machineRef).then((snapshot) => {
+        const machineData = snapshot.val();
+        if (machineData) {
+          const machineNmateriel = machineData.Nmatériel;
+
+          const ordreReparationRef = ref(db, "ordreReparation/");
+          get(ordreReparationRef).then((snapshot) => {
+            const ordreReparationData = snapshot.val();
+            let maxNumber = 0;
+            const selectedMachineId = "your_machine_id";
+
+            if (ordreReparationData) {
+              for (const key in ordreReparationData) {
+                if (ordreReparationData.hasOwnProperty(key)) {
+                  const ordreReparation = ordreReparationData[key];
+                  console.log(
+                    `Processing entry: ${JSON.stringify(ordreReparation)}`
+                  );
+
+                  if (ordreReparation.machineId === selectedMachineId) {
+                    const numberString = ordreReparation.NOrdre;
+                    if (typeof numberString === "string") {
+                      console.log(`Checking numberString: ${numberString}`);
+                      if (numberString.startsWith(nMateriel + "-")) {
+                        const parts = numberString.split("-");
+                        if (parts.length === 2) {
+                          const numberPart = parts[1];
+                          const number = parseInt(numberPart, 10);
+                          console.log(`Parsed number: ${number}`);
+                          if (!isNaN(number) && number > maxNumber) {
+                            maxNumber = number;
+                          }
+                        } else {
+                          console.warn(
+                            `Invalid format for numberString: ${numberString}`
+                          );
+                        }
+                      } else {
+                        console.warn(
+                          `Number string does not start with expected nMateriel: ${numberString}`
+                        );
+                      }
+                    } else {
+                      console.warn(
+                        `Number property is not a string: ${numberString}`
+                      );
+                    }
+                  } else {
+                    console.warn(
+                      `Machine ID mismatch: expected ${selectedMachineId}, found ${ordreReparation.machineId}`
+                    );
+                  }
+                }
+              }
+            } else {
+              console.warn("No data found.");
+            }
+
+            newNumber = maxNumber + 1;
+
+            const nOrdreDiv = document.getElementById("nOrdre");
+            const enginDiv = document.getElementById("engin");
+            const currentDateDiv = document.getElementById("currentDate");
+            nOrdreDiv.textContent = `N° de l'ordre : ${machineNmateriel}-${newNumber}`;
+            enginDiv.textContent = `Engin : ${machineNmateriel}`;
+            const currentDate = new Date().toISOString().split("T")[0];
+            currentDateDiv.textContent = `Date : ${currentDate}`;
+
+            const selectedSignalementIds = urlParams.getAll("id");
+            const signalementTableBody = document.querySelector(
+              "#signalementTable tbody"
+            );
+            selectedSignalementIds.forEach((signalementId) => {
+              const signalementRef = ref(db, `signalement/${signalementId}`);
+              get(signalementRef).then((snapshot) => {
+                const signalementData = snapshot.val();
+                if (signalementData) {
+                  const row = document.createElement("tr");
+                  row.innerHTML = `
+                      <td class="border border-2 border-dark">${
+                        signalementData.observations || ""
+                      }</td>
+                      <td class="border border-2 border-dark">${
+                        signalementData.commentaire || ""
+                      }</td>
+                      <td class="border border-2 border-dark"><input type="text" class="form-control" /></td>
+                      <td class="border border-2  border-dark">${
+                        signalementData.HeuresForreuse || ""
+                      }</td>
+                      <td class="border border-2  border-dark">${
+                        signalementData.HeuresMarteau || ""
+                      }</td>
+                      <td class="border border-2 border-dark">${
+                        signalementData.date || ""
+                      }</td>
+                      <td class="border border-2 border-dark"><input type="checkbox" /></td>
+                    `;
+                  signalementTableBody.appendChild(row);
+                }
+              });
+            });
+          });
+        } else {
+          console.log("Machine data not found.");
+        }
+      });
+
+      document
+        .getElementById("printButton")
+        .addEventListener("click", function () {
+          window.print();
+        });
+      document
+        .getElementById("addRowButton")
+        .addEventListener("click", function () {
+          const signalementTableBody = document.querySelector(
+            "#signalementTable tbody"
+          );
+          const newRow = document.createElement("tr");
+
+          newRow.setAttribute("data-new-row", "true");
+
+          newRow.innerHTML = `
+                <td><input type="text" name="observations" class="form-control" /></td>
+                <td><input type="text" name="commentaire" class="form-control" /></td>
+                <td><input type="text" name="commentaireTravaux" class="form-control" /></td>
+                <td><input type="text" name="HeuresForreuse" class="form-control" /></td>
+                <td><input type="text" name="HeuresMarteau" class="form-control" /></td>
+                <td><input type="date" name="date" class="form-control" /></td>
+                <td><input type="checkbox" name="validation" /></td>
+              `;
+          signalementTableBody.appendChild(newRow);
+        });
+
+      document
+        .getElementById("validateButton")
+        .addEventListener("click", function () {
+          const signalementTableBody = document.querySelector(
+            "#signalementTable tbody"
+          );
+          const rows = signalementTableBody.getElementsByTagName("tr");
+
+          function getLastRowData() {
+            const signalementTableBody = document.querySelector(
+              "#signalementTable tbody"
+            );
+            const rows = signalementTableBody.getElementsByTagName("tr");
+
+            if (rows.length === 0) {
+              console.log("No rows in the table.");
+              return { heuresForreuse: "", heuresMarteau: "" };
+            }
+
+            const lastRow = rows[rows.length - 1];
+            const cells = lastRow.getElementsByTagName("td");
+
+            const heuresForreuseInput =
+              cells[3] && cells[3].querySelector("input");
+            const heuresMarteauInput =
+              cells[4] && cells[4].querySelector("input");
+
+            const heuresForreuse = heuresForreuseInput
+              ? heuresForreuseInput.value
+              : "";
+            const heuresMarteau = heuresMarteauInput
+              ? heuresMarteauInput.value
+              : "";
+
+            return { heuresForreuse, heuresMarteau };
+          }
+
+          for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+
+            if (row.hasAttribute("data-new-row")) {
+              const cells = row.getElementsByTagName("td");
+
+              const observations =
+                cells[0] && cells[0].querySelector("input")
+                  ? cells[0].querySelector("input").value
+                  : "";
+              const commentaire =
+                cells[1] && cells[1].querySelector("input")
+                  ? cells[1].querySelector("input").value
+                  : "";
+              const commentaireTravaux =
+                cells[2] && cells[2].querySelector("input")
+                  ? cells[2].querySelector("input").value
+                  : "";
+              const heuresForreuse =
+                cells[3] && cells[3].querySelector("input")
+                  ? cells[3].querySelector("input").value
+                  : "";
+              const heuresMarteau =
+                cells[4] && cells[4].querySelector("input")
+                  ? cells[4].querySelector("input").value
+                  : "";
+              const date =
+                cells[5] && cells[5].querySelector("input")
+                  ? cells[5].querySelector("input").value
+                  : "";
+              const validation =
+                cells[6] && cells[6].querySelector("input")
+                  ? cells[6].querySelector("input").checked
+                  : false;
+
+              const newSignalement = {
+                observations: observations,
+                commentaire: commentaire,
+                commentaireTravaux: commentaireTravaux,
+                HeuresForreuse: heuresForreuse,
+                HeuresMarteau: heuresMarteau,
+                date: date,
+                isFinished: "oui",
+                machineId: selectedMachineId,
+              };
+
+              const signalementRef = ref(db, "signalement");
+              const newSignalementRef = push(signalementRef);
+              set(newSignalementRef, newSignalement)
+                .then(() => {
+                  console.log(
+                    "New signalement added to Firebase successfully."
+                  );
+                })
+                .catch((error) => {
+                  console.error(
+                    "Error adding signalement to Firebase: ",
+                    error
+                  );
+                });
+            }
+          }
+
+          const { heuresForreuse, heuresMarteau } = getLastRowData();
+          const currentDate = new Date().toISOString().split("T")[0];
+          const pageUrl = window.location.href;
+          const machineRef = ref(db, `machine/${selectedMachineId}`);
+          get(machineRef).then((snapshot) => {
+            const machineData = snapshot.val();
+            if (machineData) {
+              const machineNmateriel = machineData.Nmatériel;
+              const NOrdre = machineNmateriel + "-" + newNumber;
+
+              const newOrdreReparation = {
+                NOrdre: NOrdre,
+                date: currentDate,
+                commentaire: "",
+                HeuresForreuse: heuresForreuse,
+                HeuresMarteau: heuresMarteau,
+                machineId: selectedMachineId,
+                url: pageUrl,
+              };
+
+              console.log("New ordreReparation:", newOrdreReparation);
+
+              const ordreReparationRef = ref(db, "ordreReparation/");
+              const newOrdreReparationRef = push(ordreReparationRef);
+              set(newOrdreReparationRef, newOrdreReparation)
+                .then(() => {
+                  console.log(
+                    "New ordreReparation added to Firebase successfully."
+                  );
+                })
+                .catch((error) => {
+                  console.error(
+                    "Error adding ordreReparation to Firebase: ",
+                    error
+                  );
+                });
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

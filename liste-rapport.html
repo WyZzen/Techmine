@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Liste des Rapports</title>
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style-top.css" />
+  </head>
+  <body>
+    <style>
+      #table {
+        height: 600px;
+        overflow-x: auto;
+      }
+    </style>
+    <div class="container-fluid align-items-center custom-height-top">
+      <div
+        class="row bg-gradient bg-primary p-4 align-items-center custom-height-top"
+      >
+        <div class="col col-2 text-start">
+          <img src="logo techmine.svg" alt="Logo" class="custom-height-logo" />
+        </div>
+        <div class="col col-8 text-center">
+          <h1 class="custom-font-top ms-5">Liste des rapports</h1>
+        </div>
+        <div class="col col-2 text-end h-20">
+          <div class="dropdown text-center">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="symbole-de-menu-pour-android.png"
+                alt="Menu"
+                class="custom-height-menu"
+              />
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-dark custom-menu text-center"
+            >
+              <li>
+                <a class="dropdown-item" href="accueil.html"
+                  >Retourner à l'accueil</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
+              <li>
+                <a class="dropdown-item" href="liste-rapport.html"
+                  >Liste des Rapports</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="attachement.html"
+                  >Attachements</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="liste-attachement.html"
+                  >Liste des attachements</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="signalement.html">Signalement</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="liste-intervention.html"
+                  >Liste des interventions</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="historique-intervention.html"
+                  >Historique des interventions</a
+                >
+              </li>
+              <li><hr class="dropdown-divider menu-item-admin" /></li>
+              <li class="menu-item-admin">
+                <div class="dropdown-header" style="font-size: 2rem">
+                  Administrateur
+                </div>
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-utilisateur.html"
+                  >Gestion des Utilisateurs</a
+                >
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-client.html"
+                  >Gestion des Clients</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid mt-4">
+      <h2 class="">Liste des Rapports</h2>
+      <button id="exportButton" class="btn btn-primary mt-2">
+        Exporter en CSV
+      </button>
+      <div id="table" class="table-responsive">
+        <table id="reportsTable" class="table table-striped table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>Date</th>
+              <th>Utilisateur</th>
+              <th>Client</th>
+              <th>Carriere</th>
+              <th>Nombre d'heure de travail</th>
+              <th>Nombre de mètres forés</th>
+              <th>Temps de route</th>
+              <th>Gd ou Panier</th>
+              <th>Numéro de foreuse</th>
+              <th>Nombre d'heure au début</th>
+              <th>Nombre d'heure à la fin</th>
+              <th>Nombre d'heure d'arret</th>
+              <th>Commentaire sur les arrêts</th>
+              <th>Nombre d'heure de panne</th>
+              <th>Commentaire sur les pannes</th>
+              <th>Transporteur</th>
+              <th>Durée du transfert</th>
+              <th>Fournisseur</th>
+              <th>Quantité</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        onValue,
+        remove,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase();
+      const auth = getAuth();
+
+      let currentUserRole = "";
+      let currentUserId = "";
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUserId = user.uid;
+          console.log("Utilisateur connecté:", user.uid);
+
+          checkUserRole(user.uid)
+            .then((userInfo) => {
+              currentUserRole = userInfo.role;
+              console.log("Current User Role:", currentUserRole);
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = userInfo.isAdmin ? "block" : "none";
+              });
+              fetchReports();
+            })
+            .catch((error) => {
+              console.error("Erreur lors de la vérification du rôle :", error);
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = "none";
+              });
+            });
+        } else {
+          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
+          adminMenuItems.forEach((item) => {
+            item.style.display = "none";
+          });
+        }
+      });
+
+      function checkUserRole(userId) {
+        const userRef = ref(db, `users/${userId}`);
+        return get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          console.log("User Data:", userData);
+          return {
+            isAdmin: [
+              "cadre",
+              "responsable exploitation",
+              "directeur",
+              "responsable agence",
+            ].includes(userData.role),
+            role: userData.role,
+          };
+        });
+      }
+
+      function fetchReports() {
+        const reportsRef = ref(db, "rapport");
+        const usersRef = ref(db, "users");
+
+        onValue(usersRef, (usersSnapshot) => {
+          const users = usersSnapshot.val() || {};
+
+          onValue(reportsRef, (snapshot) => {
+            const reports = snapshot.val() || {};
+            const reportsTableBody = document
+              .getElementById("reportsTable")
+              .getElementsByTagName("tbody")[0];
+
+            reportsTableBody.innerHTML = "";
+
+            const sortedReportIds = Object.keys(reports).sort((a, b) => b - a);
+
+            for (const id of sortedReportIds) {
+              const report = reports[id];
+              const userId = report.user;
+              const user = users[userId] || {
+                prenom: "Utilisateur",
+                nom: "Inconnu",
+              };
+
+              if (
+                [
+                  "cadre",
+                  "responsable exploitation",
+                  "directeur",
+                  "responsable agence",
+                ].includes(currentUserRole) ||
+                userId === currentUserId
+              ) {
+                const row = reportsTableBody.insertRow();
+
+                const infos = report.infos || {};
+                row.insertCell(0).textContent = report.date || "";
+                row.insertCell(1).textContent = `${user.prenom} ${user.nom}`;
+                row.insertCell(2).textContent = infos.client || "";
+                row.insertCell(3).textContent = infos.Carriere || "";
+                row.insertCell(4).textContent = infos.NbHTravail || "";
+                row.insertCell(5).textContent = infos.NbMF || "";
+                row.insertCell(6).textContent = infos.TDR || "";
+                row.insertCell(7).textContent = infos.GdP || "";
+                row.insertCell(8).textContent = infos.numF || "";
+                row.insertCell(9).textContent = infos.NbHD || "";
+                row.insertCell(10).textContent = infos.NbHF || "";
+                row.insertCell(11).textContent = infos.NbHA || "";
+                row.insertCell(12).textContent = infos.CommA || "";
+                row.insertCell(13).textContent = infos.NbHP || "";
+                row.insertCell(14).textContent = infos.CommP || "";
+                row.insertCell(15).textContent = infos.CT || "";
+                row.insertCell(16).textContent = infos.DT || "";
+                row.insertCell(17).textContent = infos.CG || "";
+                row.insertCell(18).textContent = infos.QG || "";
+
+                const currentTime = new Date().getTime();
+                const rapportTime = id;
+                const timeDifference = currentTime - rapportTime;
+
+                if (timeDifference < 3600000) {
+                  const actionsCell = row.insertCell(19);
+                  const deleteButton = document.createElement("button");
+                  deleteButton.textContent = "Supprimer";
+                  deleteButton.className = "btn btn-danger";
+                  deleteButton.onclick = () => {
+                    remove(ref(db, `rapport/${id}`))
+                      .then(() => {
+                        alert("Rapport supprimé !");
+                      })
+                      .catch((error) => {
+                        console.error(
+                          "Erreur lors de la suppression du rapport :",
+                          error
+                        );
+                      });
+                  };
+                  actionsCell.appendChild(deleteButton);
+                } else {
+                  row.insertCell(19).textContent = "";
+                }
+              }
+            }
+          });
+        });
+      }
+
+      document.getElementById("exportButton").addEventListener("click", () => {
+        const table = $("#reportsTable").DataTable();
+        const data = table.rows().data().toArray();
+
+        if (data.length === 0) {
+          alert("Aucun rapport à exporter.");
+          return;
+        }
+
+        const csvRows = [];
+        const headers = [
+          "Client",
+          "Carriere",
+          "Nombre d'heure de travail",
+          "Nombre de mètres forés",
+          "Temps de route",
+          "Gd ou Panier",
+          "Numéro de foreuse",
+          "Nombre d'heure au début",
+          "Nombre d'heure à la fin",
+          "Nombre d'heure d'arret",
+          "Commentaire sur les arrêts",
+          "Nombre d'heure de panne",
+          "Commentaire sur les pannes",
+          "Transporteur",
+          "Durée du transfert",
+          "Fournisseur",
+          "Quantité",
+          "Date",
+          "Utilisateur",
+        ];
+        csvRows.push(headers.join(";"));
+
+        data.forEach((row) => {
+          csvRows.push(row.join(";"));
+        });
+
+        const csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "rapports.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    </script>
+  </body>
+</html>

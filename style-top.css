@@ -1,0 +1,407 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
+
+/* Mark input boxes that gets an error on validation: */
+input.invalid {
+  background-color: #ffdddd;
+}
+
+/* Hide all steps by default: */
+.tab {
+  display: none;
+}
+.tab-title {
+  display: none;
+}
+.tab-finish {
+  background-color: green;
+  border: green;
+  color: white;
+}
+
+/* Mark the active step: */
+.step.active {
+  opacity: 1;
+}
+
+/* Mark the steps that are finished and valid: */
+.step.finish {
+  background-color: #183f7c;
+}
+
+.BtnStep {
+  margin-top: 2vh;
+  margin-left: 2vh;
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+  padding-left: 1vh;
+  padding-right: 1vh;
+  width: 15vh;
+}
+.input-table {
+  width: 100%;
+  height: 10vh;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.input-table-1 {
+  width: 100%;
+  height: 3vh;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.input-table-2 {
+  width: 100%;
+  height: 5vh;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.input-table-3 {
+  width: 25%;
+  height: 5vh;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.input-table-4 {
+  width: 100%;
+  height: 5vh;
+  text-align: start;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.custom-height-btn {
+  height: 20%;
+  width: 33%;
+  font-size: 1rem;
+}
+@media (min-width: 768px) {
+  .custom-height-btn {
+    height: 20%;
+    width: 20%;
+    font-size: 1rem;
+  }
+}
+.custom-height-label {
+  height: 5vh;
+  width: 5vh;
+  font-size: 1rem;
+}
+
+.custom-height-logo-2 {
+  height: 30vh;
+  width: 100%;
+}
+
+.custom-height-menu {
+  height: 5vh;
+  width: 5vh;
+}
+
+@media (min-width: 1000px) {
+  .custom-height-menu {
+    height: 10vh;
+    width: 10vh;
+  }
+}
+
+.custom-font-big-title {
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .custom-font-big-title {
+    font-size: 3rem;
+  }
+}
+
+.custom-font-sub-title {
+  font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+  .custom-font-sub-title {
+    font-size: 2rem;
+  }
+}
+
+.custom-font-liste {
+  font-size: 1rem;
+}
+.custom-height-input {
+  height: 5vh;
+  min-width: 10vh;
+}
+
+@media (min-width: 768px) {
+  .custom-height-input {
+    height: 7vh;
+  }
+}
+
+.custom-margin-input {
+  margin-bottom: 2vh;
+}
+
+@media (min-width: 768px) {
+  .custom-margin-input {
+    margin-bottom: 2vh;
+  }
+}
+.priority-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.priority-0 {
+  background-color: white;
+  border: 1px solid black;
+}
+.priority-1 {
+  background-color: yellow;
+}
+.priority-2 {
+  background-color: green;
+}
+.priority-3 {
+  background-color: orange;
+}
+.priority-4 {
+  background-color: red;
+}
+.modify-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+.custom-menu {
+  width: 500px;
+  font-size: 2rem;
+}
+.custom-font-top {
+  font-size: 2.5rem;
+}
+.custom-size-auth {
+  width: 50vh;
+  height: 40vh;
+}
+.custom-height-top {
+  height: 15vh;
+}
+.custom-height-bot {
+  height: 85vh;
+}
+.custom-height-logo {
+  height: 15vh;
+  width: 18vh;
+}
+.custom-font-input {
+  font-size: 1.5rem;
+}
+.step {
+  height: 25px;
+  width: 25px;
+  margin: 0 2px;
+  margin-top: 10px;
+  margin-right: 8px;
+  margin-left: 10px;
+  background-color: #bbbbbb;
+  border: none;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 1;
+}
+.custom-size-signalement {
+  height: 40vh;
+}
+.custom-liste-inter {
+  height: 20vh;
+  font-size: 2.2rem;
+}
+.custom-btn-liste {
+  width: 20vh;
+  height: 5vh;
+  font-size: 1.5rem;
+  margin-right: 2vh;
+  margin-top: 2vh;
+}
+.tableau-de-bord {
+  background-color: #009ae4;
+  height: 85vh;
+  width: 30vh;
+}
+.choose-menu {
+  background-color: #009ae4;
+  height: 85vh;
+  width: 30vh;
+}
+.tableau-de-bord {
+  background-color: #009ae4;
+  height: 85%;
+  width: 15%;
+}
+.top-menu {
+  height: 25%;
+  width: 85%;
+}
+.logo-M {
+  height: 15%;
+  width: 15%;
+  background-color: white;
+}
+.top-menu-1 {
+  background-color: white;
+  height: 60%;
+  width: 100%;
+  position: absolute;
+}
+.top-menu-2 {
+  background-color: #009ae4;
+  height: 40%;
+  width: 100%;
+  position: absolute;
+}
+.btn-menu {
+  height: 80%;
+  width: 20%;
+  font-size: 1.5rem;
+  background-color: #009ae4;
+}
+.btn-menu:hover {
+  background-color: #009ae4;
+  transform: scale(1.1);
+}
+.select-machine {
+  background-color: #009ae4;
+}
+
+.machine-option {
+  background-color: #009ae4;
+  color: white;
+}
+
+.machine-option:hover {
+  background-color: #009ae4;
+  color: white;
+}
+.bloc-bas {
+  height: 75%;
+  width: 81%;
+  margin-left: 2%;
+  margin-right: 2%;
+}
+@media (min-width: 1000px) {
+  .custom-menu {
+    width: 300px;
+    font-size: 1.1rem;
+  }
+  .custom-font-top {
+    font-size: 5rem;
+  }
+  .custom-size-auth {
+    width: 50vh;
+    height: 35vh;
+  }
+  .custom-height-top {
+    height: 22vh;
+  }
+  .custom-height-bot {
+    height: 78vh;
+  }
+  .custom-height-logo {
+    height: 20vh;
+    width: 50vh;
+  }
+  .custom-font-input {
+    font-size: 1rem;
+  }
+  .daterangepicker {
+    width: 400px;
+    height: auto;
+  }
+  .step {
+    height: 30px;
+    width: 30px;
+    margin: 0 2px;
+    margin-top: 10px;
+    margin-right: 8px;
+    margin-left: 10px;
+    background-color: #bbbbbb;
+    border: none;
+    border-radius: 50%;
+    display: inline-block;
+    opacity: 1;
+  }
+  .custom-size-signalement {
+    height: 56vh;
+  }
+  .custom-liste-inter {
+    height: 35vh;
+    font-size: 2.2rem;
+  }
+  .custom-btn-liste {
+    width: 50vh;
+    height: 5vh;
+    font-size: 1.5rem;
+  }
+  .tableau-de-bord {
+    background-color: #009ae4;
+    height: 85%;
+    width: 15%;
+  }
+  .top-menu {
+    height: 25%;
+    width: 85%;
+  }
+  .logo-M {
+    height: 15%;
+    width: 15%;
+    background-color: white;
+  }
+  .top-menu-1 {
+    background-color: white;
+    height: 60%;
+    width: 100%;
+    position: absolute;
+  }
+  .top-menu-2 {
+    background-color: #009ae4;
+    height: 40%;
+    width: 100%;
+    position: absolute;
+  }
+  .btn-menu {
+    height: 80%;
+    width: 20%;
+    font-size: 1.5rem;
+    background-color: #009ae4;
+  }
+  .btn-menu:hover {
+    background-color: #009ae4;
+    transform: scale(1.1);
+  }
+  .select-machine {
+    background-color: #009ae4;
+  }
+
+  .machine-option {
+    background-color: #009ae4;
+    color: white;
+  }
+
+  .machine-option:hover {
+    background-color: #00bcd9;
+    color: white;
+  }
+  .bloc-bas {
+    height: 75%;
+    width: 81%;
+    margin-left: 2%;
+    margin-right: 2%;
+  }
+}
