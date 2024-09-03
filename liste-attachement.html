@@ -106,6 +106,19 @@
     <div class="container-fluid mt-5">
       <h1 class="mb-4 text-center">Liste des Attachements</h1>
       <div class="table-responsive">
+        <div class="row mb-3">
+          <div class="col-md-5">
+            <label for="startDate">Date de début :</label>
+            <input type="date" id="startDate" class="form-control" />
+          </div>
+          <div class="col-md-5">
+            <label for="endDate">Date de début :</label>
+            <input type="date" id="endDate" class="form-control" />
+          </div>
+          <div class="col-md-2 align-self-end">
+            <button id="filterButton" class="btn btn-primary">Filtrer</button>
+          </div>
+        </div>
         <button id="exportButton" class="btn btn-primary mt-3">
           Exporter en CSV
         </button>
@@ -443,6 +456,121 @@
       document
         .getElementById("exportButton")
         .addEventListener("click", exportRapportsToCSV);
+
+      document
+        .getElementById("filterButton")
+        .addEventListener("click", function () {
+          const startDate = new Date(
+            document.getElementById("startDate").value
+          );
+          const endDate = new Date(document.getElementById("endDate").value);
+
+          function fetchFilteredAttachements(startDate, endDate) {
+            const attachementsRef = ref(db, "Attachement");
+            const userRef = ref(db, "users");
+
+            onValue(userRef, (usersSnapshot) => {
+              const users = usersSnapshot.val() || {};
+            });
+            onValue(attachementsRef, (attachementsSnapshot) => {
+              const attachements = attachementsSnapshot.val() || {};
+              const attachementsTableBody = document
+                .getElementById("attachementsTable")
+                .getElementsByTagName("tbody")[0];
+
+              attachementsTableBody.innerHTML = "";
+
+              const sortedAttachementIds = Object.keys(attachements).sort(
+                (a, b) => b - a
+              );
+
+              for (const dateNb of sortedAttachementIds) {
+                const attachement = attachements[dateNb];
+                const userId = attachement.user;
+                const user = users[userId] || {
+                  prenom: "Utilisateur",
+                  nom: "Inconnu",
+                };
+
+                const attachmentDate = new Date(attachement.date);
+                if (
+                  attachmentDate >= startDate &&
+                  attachmentDate <= endDate &&
+                  (currentUserRole === "cadre" ||
+                    currentUserRole === "responsable exploitation" ||
+                    currentUserRole === "directeur" ||
+                    currentUserRole === "responsable agence" ||
+                    userId === currentUserId)
+                ) {
+                  const row = attachementsTableBody.insertRow();
+
+                  const infos = attachement.infos || {};
+                  row.insertCell(0).textContent = dateNb;
+                  row.insertCell(1).textContent = infos.client || "";
+                  row.insertCell(2).textContent = infos.chantier || "";
+                  row.insertCell(3).textContent = infos.observation || "";
+                  row.insertCell(4).textContent = infos.forage || "";
+                  row.insertCell(5).textContent = infos.HMFDebut || "";
+                  row.insertCell(6).textContent = infos.NPlanForage || "";
+                  row.insertCell(7).textContent = infos.HMFFin || "";
+                  row.insertCell(8).textContent = infos.DiametreForage || "";
+                  row.insertCell(9).textContent = infos.transfert || "";
+                  row.insertCell(10).textContent = infos.HeuresArret || "";
+                  row.insertCell(11).textContent = infos.CommA || "";
+                  row.insertCell(12).textContent = infos.HeuresPanne || "";
+                  row.insertCell(13).textContent = infos.CommP || "";
+                  row.insertCell(14).textContent = infos.QuantiteForage || "";
+                  row.insertCell(15).textContent = infos.UniteForage || "";
+                  row.insertCell(16).textContent = infos.minage || "";
+                  row.insertCell(17).textContent = infos.NPlanTir || "";
+                  row.insertCell(18).textContent = infos.NbSismographes || "";
+                  row.insertCell(19).textContent = infos.QuantiteMinage || "";
+                  row.insertCell(20).textContent = infos.UniteMinage || "";
+                  row.insertCell(21).textContent = infos.autre || "";
+                  row.insertCell(22).textContent = infos.GNR || "";
+                  row.insertCell(23).textContent =
+                    attachement.QuantiteGnr || "";
+                  row.insertCell(24).textContent = attachement.date || "";
+                  row.insertCell(25).textContent = `${user.prenom} ${user.nom}`;
+
+                  const currentTime = new Date().getTime();
+                  const attachmentTime = attachement.dateTimestamp;
+                  const timeDifference = currentTime - attachmentTime;
+                  console.log(
+                    dateNb,
+                    currentTime,
+                    attachmentTime,
+                    timeDifference
+                  );
+                  if (timeDifference < 3600000) {
+                    const actionsCell = row.insertCell(26);
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "btn btn-danger btn-sm mr-2";
+                    deleteButton.textContent = "Supprimer";
+                    deleteButton.onclick = () => {
+                      deleteAttachment(dateNb);
+                    };
+
+                    actionsCell.appendChild(deleteButton);
+                  } else {
+                    row.insertCell(26).textContent = "";
+                  }
+                }
+              }
+
+              if ($.fn.DataTable.isDataTable("#attachementsTable")) {
+                $("#attachementsTable").DataTable().clear().destroy();
+              }
+
+              $("#attachementsTable").DataTable({
+                order: [[19, "asc"]],
+                columnDefs: [{ orderable: true, targets: [19, 0] }],
+                paging: true,
+                searching: true,
+              });
+            });
+          }
+        });
 
       console.log(currentUserId);
       console.log(currentUserRole);
