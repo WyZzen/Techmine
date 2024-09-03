@@ -1,4 +1,4 @@
-let stepValid = [false, false, false, false, false];
+let stepValid = [false, false, false, false, false, false];
 
 function showTab(n) {
   let tabs = document.getElementsByClassName("tab");
@@ -32,12 +32,17 @@ function validateStep(step) {
 }
 
 function validStep(stepIndex) {
-  let step = document.querySelectorAll(".tab")[stepIndex];
+  let steps = document.querySelectorAll(".tab");
+  let step = steps[stepIndex];
   if (validateStep(step)) {
     stepValid[stepIndex] = true;
     changeColorBtn(stepIndex);
     // Si l'étape est valide, passez à l'étape suivante
-    showTab(stepIndex + 1);
+    // Si c'est la dernière étape on ne passe pas à la suivante (il n'y en a pas idiot)
+    if (stepIndex + 1 !== steps.length) {
+      showTab(stepIndex + 1);
+    }
+    
   } else {
     // Sinon, affichez un message d'erreur
     showMessageError(
@@ -117,4 +122,16 @@ function showMessageError(message, type, newNumber) {
     const alert = bootstrap.Alert.getInstance(document.querySelector(".alert"));
     alert.close();
   }, 3000);
+}
+// https://firebase.google.com/docs/storage/web/upload-files
+function uploadFile() {
+  console.log(here);
+
+  const storage = getStorage();
+  const storageRef = ref(storage, 'gs://test-techmine.appspot.com/Attachement - Pièces Jointes');
+  alert(storage, storageRef);
+  // 'file' comes from the Blob or File API
+  uploadBytes(storageRef, file).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
 }
