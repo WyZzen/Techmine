@@ -110,6 +110,19 @@
         Exporter en CSV
       </button>
       <div id="table" class="table-responsive">
+        <div class="row mb-3">
+          <div class="col-md-5">
+            <label for="startDate">Date de début :</label>
+            <input type="date" id="startDate" class="form-control" />
+          </div>
+          <div class="col-md-5">
+            <label for="endDate">Date de début :</label>
+            <input type="date" id="endDate" class="form-control" />
+          </div>
+          <div class="col-md-2 align-self-end">
+            <button id="filterButton" class="btn btn-primary">Filtrer</button>
+          </div>
+        </div>
         <table id="reportsTable" class="table table-striped table-bordered">
           <thead class="thead-dark">
             <tr>
@@ -311,6 +324,150 @@
               }
             }
           });
+        });
+      }
+      document
+        .getElementById("filterButton")
+        .addEventListener("click", function () {
+          const startDate = new Date(
+            document.getElementById("startDate").value
+          );
+          const endDate = new Date(document.getElementById("endDate").value);
+
+          console.log("Start Date:", startDate);
+          console.log("End Date:", endDate);
+
+          fetchReportsFiltered(startDate, endDate);
+        });
+      function fetchReportsFiltered(startDate, endDate) {
+        const reportsRef = ref(db, "rapport");
+        const usersRef = ref(db, "users");
+        resetAndInitializeReportsTable();
+
+        // Fetch users first
+        onValue(usersRef, (usersSnapshot) => {
+          const users = usersSnapshot.val() || {};
+          console.log("Fetched Users:", users);
+
+          // Then fetch reports
+          onValue(reportsRef, (snapshot) => {
+            const reports = snapshot.val() || {};
+            console.log("Fetched Reports:", reports);
+
+            const reportsTableBody = document
+              .getElementById("reportsTable")
+              .getElementsByTagName("tbody")[0];
+            reportsTableBody.innerHTML = ""; // Clear existing table data
+
+            const sortedReportIds = Object.keys(reports).sort((a, b) => b - a);
+
+            sortedReportIds.forEach((id) => {
+              const report = reports[id];
+              const userId = report.user;
+              const user = users[userId] || {
+                prenom: "Utilisateur",
+                nom: "Inconnu",
+              };
+              const reportDate = new Date(id);
+
+              console.log("Start Date:", startDate);
+              console.log("End Date:", endDate);
+              console.log("Report Date:", reportDate);
+              console.log(
+                "Is within range:",
+                reportDate >= startDate && reportDate <= endDate
+              );
+
+              // Check if the report date falls within the range
+              if (
+                reportDate >= startDate &&
+                reportDate <= endDate &&
+                ([
+                  "cadre",
+                  "responsable exploitation",
+                  "directeur",
+                  "responsable agence",
+                ].includes(currentUserRole) ||
+                  userId === currentUserId)
+              ) {
+                const row = reportsTableBody.insertRow();
+                populateReportRow(row, id, report, user); // Populate table row
+              }
+            });
+          });
+        });
+      }
+
+      function populateReportRow(row, id, report, user) {
+        const infos = report.infos || {};
+        const fields = [
+          report.date,
+          `${user.prenom} ${user.nom}`,
+          infos.client,
+          infos.Carriere,
+          infos.NbHTravail,
+          infos.NbMF,
+          infos.TDR,
+          infos.GdP,
+          infos.numF,
+          infos.NbHD,
+          infos.NbHF,
+          infos.NbHA,
+          infos.CommA,
+          infos.NbHP,
+          infos.CommP,
+          infos.CT,
+          infos.DT,
+          infos.CG,
+          infos.QG,
+        ];
+
+        fields.forEach((field, index) => {
+          row.insertCell(index).textContent = field || "";
+        });
+
+        const currentTime = new Date().getTime();
+        const reportTime = id;
+        if (currentTime - reportTime < 3600000) {
+          const actionsCell = row.insertCell(19);
+          const deleteButton = createDeleteButton(id, "rapport");
+          actionsCell.appendChild(deleteButton);
+        } else {
+          row.insertCell(19).textContent = "";
+        }
+      }
+
+      function createDeleteButton(id, type) {
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-danger btn-sm mr-2";
+        deleteButton.textContent = "Supprimer";
+        deleteButton.onclick = () => {
+          deleteEntity(id, type);
+        };
+        return deleteButton;
+      }
+
+      function deleteEntity(id, type) {
+        remove(ref(db, `${type}/${id}`))
+          .then(() => {
+            alert(
+              `${type === "rapport" ? "Rapport" : "Attachment"} supprimé !`
+            );
+          })
+          .catch((error) => {
+            console.error(`Erreur lors de la suppression du ${type} :`, error);
+          });
+      }
+
+      function resetAndInitializeReportsTable() {
+        if ($.fn.DataTable.isDataTable("#reportsTable")) {
+          $("#reportsTable").DataTable().clear().destroy();
+        }
+        $("#reportsTable").DataTable({
+          order: [[0, "asc"]],
+          columnDefs: [{ orderable: true, targets: [0, 1] }],
+          paging: true,
+          searching: true,
         });
       }
 

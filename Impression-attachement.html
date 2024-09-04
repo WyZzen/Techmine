@@ -23,6 +23,11 @@
         width: 300px;
         height: 150px;
       }
+      .signatureTable {
+        touch-action: auto;
+        width: 250px;
+        height: 100px;
+      }
       @media (min-width: 1000px) {
         .signatureCanvas {
           border: 1px solid black;
@@ -449,7 +454,7 @@
         </div>
         <div class="col-3 border border-dark">
           <p>SIGNATURE</p>
-          <canvas id="signature" class=""></canvas>
+          <canvas id="signature" class="signatureTable"></canvas>
         </div>
         <div class="col-3 border border-dark">
           NOM:
@@ -461,7 +466,7 @@
         </div>
         <div class="col-3 border border-dark">
           <p>SIGNATURE</p>
-          <canvas id="signatureClient" class=""></canvas>
+          <canvas id="signatureClient" class="signatureTable"></canvas>
         </div>
       </div>
     </div>
@@ -482,9 +487,18 @@
         const ctx = canvas.getContext("2d");
         let drawing = false;
 
-        canvas.addEventListener("mousedown", () => (drawing = true));
+        canvas.addEventListener("mousedown", (event) => {
+          drawing = true;
+          ctx.beginPath();
+          ctx.moveTo(event.offsetX, event.offsetY);
+        });
         canvas.addEventListener("mouseup", () => (drawing = false));
-        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mousemove", (event) => {
+          if (drawing) {
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+          }
+        });
         canvas.addEventListener("touchstart", (e) => {
           e.preventDefault();
           drawing = true;

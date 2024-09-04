@@ -106,15 +106,21 @@
     <div class="container-fluid mt-5">
       <h1 class="mb-4 text-center">Liste des Attachements</h1>
       <div class="table-responsive">
+        <div class="row mb-3">
+          <div class="col-md-5">
+            <label for="startDate">Date de début :</label>
+            <input type="date" id="startDate" class="form-control" />
+          </div>
+          <div class="col-md-5">
+            <label for="endDate">Date de début :</label>
+            <input type="date" id="endDate" class="form-control" />
+          </div>
+          <div class="col-md-2 align-self-end">
+            <button id="filterButton" class="btn btn-primary">Filtrer</button>
+          </div>
+        </div>
         <button id="exportButton" class="btn btn-primary mt-3">
           Exporter en CSV
-        </button>
-        <button
-          id="goListe"
-          class="btn btn-primary mt-3"
-          onclick="window.location.href='./affichage-attachement.html'"
-        >
-          visualiser un ancien attachement
         </button>
         <table
           id="attachementsTable"
@@ -267,12 +273,7 @@
                 const currentTime = new Date().getTime();
                 const attachmentTime = attachement.dateTimestamp;
                 const timeDifference = currentTime - attachmentTime;
-                console.log(
-                  dateNb,
-                  currentTime,
-                  attachmentTime,
-                  timeDifference
-                );
+
                 if (timeDifference < 3600000) {
                   const actionsCell = row.insertCell(26);
                   const deleteButton = document.createElement("button");
@@ -281,10 +282,27 @@
                   deleteButton.onclick = () => {
                     deleteAttachment(dateNb);
                   };
+                  const viewButton = document.createElement("button");
+                  viewButton.className = "btn btn-info btn-sm mr-2";
+                  viewButton.textContent = "Voir";
+                  viewButton.onclick = () => {
+                    window.location.href =
+                      "Impression-attachement.html?number=" + dateNb;
+                  };
 
                   actionsCell.appendChild(deleteButton);
+                  actionsCell.appendChild(viewButton);
                 } else {
-                  row.insertCell(26).textContent = "";
+                  const actionsCell = row.insertCell(26);
+                  const viewButton = document.createElement("button");
+                  viewButton.className = "btn btn-info btn-sm mr-2";
+                  viewButton.textContent = "Voir";
+                  viewButton.onclick = () => {
+                    window.location.href =
+                      "Impression-attachement.html?number=" + dateNb;
+                  };
+
+                  actionsCell.appendChild(viewButton);
                 }
               }
             }
@@ -413,7 +431,6 @@
       auth.onAuthStateChanged((user) => {
         if (user) {
           currentUserId = user.uid;
-          console.log("Utilisateur connecté:", user.uid);
           checkUserRole(user.uid)
             .then((userInfo) => {
               currentUserRole = userInfo.role;
@@ -444,8 +461,147 @@
         .getElementById("exportButton")
         .addEventListener("click", exportRapportsToCSV);
 
-      console.log(currentUserId);
-      console.log(currentUserRole);
+      document
+        .getElementById("filterButton")
+        .addEventListener("click", function () {
+          const startDate = new Date(
+            document.getElementById("startDate").value
+          );
+          const endDate = new Date(document.getElementById("endDate").value);
+
+          fetchFilteredAttachments(startDate, endDate);
+        });
+
+      function fetchFilteredAttachments(startDate, endDate) {
+        const attachementsRef = ref(db, "Attachement");
+        const userRef = ref(db, "users");
+        resetAndInitializeDataTable();
+
+        // Fetch users first
+        onValue(userRef, (usersSnapshot) => {
+          const users = usersSnapshot.val() || {};
+
+          // Then fetch attachments
+          onValue(attachementsRef, (attachementsSnapshot) => {
+            const attachements = attachementsSnapshot.val() || {};
+
+            const attachementsTableBody = document
+              .getElementById("attachementsTable")
+              .getElementsByTagName("tbody")[0];
+            attachementsTableBody.innerHTML = ""; // Clear existing table data
+
+            const sortedAttachementIds = Object.keys(attachements).sort(
+              (a, b) => b - a
+            );
+
+            sortedAttachementIds.forEach((dateNb) => {
+              const attachement = attachements[dateNb];
+              const userId = attachement.user;
+              const user = users[userId] || {
+                prenom: "Utilisateur",
+                nom: "Inconnu",
+              };
+              const attachmentDate = new Date(attachement.dateTimestamp);
+
+              // Check if the attachment date falls within the range
+              if (
+                attachmentDate >= startDate &&
+                attachmentDate <= endDate &&
+                (currentUserRole === "cadre" ||
+                  currentUserRole === "responsable exploitation" ||
+                  currentUserRole === "directeur" ||
+                  currentUserRole === "responsable agence" ||
+                  userId === currentUserId)
+              ) {
+                const row = attachementsTableBody.insertRow();
+                populateRow(row, dateNb, attachement, user); // Populate table row
+              }
+            });
+          });
+        });
+      }
+
+      function populateRow(row, dateNb, attachement, user) {
+        const infos = attachement.infos || {};
+        const fields = [
+          dateNb,
+          infos.client,
+          infos.chantier,
+          infos.observation,
+          infos.forage,
+          infos.HMFDebut,
+          infos.NPlanForage,
+          infos.HMFFin,
+          infos.DiametreForage,
+          infos.transfert,
+          infos.HeuresArret,
+          infos.CommA,
+          infos.HeuresPanne,
+          infos.CommP,
+          infos.QuantiteForage,
+          infos.UniteForage,
+          infos.minage,
+          infos.NPlanTir,
+          infos.NbSismographes,
+          infos.QuantiteMinage,
+          infos.UniteMinage,
+          infos.autre,
+          infos.GNR,
+          attachement.QuantiteGnr,
+          attachement.date,
+          `${user.prenom} ${user.nom}`,
+        ];
+
+        fields.forEach((field, index) => {
+          row.insertCell(index).textContent = field || "";
+        });
+
+        const actionsCell = row.insertCell(26);
+
+        const viewButton = createViewButton(dateNb);
+        actionsCell.appendChild(viewButton);
+
+        const currentTime = new Date().getTime();
+        const attachmentTime = attachement.dateTimestamp;
+        if (currentTime - attachmentTime < 3600000) {
+          const deleteButton = createDeleteButton(dateNb);
+          actionsCell.appendChild(deleteButton);
+        }
+      }
+
+      function createDeleteButton(dateNb) {
+        console.log("bouton delete");
+        const deleteButton = document.createElement("button");
+        deleteButton.className = "btn btn-danger btn-sm mr-2";
+        deleteButton.textContent = "Supprimer";
+        deleteButton.onclick = () => {
+          deleteAttachment(dateNb);
+        };
+        return deleteButton;
+      }
+
+      function createViewButton(dateNb) {
+        console.log("bouton voir");
+        const viewButton = document.createElement("button");
+        viewButton.className = "btn btn-info btn-sm mr-2";
+        viewButton.textContent = "Voir";
+        viewButton.onclick = () => {
+          window.location.href = "Impression-attachement.html?number=${dateNb}";
+        };
+        return viewButton;
+      }
+
+      function resetAndInitializeDataTable() {
+        if ($.fn.DataTable.isDataTable("#attachementsTable")) {
+          $("#attachementsTable").DataTable().clear().destroy();
+        }
+        $("#attachementsTable").DataTable({
+          order: [[19, "asc"]],
+          columnDefs: [{ orderable: true, targets: [19, 0] }],
+          paging: true,
+          searching: true,
+        });
+      }
     </script>
   </body>
 </html>
