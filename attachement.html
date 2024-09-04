@@ -635,16 +635,16 @@
                 Pour ajouter les pièces jointes nécesaires
                 </br>
                 <div class="input-group mb-3">
-                  <input type="file" class="form-control" id="inputGroupFile02">
+                  <input id="selectFiles" type="file" class="form-control" id="inputGroupFile02" multiple>
                   <label class="input-group-text" for="inputGroupFile02">Upload</label>
                 </div>
                 </br>
                 </br>
                 <button
                   type="button"
-                  id="valider"
+                  id="validateFiles"
                   class="btn btn-white border-primary text-primary fw-bold border-3 custom-height-btn"
-                  onclick="validStep(5); uploadFile()"
+                  onclick="validStep(5)"
                 >
                   valider
                 </button>
@@ -745,7 +745,6 @@
 
       const app = initializeApp(firebaseConfig);
       const db = getDatabase();
-      console.log(new Date().getTime());
 
       let submitBtn = document.getElementById("submit");
 
@@ -881,12 +880,6 @@
                                   ${message}
                                   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>`;
-        setTimeout(() => {
-          const alert = bootstrap.Alert.getInstance(
-            document.querySelector(".alert")
-          );
-          alert.close();
-        }, 3000);
       }
 
       function getImplantationValue() {
@@ -902,6 +895,35 @@
       }
 
       submitBtn.addEventListener("click", AddData);
+    </script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-storage.js";
+
+      const storage = getStorage();
+
+      let selectedFiles = [];
+      const validateFiles = document.getElementById("submit");
+
+      document.getElementById("selectFiles").addEventListener("change", (e) => {
+        selectedFiles = e.target.files;
+      });
+
+      validateFiles.addEventListener("click", () => {
+        if (allStepsValid()) {
+          for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            const storageRef = ref(storage, "attachments/" + file.name);
+            uploadBytes(storageRef, file).then((snapshot) => {
+              console.log("Uploaded a file:", file.name);
+            });
+          }
+        }
+      });
     </script>
   </body>
 </html>

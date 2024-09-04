@@ -13,24 +13,6 @@ function changeColorBtn(n) {
   elements.classList.add("tab-finish");
 }
 
-function validateStep(step) {
-  let valid = true;
-  let inputs = step.querySelectorAll("input, select, textarea");
-
-  for (let i = 0; i < inputs.length; i++) {
-    if (inputs[i].value.trim() === "") {
-      valid = false;
-      inputs[i].classList = inputs[i].classList + " is-invalid";
-      console.log(inputs[i].classList);
-    } else {
-      inputs[i].classList.remove("is-invalid");
-      alert("veuillez remplir tout les champs");
-    }
-  }
-
-  return valid;
-}
-
 function validStep(stepIndex) {
   let steps = document.querySelectorAll(".tab");
   let step = steps[stepIndex];
@@ -66,21 +48,23 @@ function validateStep(step) {
 }
 
 function allStepsValid() {
-  if (stepValid[0] && stepValid[1] && stepValid[4]) {
+  if (stepValid[0] && stepValid[1] && stepValid[4] && stepValid[5]) {
     console.log(
       "chantier forage et gnr",
       stepValid[0],
       stepValid[1],
-      stepValid[4]
+      stepValid[4],
+      stepValid[5]
     );
     return true;
-  } else if (stepValid[0] && (stepValid[2] || stepValid[3])) {
+  } else if (stepValid[0] && stepValid[5] && (stepValid[2] || stepValid[3])) {
     console.log(
       "chantier, minage/autre et gnr",
       stepValid[0],
       stepValid[2],
       stepValid[3],
-      stepValid[4]
+      stepValid[4],
+      stepValid[5]
     );
     return true;
   } else {
@@ -90,7 +74,8 @@ function allStepsValid() {
       stepValid[1],
       stepValid[2],
       stepValid[3],
-      stepValid[4]
+      stepValid[4],
+      stepValid[5]
     );
     return false;
   }
@@ -118,20 +103,4 @@ function showMessageError(message, type, newNumber) {
                             ${message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                           </div>`;
-  setTimeout(() => {
-    const alert = bootstrap.Alert.getInstance(document.querySelector(".alert"));
-    alert.close();
-  }, 3000);
-}
-// https://firebase.google.com/docs/storage/web/upload-files
-function uploadFile() {
-  console.log(here);
-
-  const storage = getStorage();
-  const storageRef = ref(storage, 'gs://test-techmine.appspot.com/Attachement - Pièces Jointes');
-  alert(storage, storageRef);
-  // 'file' comes from the Blob or File API
-  uploadBytes(storageRef, file).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
-  });
 }
