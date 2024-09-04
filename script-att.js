@@ -39,7 +39,8 @@ function validateStep(step) {
   let isValid = true;
 
   inputs.forEach((input) => {
-    if (input.value.trim() === "") {
+    console.log(input.type === 'checkbox', input.checked)
+    if (input.value === "" || input.type === 'checkbox' && input.checked === false) {
       isValid = false;
     }
   });
