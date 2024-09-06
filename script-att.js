@@ -105,3 +105,10 @@ function showMessageError(message, type, newNumber) {
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                           </div>`;
 }
+function addInputDiametre() {
+  
+  const inputDiametre = document.getElementById("DiametreForage");
+  const inputClone = inputDiametre.cloneNode(true);
+  console.log(inputDiametre);
+  inputDiametre.parentNode.insertBefore(inputClone, inputDiametre.nextSibling);
+}
