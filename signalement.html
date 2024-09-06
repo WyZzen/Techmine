@@ -77,12 +77,18 @@
               </li>
               <li>
                 <a class="dropdown-item" href="liste-intervention.html"
-                  >Liste des interventions</a
+                  >Liste des Signalements</a
                 >
               </li>
               <li>
                 <a class="dropdown-item" href="historique-intervention.html"
                   >Historique des interventions</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="machines.html"
+                  >Gestion des Machines</a
                 >
               </li>
               <li><hr class="dropdown-divider menu-item-admin" /></li>
@@ -215,22 +221,29 @@
       const db = getDatabase();
       const auth = getAuth();
 
-      onAuthStateChanged(auth, (user) => {
+      auth.onAuthStateChanged((user) => {
         if (user) {
-          console.log("User is authenticated:", user.uid);
           checkUserRole(user.uid)
-            .then((roleInfo) => {
-              document.querySelectorAll(".menu-item-admin").forEach((item) => {
-                item.style.display = roleInfo.isAdmin ? "block" : "none";
+            .then((isCadre) => {
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = isCadre ? "block" : "none";
               });
-              return loadUserInfo(user.uid);
             })
             .catch((error) => {
               console.error("Erreur lors de la vérification du rôle :", error);
-              document.querySelectorAll(".menu-item-admin").forEach((item) => {
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
                 item.style.display = "none";
               });
             });
+        } else {
+          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
+          adminMenuItems.forEach((item) => {
+            item.style.display = "none";
+          });
         }
       });
 
