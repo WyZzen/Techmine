@@ -150,6 +150,181 @@
           </thead>
           <tbody></tbody>
         </table>
+
+        <div
+          class="modal fade"
+          id="editReportModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="editReportModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editReportModalLabel">
+                  Modifier le Rapport
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <!-- Add form fields for editing report information -->
+                <form id="editReportForm">
+                  <input type="hidden" id="editReportId" />
+                  <div class="form-group">
+                    <label for="editReportClient">Client</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportClient"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportCarriere">Carrière</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportCarriere"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNbHTravail"
+                      >Nombre d'heure de travail</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNbHTravail"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNbMF">Nombre de mètres forés</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNbMF"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportTDR">Temps de route</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportTDR"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportGdP">Gd ou Panier</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportGdP"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNumF">Numéro de foreuse</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNumF"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNbHD">Nombre d'heure au début</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNbHD"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNbHF">Nombre d'heure à la fin</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNbHF"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNbHA">Nombre d'heure d'arrêt</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNbHA"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportCommA"
+                      >Commentaire sur les arrêts</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportCommA"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportNbHP">Nombre d'heure de panne</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportNbHP"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportCommP"
+                      >Commentaire sur les pannes</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editReportCommP"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportCT">Transporteur</label>
+                    <input type="text" class="form-control" id="editReportCT" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportDT">Durée du transfert</label>
+                    <input type="text" class="form-control" id="editReportDT" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportCG">Fournisseur</label>
+                    <input type="text" class="form-control" id="editReportCG" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editReportQG">Quantité</label>
+                    <input type="text" class="form-control" id="editReportQG" />
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="updateReportButton"
+                >
+                  Enregistrer les modifications
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -169,6 +344,7 @@
         get,
         onValue,
         remove,
+        update,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
 
       const firebaseConfig = {
@@ -299,6 +475,9 @@
                 const currentTime = new Date().getTime();
                 const rapportTime = id;
                 const timeDifference = currentTime - rapportTime;
+                const actionsCell = row.insertCell(19);
+                const editButton = createEditButton(id);
+                actionsCell.appendChild(editButton);
 
                 if (timeDifference < 3600000) {
                   const actionsCell = row.insertCell(19);
@@ -317,6 +496,9 @@
                         );
                       });
                   };
+                  const editButton = createEditButton(id);
+
+                  actionsCell.appendChild(editButton);
                   actionsCell.appendChild(deleteButton);
                 } else {
                   row.insertCell(19).textContent = "";
@@ -325,6 +507,15 @@
             }
           });
         });
+      }
+      function createEditButton(id) {
+        const editButton = document.createElement("button");
+        editButton.className = "btn btn-warning btn-sm mr-2";
+        editButton.textContent = "Modifier";
+        editButton.onclick = () => {
+          openEditReportModal(id);
+        };
+        return editButton;
       }
       document
         .getElementById("filterButton")
@@ -395,6 +586,38 @@
               }
             });
           });
+        });
+      }
+      function openEditReportModal(id) {
+        // Fetch the report data from the database
+        const reportRef = ref(db, `rapport/${id}`);
+        get(reportRef).then((snapshot) => {
+          const report = snapshot.val();
+          const infos = report.infos || {};
+
+          // Populate the modal with the report data
+          document.getElementById("editReportId").value = id;
+          document.getElementById("editReportClient").value = infos.client;
+          document.getElementById("editReportCarriere").value = infos.Carriere;
+          document.getElementById("editReportNbHTravail").value =
+            infos.NbHTravail;
+          document.getElementById("editReportNbMF").value = infos.NbMF;
+          document.getElementById("editReportTDR").value = infos.TDR;
+          document.getElementById("editReportGdP").value = infos.GdP;
+          document.getElementById("editReportNumF").value = infos.numF;
+          document.getElementById("editReportNbHD").value = infos.NbHD;
+          document.getElementById("editReportNbHF").value = infos.NbHF;
+          document.getElementById("editReportNbHA").value = infos.NbHA;
+          document.getElementById("editReportCommA").value = infos.CommA;
+          document.getElementById("editReportNbHP").value = infos.NbHP;
+          document.getElementById("editReportCommP").value = infos.CommP;
+          document.getElementById("editReportCT").value = infos.CT;
+          document.getElementById("editReportDT").value = infos.DT;
+          document.getElementById("editReportCG").value = infos.CG;
+          document.getElementById("editReportQG").value = infos.QG;
+
+          // Show the modal
+          $("#editReportModal").modal("show");
         });
       }
 
@@ -517,6 +740,46 @@
         link.click();
         document.body.removeChild(link);
       });
+      document
+        .getElementById("updateReportButton")
+        .addEventListener("click", () => {
+          const id = document.getElementById("editReportId").value;
+          const updatedData = {
+            infos: {
+              client: document.getElementById("editReportClient").value,
+              Carriere: document.getElementById("editReportCarriere").value,
+              NbHTravail: document.getElementById("editReportNbHTravail").value,
+              NbMF: document.getElementById("editReportNbMF").value,
+              TDR: document.getElementById("editReportTDR").value,
+              GdP: document.getElementById("editReportGdP").value,
+              numF: document.getElementById("editReportNumF").value,
+              NbHD: document.getElementById("editReportNbHD").value,
+              NbHF: document.getElementById("editReportNbHF").value,
+              NbHA: document.getElementById("editReportNbHA").value,
+              CommA: document.getElementById("editReportCommA").value,
+              NbHP: document.getElementById("editReportNbHP").value,
+              CommP: document.getElementById("editReportCommP").value,
+              CT: document.getElementById("editReportCT").value,
+              DT: document.getElementById("editReportDT").value,
+              CG: document.getElementById("editReportCG").value,
+              QG: document.getElementById("editReportQG").value,
+            },
+          };
+
+          const reportRef = ref(db, `rapport/${id}`);
+          update(reportRef, updatedData)
+            .then(() => {
+              alert("Rapport modifié avec succès.");
+              $("#editReportModal").modal("hide");
+              fetchReports();
+            })
+            .catch((error) => {
+              console.error(
+                "Erreur lors de la modification du rapport :",
+                error
+              );
+            });
+        });
     </script>
   </body>
 </html>
