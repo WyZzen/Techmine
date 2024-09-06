@@ -11,6 +11,18 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style-top.css" />
+    <style>
+      .modal-dialog {
+        max-width: 80%; /* Ajustez la largeur de la modale selon vos besoins */
+      }
+      .modal-content {
+        padding: 20px;
+      }
+      .table {
+        height: 400px;
+        overflow-x: auto;
+      }
+    </style>
   </head>
   <body>
     <div class="container-fluid align-items-center custom-height-top">
@@ -167,6 +179,42 @@
           </thead>
           <tbody></tbody>
         </table>
+        <div
+          class="modal fade"
+          id="fileModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="fileModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="fileModalLabel">Attached Files</h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" id="fileList">
+                <!-- File content will be dynamically added here -->
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -185,6 +233,7 @@
         ref as firebaseStorageRef,
         listAll,
         deleteObject,
+        getDownloadURL,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-storage.js";
 
       const firebaseConfig = {
@@ -222,6 +271,18 @@
       let user = sessionStorage.getItem("user-uid");
       let currentUserId = null;
       let currentUserRole = null;
+
+      function createViewButton(dateNb) {
+        console.log("bouton voir");
+        const viewButton = document.createElement("button");
+        viewButton.className = "btn btn-info btn-sm mr-2";
+        viewButton.textContent = "Voir";
+        viewButton.onclick = () => {
+          window.location.href = "Impression-attachement.html?number=${dateNb}";
+        };
+        return viewButton;
+      }
+
       function fetchAttachements() {
         const attachementsRef = ref(db, "Attachement");
         const usersRef = ref(db, "users");
@@ -289,12 +350,7 @@
                 const currentTime = new Date().getTime();
                 const attachmentTime = attachement.dateTimestamp;
                 const timeDifference = currentTime - attachmentTime;
-                console.log(
-                  dateNb,
-                  currentTime,
-                  attachmentTime,
-                  timeDifference
-                );
+
                 if (timeDifference < 3600000) {
                   const actionsCell = row.insertCell(26);
                   const deleteButton = document.createElement("button");
@@ -303,10 +359,41 @@
                   deleteButton.onclick = () => {
                     deleteAttachment(dateNb);
                   };
+                  const viewButton = document.createElement("button");
+                  viewButton.className = "btn btn-info btn-sm mr-2";
+                  viewButton.textContent = "Voir";
+                  viewButton.onclick = () => {
+                    window.location.href =
+                      "Impression-attachement.html?number=" + dateNb;
+                  };
+                  const viewFilesButton = document.createElement("button");
+                  viewFilesButton.className = "btn btn-primary btn-sm mr-2";
+                  viewFilesButton.textContent = "View Files";
+                  viewFilesButton.onclick = () => {
+                    viewAttachedFiles(dateNb);
+                  };
 
+                  actionsCell.appendChild(viewFilesButton);
                   actionsCell.appendChild(deleteButton);
+                  actionsCell.appendChild(viewButton);
                 } else {
-                  row.insertCell(26).textContent = "";
+                  const actionsCell = row.insertCell(26);
+                  const viewButton = document.createElement("button");
+                  viewButton.className = "btn btn-info btn-sm mr-2";
+                  viewButton.textContent = "Voir";
+                  viewButton.onclick = () => {
+                    window.location.href =
+                      "Impression-attachement.html?number=" + dateNb;
+                  };
+                  const viewFilesButton = document.createElement("button");
+                  viewFilesButton.className = "btn btn-primary btn-sm mr-2";
+                  viewFilesButton.textContent = "View Files";
+                  viewFilesButton.onclick = () => {
+                    viewAttachedFiles(dateNb);
+                  };
+
+                  actionsCell.appendChild(viewFilesButton);
+                  actionsCell.appendChild(viewButton);
                 }
               }
             }
@@ -323,6 +410,77 @@
             });
           });
         });
+      }
+      function viewAttachedFiles(attachmentId) {
+        const storageReference = firebaseStorageRef(
+          storage,
+          `attachments/${attachmentId}/`
+        );
+
+        listAll(storageReference)
+          .then((res) => {
+            const files = res.items;
+            if (files.length === 0) {
+              alert("No files attached to this attachment.");
+              return;
+            }
+
+            // Clear previous file list
+            const fileList = document.getElementById("fileList");
+            fileList.innerHTML = "";
+
+            files.forEach((fileRef) => {
+              getDownloadURL(fileRef)
+                .then((url) => {
+                  const fileContainer = document.createElement("div");
+
+                  if (fileRef.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+                    const img = document.createElement("img");
+                    img.src = url;
+                    img.style.maxWidth = "100%";
+                    fileContainer.appendChild(img);
+                  } else if (fileRef.name.match(/\.(pdf)$/)) {
+                    const iframe = document.createElement("iframe");
+                    iframe.src = url;
+                    iframe.width = "100%";
+                    iframe.height = "500px";
+                    fileContainer.appendChild(iframe);
+                  } else {
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.textContent = `Download ${fileRef.name}`;
+                    link.target = "_blank";
+                    fileContainer.appendChild(link);
+                  }
+
+                  fileList.appendChild(fileContainer);
+                })
+                .catch((error) => {
+                  console.error("Error getting download URL:", error);
+                  alert("Error getting download URL.");
+                });
+            });
+
+            // Show the modal
+            $("#fileModal").modal("show");
+            const closeButton = modal.querySelector(".close");
+            closeButton.onclick = () => {
+              modal.style.display = "none";
+              modal.remove();
+            };
+
+            window.onclick = (event) => {
+              if (event.target === modal) {
+                modal.style.display = "none";
+                modal.remove();
+              }
+            };
+          })
+
+          .catch((error) => {
+            console.error("Error listing files:", error);
+            alert("Error listing files.");
+          });
       }
 
       function exportRapportsToCSV() {
