@@ -181,6 +181,11 @@
         getAuth,
         onAuthStateChanged,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+      import {
+        ref as firebaseStorageRef,
+        listAll,
+        deleteObject,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-storage.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
@@ -209,6 +214,10 @@
 
       const db = getDatabase();
       const auth = getAuth();
+      import { getStorage } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-storage.js";
+
+      // Initialize Firebase Storage
+      const storage = getStorage();
 
       let user = sessionStorage.getItem("user-uid");
       let currentUserId = null;
@@ -396,6 +405,36 @@
         // Supprimer l'attachement de la base de données
         remove(attachementsRef)
           .then(() => {
+            // Supprimer les fichiers associés du stockage
+            const storageReference = firebaseStorageRef(
+              storage,
+              `attachments/${attachmentId}/`
+            );
+            listAll(storageReference)
+              .then((res) => {
+                res.items.forEach((itemRef) => {
+                  deleteObject(itemRef)
+                    .then(() => {
+                      console.log(
+                        "Fichier supprimé avec succès:",
+                        itemRef.name
+                      );
+                    })
+                    .catch((error) => {
+                      console.error(
+                        "Erreur lors de la suppression du fichier:",
+                        error
+                      );
+                    });
+                });
+              })
+              .catch((error) => {
+                console.error(
+                  "Erreur lors de la récupération des fichiers:",
+                  error
+                );
+              });
+
             alert("Attachement supprimé avec succès.");
             fetchAttachements();
           })
