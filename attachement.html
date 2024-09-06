@@ -198,6 +198,8 @@
                   />
                 </td>
                 <td>
+                  <input type="checkbox" class="form-check-input border border-primary mx-1" id="checkboxPerte"/>
+                  <label class="form-check-label" for="checkboxPerte">Perte outillage dans tir</label>
                   <input
                     type="text"
                     class="border border-white input-table"
@@ -807,6 +809,7 @@
         let CommP = document.getElementById("CommP").value || "";
         let CommA = document.getElementById("CommA").value || "";
         let QuantiteGNR = document.getElementById("QuantiteGNR").value || "";
+        let perteOutillageTir = document.getElementById("checkboxPerte").checked;
 
         const lastNumber = await getLastAttachementNumber();
         const newNumber = lastNumber + 1;
@@ -842,6 +845,7 @@
             CommP: CommP,
             CommA: CommA,
             QuantiteGNR: QuantiteGNR,
+            perteOutillageTir: perteOutillageTir,
           },
           date: date,
           user: user,
