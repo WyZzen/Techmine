@@ -817,6 +817,23 @@
 
       let submitBtn = document.getElementById("submit");
 
+      let selectedFiles = [];
+      let validateFiles = document.getElementById("submit");
+      let newNumber;
+
+      function checkUserRole(userId) {
+        const userRef = ref(db, `users/${userId}`);
+        return get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          console.log("Données utilisateur :", userData.role);
+          return (
+            userData.role === "cadre" ||
+            userData.role === "responsable exploitation" ||
+            userData.role === "directeur" ||
+            userData.role === "responsable agence"
+          );
+        });
+      }
       auth.onAuthStateChanged((user) => {
         if (user) {
           checkUserRole(user.uid)
@@ -989,17 +1006,21 @@
         return "";
       }
 
-      submitBtn.addEventListener("click", async () => {
-        await AddData();
-        newNumber = await getLastAttachementNumber();
+      document.getElementById("selectFiles").addEventListener("change", (e) => {
+        selectedFiles = e.target.files;
+      });
+
+      validateFiles.addEventListener("click", async () => {
+        AddData();
+        newNumber = await getLastAttachementNumber(); // Get the new attachement number
         for (let i = 0; i < selectedFiles.length; i++) {
           try {
             const file = selectedFiles[i];
-            const storageFileRef = storageRef(
+            const storageRef1 = storageRef(
               storage,
               `attachments/${newNumber}/${file.name}`
-            );
-            uploadBytes(storageFileRef, file).then((snapshot) => {
+            ); // Use template literals to include newNumber in the path
+            uploadBytes(storageRef1, file).then((snapshot) => {
               console.log("Uploaded a file:", file.name);
             });
           } catch (error) {
