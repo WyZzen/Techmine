@@ -162,16 +162,18 @@
         </table>
         <div
           class="modal fade"
-          id="fileModal"
+          id="editModal"
           tabindex="-1"
           role="dialog"
-          aria-labelledby="fileModalLabel"
+          aria-labelledby="editModalLabel"
           aria-hidden="true"
         >
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="fileModalLabel">Attached Files</h5>
+                <h5 class="modal-title" id="editModalLabel">
+                  Modifier l'Attachement
+                </h5>
                 <button
                   type="button"
                   class="close"
@@ -181,8 +183,215 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body" id="fileList">
-                <!-- File content will be dynamically added here -->
+              <div class="modal-body">
+                <!-- Add form fields for editing attachment information -->
+                <form id="editForm">
+                  <input type="hidden" id="editModalNumber" />
+                  <div class="form-group">
+                    <label for="editModalClient">Client</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalClient"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalChantier">Chantier</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalChantier"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalObservation">Observation</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalObservation"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalForage">Forage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalForage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalHMFDebut">HMF Début</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalHMFDebut"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalNPlanForage">N° Plan Forage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalNPlanForage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalHMFFin">HMF Fin</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalHMFFin"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalDiametreForage">Diamètre Forage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalDiametreForage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalHeuresPanne">Heures Panne</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalHeuresPanne"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalHeuresArret">Heures Arrêt</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalHeuresArret"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalQuantiteForage">Quantité Forage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalQuantiteForage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalUniteForage">Unité Forage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalUniteForage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalMinage">Minage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalMinage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalNPlanTir">N° Plan Tir</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalNPlanTir"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalNbSismographes">N° Sismographes</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalNbSismographes"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalQuantiteMinage">Quantité Minage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalQuantiteMinage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalUniteMinage">Unité Minage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalUniteMinage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalAutre">Autre</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalAutre"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalGNR">GNR</label>
+                    <input type="text" class="form-control" id="editModalGNR" />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalDatesForage">Dates Forage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalDatesForage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalDatesMinage">Dates Minage</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalDatesMinage"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalImplantation">Implantation</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalImplantation"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalTransfert">Transfert</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalTransfert"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalCommP">Commentaire Panne</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalCommP"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalCommA">Commentaire Arrêt</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalCommA"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label for="editModalQuantiteGNR">Quantité GNR</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="editModalQuantiteGNR"
+                    />
+                  </div>
+                </form>
               </div>
               <div class="modal-footer">
                 <button
@@ -190,7 +399,14 @@
                   class="btn btn-secondary"
                   data-dismiss="modal"
                 >
-                  Close
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="saveChangesButton"
+                >
+                  Enregistrer les modifications
                 </button>
               </div>
             </div>
@@ -339,6 +555,9 @@
                   viewFilesButton.onclick = () => {
                     viewAttachedFiles(dateNb);
                   };
+                  const editButton = createEditButton(dateNb);
+
+                  actionsCell.appendChild(editButton);
                   actionsCell.appendChild(viewFilesButton);
                   actionsCell.appendChild(deleteButton);
                   actionsCell.appendChild(viewButton);
@@ -357,6 +576,9 @@
                   viewFilesButton.onclick = () => {
                     viewAttachedFiles(dateNb);
                   };
+
+                  const editButton = createEditButton(dateNb);
+                  actionsCell.appendChild(editButton);
                   actionsCell.appendChild(viewFilesButton);
                   actionsCell.appendChild(viewButton);
                 }
@@ -571,7 +793,6 @@
               return;
             }
 
-            // Clear previous file list
             const fileList = document.getElementById("fileList");
             fileList.innerHTML = "";
 
@@ -607,7 +828,6 @@
                 });
             });
 
-            // Show the modal
             $("#fileModal").modal("show");
           })
           .catch((error) => {
@@ -620,18 +840,16 @@
         const userRef = ref(db, "users");
         resetAndInitializeDataTable();
 
-        // Fetch users first
         onValue(userRef, (usersSnapshot) => {
           const users = usersSnapshot.val() || {};
 
-          // Then fetch attachments
           onValue(attachementsRef, (attachementsSnapshot) => {
             const attachements = attachementsSnapshot.val() || {};
 
             const attachementsTableBody = document
               .getElementById("attachementsTable")
               .getElementsByTagName("tbody")[0];
-            attachementsTableBody.innerHTML = ""; // Clear existing table data
+            attachementsTableBody.innerHTML = "";
 
             const sortedAttachementIds = Object.keys(attachements).sort(
               (a, b) => b - a
@@ -646,7 +864,6 @@
               };
               const attachmentDate = new Date(attachement.dateTimestamp);
 
-              // Check if the attachment date falls within the range
               if (
                 attachmentDate >= startDate &&
                 attachmentDate <= endDate &&
@@ -657,7 +874,7 @@
                   userId === currentUserId)
               ) {
                 const row = attachementsTableBody.insertRow();
-                populateRow(row, dateNb, attachement, user); // Populate table row
+                populateRow(row, dateNb, attachement, user);
               }
             });
           });
@@ -708,6 +925,9 @@
         };
         actionsCell.appendChild(viewFilesButton);
 
+        const editButton = createEditButton(dateNb);
+        actionsCell.appendChild(editButton);
+
         const viewButton = createViewButton(dateNb);
         actionsCell.appendChild(viewButton);
 
@@ -721,10 +941,125 @@
           viewFilesButton.onclick = () => {
             viewAttachedFiles(dateNb);
           };
+          const editButton = createEditButton(dateNb);
+          actionsCell.appendChild(editButton);
           actionsCell.appendChild(viewFilesButton);
           actionsCell.appendChild(deleteButton);
         }
       }
+      function openEditModal(dateNb) {
+        const attachementRef = ref(db, `Attachement/${dateNb}`);
+        get(attachementRef).then((snapshot) => {
+          const attachement = snapshot.val();
+          const infos = attachement.infos || {};
+
+          document.getElementById("editModalNumber").value = dateNb;
+          document.getElementById("editModalClient").value = infos.client;
+          document.getElementById("editModalChantier").value = infos.chantier;
+          document.getElementById("editModalObservation").value =
+            infos.observation;
+          document.getElementById("editModalForage").value = infos.forage;
+          document.getElementById("editModalHMFDebut").value = infos.HMFDebut;
+          document.getElementById("editModalNPlanForage").value =
+            infos.NPlanForage;
+          document.getElementById("editModalHMFFin").value = infos.HMFFin;
+          document.getElementById("editModalDiametreForage").value =
+            infos.DiametreForage;
+          document.getElementById("editModalHeuresPanne").value =
+            infos.HeuresPanne;
+          document.getElementById("editModalHeuresArret").value =
+            infos.HeuresArret;
+          document.getElementById("editModalQuantiteForage").value =
+            infos.QuantiteForage;
+          document.getElementById("editModalUniteForage").value =
+            infos.UniteForage;
+          document.getElementById("editModalMinage").value = infos.minage;
+          document.getElementById("editModalNPlanTir").value = infos.NPlanTir;
+          document.getElementById("editModalNbSismographes").value =
+            infos.NbSismographes;
+          document.getElementById("editModalQuantiteMinage").value =
+            infos.QuantiteMinage;
+          document.getElementById("editModalUniteMinage").value =
+            infos.UniteMinage;
+          document.getElementById("editModalAutre").value = infos.autre;
+          document.getElementById("editModalGNR").value = infos.GNR;
+          document.getElementById("editModalDatesForage").value =
+            infos.datesForage;
+          document.getElementById("editModalDatesMinage").value =
+            infos.datesMinage;
+          document.getElementById("editModalImplantation").value =
+            infos.implantation;
+          document.getElementById("editModalTransfert").value = infos.Transfert;
+          document.getElementById("editModalCommP").value = infos.CommP;
+          document.getElementById("editModalCommA").value = infos.CommA;
+          document.getElementById("editModalQuantiteGNR").value =
+            infos.QuantiteGNR;
+          $("#editModal").modal("show");
+        });
+      }
+      document
+        .getElementById("saveChangesButton")
+        .addEventListener("click", function () {
+          const dateNb = document.getElementById("editModalNumber").value;
+          const updatedData = {
+            infos: {
+              client: document.getElementById("editModalClient").value,
+              chantier: document.getElementById("editModalChantier").value,
+              observation: document.getElementById("editModalObservation")
+                .value,
+              forage: document.getElementById("editModalForage").value,
+              HMFDebut: document.getElementById("editModalHMFDebut").value,
+              NPlanForage: document.getElementById("editModalNPlanForage")
+                .value,
+              HMFFin: document.getElementById("editModalHMFFin").value,
+              DiametreForage: document.getElementById("editModalDiametreForage")
+                .value,
+              HeuresPanne: document.getElementById("editModalHeuresPanne")
+                .value,
+              HeuresArret: document.getElementById("editModalHeuresArret")
+                .value,
+              QuantiteForage: document.getElementById("editModalQuantiteForage")
+                .value,
+              UniteForage: document.getElementById("editModalUniteForage")
+                .value,
+              minage: document.getElementById("editModalMinage").value,
+              NPlanTir: document.getElementById("editModalNPlanTir").value,
+              NbSismographes: document.getElementById("editModalNbSismographes")
+                .value,
+              QuantiteMinage: document.getElementById("editModalQuantiteMinage")
+                .value,
+              UniteMinage: document.getElementById("editModalUniteMinage")
+                .value,
+              autre: document.getElementById("editModalAutre").value,
+              GNR: document.getElementById("editModalGNR").value,
+              datesForage: document.getElementById("editModalDatesForage")
+                .value,
+              datesMinage: document.getElementById("editModalDatesMinage")
+                .value,
+              implantation: document.getElementById("editModalImplantation")
+                .value,
+              Transfert: document.getElementById("editModalTransfert").value,
+              CommP: document.getElementById("editModalCommP").value,
+              CommA: document.getElementById("editModalCommA").value,
+              QuantiteGNR: document.getElementById("editModalQuantiteGNR")
+                .value,
+            },
+          };
+          const attachementRef = ref(db, `Attachement/${dateNb}`);
+          update(attachementRef, updatedData)
+            .then(() => {
+              alert("Attachement modifié avec succès.");
+              $("#editModal").modal("hide");
+              fetchAttachements();
+            })
+            .catch((error) => {
+              console.error(
+                "Erreur lors de la modification de l'attachement:",
+                error
+              );
+              alert("Erreur lors de la modification de l'attachement.");
+            });
+        });
 
       function createDeleteButton(dateNb) {
         console.log("bouton delete");
@@ -746,6 +1081,15 @@
           window.location.href = "Impression-attachement.html?number=${dateNb}";
         };
         return viewButton;
+      }
+      function createEditButton(dateNb) {
+        const editButton = document.createElement("button");
+        editButton.className = "btn btn-warning btn-sm mr-2";
+        editButton.textContent = "Modifier";
+        editButton.onclick = () => {
+          openEditModal(dateNb);
+        };
+        return editButton;
       }
 
       function resetAndInitializeDataTable() {
