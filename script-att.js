@@ -105,10 +105,19 @@ function showMessageError(message, type, newNumber) {
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                           </div>`;
 }
-function addInputDiametre() {
-  
-  const inputDiametre = document.getElementById("DiametreForage");
+function addInput(idInput) {
+  const inputDiametre = document.getElementById(idInput);
   const inputClone = inputDiametre.cloneNode(true);
-  console.log(inputDiametre);
   inputDiametre.parentNode.insertBefore(inputClone, inputDiametre.nextSibling);
+}
+
+function getElementsValuesFromNodeList(NodeList) {
+  let valeurs = [];
+
+  // Parcourt chaque élément de la NodeList
+  NodeList.forEach(function(element) {
+      valeurs.push(element.value);
+  });
+
+  return valeurs;
 }
