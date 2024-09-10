@@ -331,9 +331,9 @@
                         <td>
                           <input
                             type="text"
-                            placeholder="Diamètre de forage"
+                            placeholder="Transfert (1 ou 0)"
                             class="text-primary border border-white input-table-2"
-                            id="DiametreForage"
+                            id="Transfert"
                           />
                         </td>
                         <td>
@@ -358,20 +358,6 @@
                                 />
                               </td>
                             </tr>
-                          </table>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <input
-                            type="text"
-                            placeholder="Transfert (1 ou 0)"
-                            class="text-primary border border-white input-table-2"
-                            id="Transfert"
-                          />
-                        </td>
-                        <td>
-                          <table style="width: 100%">
                             <tr>
                               <td
                                 class="border border-primary border-top-0 border-bottom-0 border-start-0"
@@ -400,24 +386,48 @@
                   </td>
                 </tr>
                 <tr>
-                  <td>
-                    <input
-                      type="text"
-                      class="border border-white border border-white input-table-1"
-                      id="QuantiteForage"
-                      placeholder="Quantité"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <input
-                      type="text"
-                      class="border border-white border border-white input-table-1"
-                      id="UniteForage"
-                      placeholder="Unité"
-                    />
-                  </td>
+                  <table
+                    class="table table-bordered border-primary"
+                    style="width: 100%"
+                  >
+                    <tbody id="tableBody">
+                      <tr>
+                        <td>
+                          <input
+                            type="text"
+                            class="border-primary input-table-2"
+                            id="DiametreForage"
+                            placeholder="Diamètre de forage"
+                            style="border-style: none none solid none"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="border-primary input-table-2"
+                            id="QuantiteForage"
+                            placeholder="Quantité"
+                            style="border-style: none none solid none"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="border-primary input-table-2"
+                            id="UniteForage"
+                            placeholder="Unité"
+                            style="border-style: none none solid none"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <input
+                    type="button"
+                    class="btn btn-primary mt-2"
+                    value="Ajouter une ligne"
+                    onclick="addRow()"
+                  />
                 </tr>
               </table>
               <button
@@ -885,13 +895,20 @@
         let HMFDebut = document.getElementById("HMFDebut").value || "";
         let NPlanForage = document.getElementById("NPlanForage").value || "";
         let HMFFin = document.getElementById("HMFFin").value || "";
-        let DiametreForage =
-          document.getElementById("DiametreForage").value || "";
         let HeuresPanne = document.getElementById("HeuresPanne").value || "";
         let HeuresArret = document.getElementById("HeuresArret").value || "";
+        let DiametreForage =
+          getElementsValuesFromNodeList(
+            document.querySelectorAll("#DiametreForage")
+          ) || "";
         let QuantiteForage =
-          document.getElementById("QuantiteForage").value || "";
-        let UniteForage = document.getElementById("UniteForage").value || "";
+          getElementsValuesFromNodeList(
+            document.querySelectorAll("#QuantiteForage")
+          ) || "";
+        let UniteForage =
+          getElementsValuesFromNodeList(
+            document.querySelectorAll("#UniteForage")
+          ) || "";
         let minage = document.getElementById("minage").checked ? "oui" : "non";
         let NPlanTir = document.getElementById("NPlanTir").value || "";
         let NbSismographes =
@@ -928,9 +945,9 @@
             HMFDebut: HMFDebut,
             NPlanForage: NPlanForage,
             HMFFin: HMFFin,
-            DiametreForage: DiametreForage,
             HeuresPanne: HeuresPanne,
             HeuresArret: HeuresArret,
+            DiametreForage: DiametreForage,
             QuantiteForage: QuantiteForage,
             UniteForage: UniteForage,
             minage: minage,
