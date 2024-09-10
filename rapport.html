@@ -734,7 +734,9 @@
       function checkUserAuthentication() {
         onAuthStateChanged(auth, (user) => {
           if (user) {
+            console.log(user);
           } else {
+            console.log("pas d'utilisateur");
             window.location.href = "index.html";
           }
         });
@@ -1014,6 +1016,7 @@
         });
 
       submitBtn.addEventListener("click", AddData);
+      checkUserAuthentication();
     </script>
   </body>
 </html>

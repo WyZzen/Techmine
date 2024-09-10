@@ -220,7 +220,15 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase();
       const auth = getAuth();
-
+      function checkUserAuthentication() {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+          } else {
+            window.location.href = "index.html";
+          }
+        });
+      }
+      checkUserAuthentication();
       auth.onAuthStateChanged((user) => {
         if (user) {
           checkUserRole(user.uid)
