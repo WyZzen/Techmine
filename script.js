@@ -6,7 +6,7 @@ function showTab(n) {
   // This function will display the specified tab of the form ...
   var x = document.getElementsByClassName("tab");
   var y = document.getElementsByClassName("tab-title");
-  if (n == 5) {
+  if (n == 5 && reportType == "simplified") {
     x[n].style.display = "block";
     y[n].style.display = "block";
     document.getElementById("submitBtn").style.display = "inline";
