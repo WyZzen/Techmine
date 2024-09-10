@@ -230,7 +230,7 @@
             disabled
           />
         </div>
-        <div class="col-7 border border-dark text-start">
+        <div class="col-5 border border-dark text-start">
           <div class="form-check mt-2">
             <input
               class="form-check-input text-dark"
@@ -250,33 +250,19 @@
           /><br />
           <input
             type="text"
-            id="DiametreForage&1"
-            class="border-0 text-start text-dark"
-            disabled
-          />
-          <br />
-          <input
-            type="text"
             id="transfert&1"
             class="border-0 text-start text-dark"
             disabled
           />
         </div>
-        <div class="col-1 border border-dark">
-          <input
-            type="text"
-            id="QuantiteForage&1"
-            class="border-0 text-center mt-2 text-dark"
-            disabled
-          />
+        <div class="col-2 border border-dark text-start">
+          <div id="diametreContainer"></div>
         </div>
         <div class="col-1 border border-dark">
-          <input
-            type="text"
-            id="UniteForage&1"
-            class="border-0 text-center mt-2 text-dark"
-            disabled
-          />
+          <div id="quantiteContainer"></div>
+        </div>
+        <div class="col-1 border border-dark">
+          <div id="uniteContainer"></div>
         </div>
       </div>
 
@@ -309,22 +295,8 @@
             disabled
           />
         </div>
-        <div class="col-1 border border-dark">
-          <input
-            type="text"
-            id="QuantiteForage&1"
-            class="border-0 text-center mt-2 text-dark"
-            disabled
-          />
-        </div>
-        <div class="col-1 border border-dark">
-          <input
-            type="text"
-            id="UniteForage&1"
-            class="border-0 text-center mt-2 text-dark"
-            disabled
-          />
-        </div>
+        <div class="col-1 border border-dark"></div>
+        <div class="col-1 border border-dark"></div>
       </div>
 
       <div class="row text-center" id="ligneMinage">
@@ -597,10 +569,6 @@
               "Diamètre de forage: " +
               snapshot.val().infos.DiametreForage +
               " mm";
-            document.getElementById("DiametreForage&1").value =
-              "Diamètre de forage: " +
-              snapshot.val().infos.DiametreForage +
-              " mm";
             if (snapshot.val().infos.forage == "oui") {
               document.getElementById("Forage").checked = true;
               document.getElementById("Forage&1").checked = true;
@@ -651,14 +619,6 @@
                 snapshot.val().infos.CommA
             );
             console.log(snapshot.val().infos.datesMinage);
-            document.getElementById("QuantiteForage").value =
-              snapshot.val().infos.QuantiteForage;
-            document.getElementById("QuantiteForage&1").value =
-              snapshot.val().infos.QuantiteForage;
-            document.getElementById("UniteForage").value =
-              snapshot.val().infos.UniteForage;
-            document.getElementById("UniteForage&1").value =
-              snapshot.val().infos.UniteForage;
             document.getElementById("datesMinage").value =
               snapshot.val().infos.datesMinage;
             document.getElementById("NPlanTir").value =
@@ -690,6 +650,54 @@
             document.getElementById("Date").value = snapshot.val().date;
             document.getElementById("Nom").value =
               snapshot2.val().nom + " " + snapshot2.val().prenom;
+
+            const diametres = snapshot.val().infos.DiametreForage;
+            const unites = snapshot.val().infos.UniteForage;
+            const quantite = snapshot.val().infos.QuantiteForage;
+            const diametreContainer =
+              document.getElementById("diametreContainer");
+            const uniteContainer = document.getElementById("uniteContainer");
+            const quantiteContainer =
+              document.getElementById("quantiteContainer");
+
+            diametreContainer.innerHTML = "";
+            uniteContainer.innerHTML = "";
+            quantiteContainer.innerHTML = "";
+
+            // Gestion des diamètres
+            diametres.forEach((diametre, index) => {
+              const inputElement = document.createElement("input");
+              inputElement.type = "text";
+              inputElement.id = "DiametreForage&" + (index + 1);
+              inputElement.className = "border-0 text-start text-dark";
+              inputElement.disabled = true;
+              inputElement.value =
+                "Diamètre de forage " + (index + 1) + ": " + diametre + " mm";
+              diametreContainer.appendChild(inputElement);
+            });
+
+            // Gestion des unités
+            unites.forEach((unite, index) => {
+              const inputElement = document.createElement("input");
+              inputElement.type = "text";
+              inputElement.id = "UniteMinage&" + (index + 1);
+              inputElement.className = "border-0 text-start text-dark";
+              inputElement.disabled = true;
+              inputElement.value = unite;
+              uniteContainer.appendChild(inputElement);
+            });
+
+            // Gestion des quantités
+            quantite.forEach((qte, index) => {
+              const inputElement = document.createElement("input");
+              inputElement.type = "text";
+              inputElement.id = "QuantiteMinage&" + (index + 1);
+              inputElement.className = "border-0 text-start text-dark";
+              inputElement.disabled = true;
+              inputElement.value = qte;
+              quantiteContainer.appendChild(inputElement);
+            });
+
             if (
               snapshot.val().infos.forage == "oui" &&
               snapshot.val().infos.minage == "oui"

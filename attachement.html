@@ -251,7 +251,10 @@
             <div
               class="container-fluid bg-white p-3 rounded-4 form-container align-items-center align-self-center tab custom-height-tab text-primary"
             >
-              <table class="table table-bordered border-primary" style="height: 25vh">
+              <table
+                class="table table-bordered border-primary"
+                style="height: 25vh"
+              >
                 <tr>
                   <td>
                     <div class="mb-3">
@@ -350,7 +353,9 @@
                               </td>
                             </tr>
                             <tr>
-                              <td class="border border-primary border-top-0 border-bottom-0 border-start-0">
+                              <td
+                                class="border border-primary border-top-0 border-bottom-0 border-start-0"
+                              >
                                 <input
                                   type="text"
                                   placeholder="H d'arrêt"
@@ -375,23 +380,49 @@
                   </td>
                 </tr>
                 <tr>
-                  <table class="table table-bordered border-primary" style="width: 100%">
-                    <tr>
-                      <td>
-                        <input type="text" class="border-primary input-table-2" id="DiametreForage" placeholder="Diamètre de forage" style="border-style: none none solid none;"/>
-                        <input type="button" class=" btn btn-primary mt-2" value="+" onclick="addInput('DiametreForage')"/>
-                      </td>
-                      <td>
-                        <input type="text" class="border-primary input-table-2" id="QuantiteForage" placeholder="Quantité" style="border-style: none none solid none;"/>
-                        <input type="button" class="btn btn-primary mt-2" value="+" onclick="addInput('QuantiteForage')"/>
-                      </td>
-                      <td>
-                        <input type="text" class="border-primary input-table-2" id="UniteForage" placeholder="Unité" style="border-style: none none solid none;"/>
-                        <input type="button" class="btn btn-primary mt-2" value="+" onclick="addInput('UniteForage')"/>
-                      </td>
-                    </tr>
+                  <table
+                    class="table table-bordered border-primary"
+                    style="width: 100%"
+                  >
+                    <tbody id="tableBody">
+                      <tr>
+                        <td>
+                          <input
+                            type="text"
+                            class="border-primary input-table-2"
+                            id="DiametreForage"
+                            placeholder="Diamètre de forage"
+                            style="border-style: none none solid none"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="border-primary input-table-2"
+                            id="QuantiteForage"
+                            placeholder="Quantité"
+                            style="border-style: none none solid none"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="border-primary input-table-2"
+                            id="UniteForage"
+                            placeholder="Unité"
+                            style="border-style: none none solid none"
+                          />
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
-                </tr>  
+                  <input
+                    type="button"
+                    class="btn btn-primary mt-2"
+                    value="Ajouter une ligne"
+                    onclick="addRow()"
+                  />
+                </tr>
               </table>
               <button
                 type="button"
@@ -822,9 +853,18 @@
         let HMFFin = document.getElementById("HMFFin").value || "";
         let HeuresPanne = document.getElementById("HeuresPanne").value || "";
         let HeuresArret = document.getElementById("HeuresArret").value || "";
-        let DiametreForage = getElementsValuesFromNodeList(document.querySelectorAll("#DiametreForage")) || "";
-        let QuantiteForage = getElementsValuesFromNodeList(document.querySelectorAll("#QuantiteForage")) || "";
-        let UniteForage = getElementsValuesFromNodeList(document.querySelectorAll("#UniteForage")) || "";
+        let DiametreForage =
+          getElementsValuesFromNodeList(
+            document.querySelectorAll("#DiametreForage")
+          ) || "";
+        let QuantiteForage =
+          getElementsValuesFromNodeList(
+            document.querySelectorAll("#QuantiteForage")
+          ) || "";
+        let UniteForage =
+          getElementsValuesFromNodeList(
+            document.querySelectorAll("#UniteForage")
+          ) || "";
         let minage = document.getElementById("minage").checked ? "oui" : "non";
         let NPlanTir = document.getElementById("NPlanTir").value || "";
         let NbSismographes =

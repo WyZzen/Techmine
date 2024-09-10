@@ -24,7 +24,6 @@ function validStep(stepIndex) {
     if (stepIndex + 1 !== steps.length) {
       showTab(stepIndex + 1);
     }
-    
   } else {
     // Sinon, affichez un message d'erreur
     showMessageError(
@@ -39,8 +38,11 @@ function validateStep(step) {
   let isValid = true;
 
   inputs.forEach((input) => {
-    console.log(input.type === 'checkbox', input.checked)
-    if (input.value === "" || input.type === 'checkbox' && input.checked === false) {
+    console.log(input.type === "checkbox", input.checked);
+    if (
+      input.value === "" ||
+      (input.type === "checkbox" && input.checked === false)
+    ) {
       isValid = false;
     }
   });
@@ -105,18 +107,36 @@ function showMessageError(message, type, newNumber) {
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                           </div>`;
 }
-function addInput(idInput) {
-  const inputDiametre = document.getElementById(idInput);
-  const inputClone = inputDiametre.cloneNode(true);
-  inputDiametre.parentNode.insertBefore(inputClone, inputDiametre.nextSibling);
+function addRow() {
+  // Récupère le tableau
+  const tableBody = document.getElementById("tableBody");
+
+  // Crée une nouvelle ligne
+  const newRow = document.createElement("tr");
+
+  // Crée et ajoute chaque cellule avec l'input correspondant
+  newRow.innerHTML = `
+    <td>
+      <input type="text" class="border-primary input-table-2" placeholder="Diamètre de forage" style="border-style: none none solid none;" id="DiametreForage"/>
+    </td>
+    <td>
+      <input type="text" class="border-primary input-table-2" placeholder="Quantité" style="border-style: none none solid none;" id="QuantiteForage"/>
+    </td>
+    <td>
+      <input type="text" class="border-primary input-table-2" placeholder="Unité" style="border-style: none none solid none;" id="UniteForage"/>
+    </td>
+  `;
+
+  // Ajoute la nouvelle ligne au tableau
+  tableBody.appendChild(newRow);
 }
 
 function getElementsValuesFromNodeList(NodeList) {
   let valeurs = [];
 
   // Parcourt chaque élément de la NodeList
-  NodeList.forEach(function(element) {
-      valeurs.push(element.value);
+  NodeList.forEach(function (element) {
+    valeurs.push(element.value);
   });
 
   return valeurs;
