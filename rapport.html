@@ -731,6 +731,14 @@
       let dateNb = Date.now();
       let selectedClientId = null;
       let isSimple = null;
+      function checkUserAuthentication() {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+          } else {
+            window.location.href = "index.html";
+          }
+        });
+      }
 
       function fetchClients() {
         const clientDataList = document.getElementById("clients");
