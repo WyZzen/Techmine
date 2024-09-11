@@ -142,11 +142,7 @@
                 >Liste des Signalements</a
               >
             </li>
-            <li>
-              <a class="dropdown-item" href="historique-intervention.html"
-                >Historique des interventions</a
-              >
-            </li>
+
             <li><hr class="dropdown-divider" /></li>
             <li>
               <a class="dropdown-item" href="machines.html"
@@ -347,6 +343,44 @@
       let selectedMachineKey = null; // Added to keep track of the selected machine key
       let selectedSignalementId = null;
 
+      function checkUserRole(userId) {
+        const userRef = ref(db, `users/${userId}`);
+        return get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          console.log("Données utilisateur :", userData.role);
+          return (
+            userData.role === "cadre" ||
+            userData.role === "responsable exploitation" ||
+            userData.role === "directeur" ||
+            userData.role === "responsable agence"
+          );
+        });
+      }
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          checkUserRole(user.uid)
+            .then((isCadre) => {
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = isCadre ? "block" : "none";
+              });
+            })
+            .catch((error) => {
+              console.error("Erreur lors de la vérification du rôle :", error);
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = "none";
+              });
+            });
+        } else {
+          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
+          adminMenuItems.forEach((item) => {
+            item.style.display = "none";
+          });
+        }
+      });
       function fetchSignalements() {
         const signalementsRef = ref(db, "signalement/");
         onValue(signalementsRef, (snapshot) => {
@@ -916,31 +950,6 @@
             alert("Please select at least one signalement.");
           }
         });
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          checkUserRole(user.uid)
-            .then((isCadre) => {
-              const adminMenuItems =
-                document.querySelectorAll(".menu-item-admin");
-              adminMenuItems.forEach((item) => {
-                item.style.display = isCadre ? "block" : "none";
-              });
-            })
-            .catch((error) => {
-              console.error("Erreur lors de la vérification du rôle :", error);
-              const adminMenuItems =
-                document.querySelectorAll(".menu-item-admin");
-              adminMenuItems.forEach((item) => {
-                item.style.display = "none";
-              });
-            });
-        } else {
-          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
-          adminMenuItems.forEach((item) => {
-            item.style.display = "none";
-          });
-        }
-      });
 
       fetchMachines();
       fetchSignalements();

@@ -283,6 +283,19 @@
       let selectedMachine = null;
       let filteredSignalements = [];
 
+      function checkUserRole(userId) {
+        const userRef = ref(db, `users/${userId}`);
+        return get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          console.log("Données utilisateur :", userData.role);
+          return (
+            userData.role === "cadre" ||
+            userData.role === "responsable exploitation" ||
+            userData.role === "directeur" ||
+            userData.role === "responsable agence"
+          );
+        });
+      }
       function fetchMachines() {
         const machinesRef = ref(db, "machine/");
         get(machinesRef).then((snapshot) => {

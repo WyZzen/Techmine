@@ -166,6 +166,7 @@
         if (user) {
           checkUserRole(user.uid)
             .then((isCadre) => {
+              console.log(isCadre);
               const adminMenuItems =
                 document.querySelectorAll(".menu-item-admin");
               adminMenuItems.forEach((item) => {
