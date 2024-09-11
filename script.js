@@ -63,6 +63,13 @@ function nextPrev(n) {
   // This function will figure out which tab to display
   var x = document.getElementsByClassName("tab");
   var y = document.getElementsByClassName("tab-title");
+  if (n == -1) {
+    x[currentTab].style.display = "none";
+    y[currentTab].style.display = "none";
+    currentTab = currentTab - 1;
+    showTab(currentTab);
+    return;
+  }
 
   if (currentTab == 0) {
     const clientSelect = document.getElementById("clients");
