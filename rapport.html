@@ -139,27 +139,6 @@
         </div>
       </div>
     </div>
-    <div class="modal" id="reportTypeModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Choisissez votre type de rapport</h5>
-          </div>
-          <div class="modal-body">
-            <button type="button" class="btn btn-primary" id="simplifiedBtn">
-              Rapport simplifié
-            </button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              id="comprehensiveBtn"
-            >
-              Rapport complet
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
     <!-- bloc du bas -->
     <div class="container-fluid">
       <div class="row bg-primary custom-height-bot">
@@ -178,6 +157,11 @@
               >
                 <div class="col-1"></div>
                 <div class="col-10r" style="height: 10vh">
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Choix du type de rapport :
+                  </div>
                   <div
                     class="custom-font-sub-title fw-bold text-primary tab-title"
                   >
@@ -233,23 +217,25 @@
                     class="alert alert-warning"
                     style="display: none"
                   ></div>
+                  <!-- tab 0 -->
+                  <div class="tab" id="tab0">
+                    <button
+                      type="button"
+                      class="btn btn-primary"
+                      id="simplifiedBtn"
+                    >
+                      Rapport simplifié
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      id="comprehensiveBtn"
+                    >
+                      Rapport complet
+                    </button>
+                  </div>
                   <!-- tab 1 -->
                   <div class="tab" id="tab1">
-                    <!--<div class="input-group">
-                    <span
-                      class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                      id="addon-wrapping"
-                      >Client :</span
-                    >
-                    <input
-                      type="text"
-                      class="form-control custom-height-input border border-primary-subtle custom-margin-input"
-                      placeholder=""
-                      aria-label="client"
-                      aria-describedby="addon-wrapping"
-                      id="client"
-                    />
-                  </div>-->
                     <div class="input-group">
                       <span
                         class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white custom-margin-input"
@@ -596,6 +582,7 @@
                     <span id="step5" class="step"></span>
                     <span id="step6" class="step"></span>
                     <span id="step7" class="step"></span>
+                    <span id="step8" class="step"></span>
                   </div>
                 </div>
                 <div class="col-6">
@@ -991,7 +978,6 @@
         }
       });
       window.onload = function () {
-        $("#reportTypeModal").modal("show");
         fetchClients();
         fetchClientsAndCarrieres();
       };
@@ -1002,9 +988,10 @@
           $("#reportTypeModal").modal("hide");
           reportType = "simplified";
           isSimple = true;
-          document.getElementById("step2").style.display = "none";
-          document.getElementById("step6").style.display = "none";
+          document.getElementById("step3").style.display = "none";
           document.getElementById("step7").style.display = "none";
+          document.getElementById("step8").style.display = "none";
+          nextPrev(1);
         });
 
       document
@@ -1013,6 +1000,7 @@
           $("#reportTypeModal").modal("hide");
           reportType = "comprehensive";
           isSimple = false;
+          nextPrev(1);
         });
 
       submitBtn.addEventListener("click", AddData);
