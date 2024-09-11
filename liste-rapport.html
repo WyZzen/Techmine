@@ -484,7 +484,9 @@
                 const timeDifference = currentTime - rapportTime;
                 const actionsCell = row.insertCell(19);
                 const editButton = createEditButton(id);
+                const ViewButton = createViewButton(id);
                 actionsCell.appendChild(editButton);
+                actionsCell.appendChild(ViewButton);
 
                 if (timeDifference < 3600000) {
                   const actionsCell = row.insertCell(19);
@@ -503,8 +505,11 @@
                         );
                       });
                   };
-                  const editButton = createEditButton(id);
 
+                  const editButton = createEditButton(id);
+                  const viewButton = createViewButton(id);
+
+                  actionsCell.appendChild(viewButton);
                   actionsCell.appendChild(editButton);
                   actionsCell.appendChild(deleteButton);
                 } else {
@@ -523,6 +528,16 @@
           openEditReportModal(id);
         };
         return editButton;
+      }
+      function createViewButton(id) {
+        console.log("dans la creation du boutton de vue");
+        const viewButton = document.createElement("button");
+        viewButton.className = "btn btn-info btn-sm mr-2";
+        viewButton.textContent = "Voir";
+        viewButton.onclick = () => {
+          window.location.href = "Impression-rapport.html?id=" + id;
+        };
+        return viewButton;
       }
       document
         .getElementById("filterButton")
@@ -659,9 +674,16 @@
         const currentTime = new Date().getTime();
         const reportTime = id;
         if (currentTime - reportTime < 3600000) {
+          const viewButton = document.createElement("button");
+          viewButton.className = "btn btn-info btn-sm mr-2";
+          viewButton.textContent = "Voir";
+          viewButton.onclick = () => {
+            window.location.href = "Impression-rapport.html?id=" + id;
+          };
           const actionsCell = row.insertCell(19);
           const deleteButton = createDeleteButton(id, "rapport");
           actionsCell.appendChild(deleteButton);
+          actionsCell.appendChild(viewButton);
         } else {
           row.insertCell(19).textContent = "";
         }

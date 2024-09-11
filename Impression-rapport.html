@@ -25,9 +25,11 @@
     <div id="HForreuse"></div>
     <br />
     <div id="HArret"></div>
+    <div id="CommA"></div>
     <br />
     <div id="HPanne"></div>
-    <button id="btnPrint" class="btn btn-primary mt-2">
+    <div id="CommP"></div>
+    <button id="btnPrint" class="btn btn-primary m-4">
       Imprimer l'attachement
     </button>
     <script type="module">
@@ -81,16 +83,23 @@
         const divClient = document.getElementById("client");
         const divHForreuse = document.getElementById("HForreuse");
         const divHArret = document.getElementById("HArret");
+        const divCommA = document.getElementById("CommA");
         const divHPanne = document.getElementById("HPanne");
+        const divCommP = document.getElementById("CommP");
+        let Hforreuse = 0;
 
         const snapshot = await get(attachmentRef);
         const infos = snapshot.val().infos;
 
+        Hforreuse = infos.NbHF - infos.NbHD;
+
         divChantier.textContent = "chantier : " + infos.Carriere;
         divClient.textContent = "client : " + infos.client;
-        divHForreuse.textContent = "heures forreuse : " + infos.NbHF;
+        divHForreuse.textContent = "heures forreuse : " + Hforreuse;
         divHArret.textContent = "heures d'arret : " + infos.NbHA;
+        divCommA.textContent = "commentaire : " + infos.CommA;
         divHPanne.textContent = "heures de panne : " + infos.NbHP;
+        divCommP.textContent = "commentaire : " + infos.CommP;
       }
       document.getElementById("btnPrint").addEventListener("click", () => {
         document.getElementById("btnPrint").style.display = "none";
