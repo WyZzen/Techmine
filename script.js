@@ -14,6 +14,7 @@ function showTab(n) {
     document.getElementById("nextBtn").style.display = "none";
     return;
   }
+
   x[n].style.display = "block";
   y[n].style.display = "block";
   // ... and fix the Previous/Next buttons:
@@ -22,6 +23,8 @@ function showTab(n) {
       console.log(reportType + "dans bouttons");
       if (n == 0) {
         document.getElementById("prevBtn").style.display = "none";
+        document.getElementById("submitBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "none";
       } else {
         document.getElementById("prevBtn").style.display = "inline";
       }
@@ -35,6 +38,8 @@ function showTab(n) {
     } else {
       if (n == 0) {
         document.getElementById("prevBtn").style.display = "none";
+        document.getElementById("submitBtn").style.display = "none";
+        document.getElementById("nextBtn").style.display = "none";
       } else {
         document.getElementById("prevBtn").style.display = "inline";
       }
