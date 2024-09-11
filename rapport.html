@@ -814,7 +814,9 @@
         })
           .then(() => {
             if (isSimple == true) {
-              window.location.href = "Impression-rapport.html?id=" + dateNb;
+              setTimeout(() => {
+                window.location.href = "Impression-rapport.html?id=" + dateNb;
+              }, 3000);
             }
             showMessage("Données sauvegardées avec succès !", "success");
           })
