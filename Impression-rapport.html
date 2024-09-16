@@ -8,6 +8,8 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <!-- Ajout de la bibliothèque jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   </head>
   <body class="h4">
     <style>
@@ -16,7 +18,13 @@
       }
     </style>
     <div class="text-start">
-      <img src="logo techmine.svg" alt="" class="img" style="height: 25vh" />
+      <img
+        id="logo"
+        src="logo techmine.svg"
+        alt="Logo"
+        class="img"
+        style="height: 25vh"
+      />
     </div>
     <div id="client"></div>
     <br />
@@ -31,8 +39,8 @@
     <div id="HPanne"></div>
     <div id="CommP"></div>
 
-    <button id="btnPrint" class="btn btn-primary m-4">
-      Imprimer l'attachement
+    <button id="btnShare" class="btn btn-primary m-4">
+      Partager l'attachement en PDF
     </button>
     <script type="module">
       let UserCreds = JSON.parse(sessionStorage.getItem("UserCreds"));
@@ -61,15 +69,7 @@
       import {
         getDatabase,
         ref,
-        child,
         get,
-        set,
-        update,
-        remove,
-        onValue,
-        query,
-        orderByChild,
-        equalTo,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
 
       const db = getDatabase();
@@ -79,6 +79,7 @@
       function getURLParameter(name) {
         return new URLSearchParams(window.location.search).get(name);
       }
+
       async function getAttachement() {
         const attachmentRef = ref(db, "rapport/" + number);
         const divChantier = document.getElementById("chantier");
@@ -105,14 +106,70 @@
         divCommP.textContent = "commentaire : " + infos.CommP;
         divNbHF.textContent = "Nombre de mètres forés : " + infos.NbMF;
       }
-      document.getElementById("btnPrint").addEventListener("click", () => {
-        document.getElementById("btnPrint").style.display = "none";
-        window.print();
-        setTimeout(function () {
-          document.getElementById("btnPrint").style.display = "block";
-        }, 3000);
-      });
+
       getAttachement();
+
+      // Fonction pour convertir l'image en base64
+      function getBase64Image(img) {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
+        return canvas.toDataURL("image/png");
+      }
+
+      // Fonction pour générer le PDF et l'ouvrir dans le menu de partage natif
+      async function generateAndSharePDF() {
+        // Vérifier la compatibilité du navigateur pour l'API de partage
+        if (navigator.share) {
+          // Utilisation de jsPDF à partir de window.jspdf.jsPDF
+          const { jsPDF } = window.jspdf;
+
+          // Créer un document PDF au format paysage
+          const doc = new jsPDF({ orientation: "landscape" });
+
+          // Récupérer le logo en base64
+          const logoImg = document.getElementById("logo");
+          const logoBase64 = getBase64Image(logoImg);
+
+          // Ajouter le logo dans le PDF
+          doc.addImage(logoBase64, "PNG", 10, 10, 50, 30); // Position et taille du logo dans le PDF
+
+          // Ajouter du texte dans le PDF (exemple basique)
+          doc.text(document.getElementById("client").textContent, 10, 50);
+          doc.text(document.getElementById("chantier").textContent, 10, 60);
+          doc.text(document.getElementById("HForreuse").textContent, 10, 70);
+          doc.text(document.getElementById("NbMF").textContent, 10, 80);
+          doc.text(document.getElementById("HArret").textContent, 10, 90);
+          doc.text(document.getElementById("CommA").textContent, 10, 100);
+          doc.text(document.getElementById("HPanne").textContent, 10, 110);
+          doc.text(document.getElementById("CommP").textContent, 10, 120);
+
+          // Sauvegarde du PDF en blob
+          const pdfBlob = doc.output("blob");
+
+          try {
+            // Partager le PDF en utilisant l'API Web Share
+            await navigator.share({
+              files: [
+                new File([pdfBlob], "rapport.pdf", { type: "application/pdf" }),
+              ],
+              title: "Rapport PDF",
+              text: "Voici le rapport en PDF",
+            });
+          } catch (error) {
+            console.log("Erreur lors du partage:", error);
+          }
+        } else {
+          alert("Le partage de fichiers n'est pas supporté sur ce navigateur.");
+        }
+      }
+
+      // Écouteur pour le bouton de partage
+      document
+        .getElementById("btnShare")
+        .addEventListener("click", generateAndSharePDF);
     </script>
   </body>
 </html>

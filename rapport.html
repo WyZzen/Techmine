@@ -180,6 +180,11 @@
                   <div
                     class="custom-font-sub-title fw-bold text-primary tab-title"
                   >
+                    <br />Informations voiture :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
                     <br />Informations arrêt :
                   </div>
                   <div
@@ -439,6 +444,41 @@
                       <span
                         class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
                         id="addon-wrapping"
+                        >Numéro voiture :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="voiture"
+                        list="voitures"
+                      />
+                      <datalist id="voitures"> </datalist>
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >kilometrage :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="kilV"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 6 -->
+                  <div class="tab" id="tab6">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
                         >nombre d'heure d'arrêt :</span
                       >
                       <input
@@ -466,8 +506,8 @@
                       />
                     </div>
                   </div>
-                  <!-- tab 6 -->
-                  <div class="tab" id="tab6">
+                  <!-- tab 7 -->
+                  <div class="tab" id="tab7">
                     <div class="input-group">
                       <span
                         class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
@@ -499,8 +539,8 @@
                       />
                     </div>
                   </div>
-                  <!-- tab 7 -->
-                  <div class="tab" id="tab7">
+                  <!-- tab 8 -->
+                  <div class="tab" id="tab8">
                     <div class="input-group">
                       <span
                         class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
@@ -532,8 +572,8 @@
                       />
                     </div>
                   </div>
-                  <!-- tab 8 -->
-                  <div class="tab" id="tab8">
+                  <!-- tab 9 -->
+                  <div class="tab" id="tab9">
                     <div class="input-group">
                       <span
                         class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
@@ -584,6 +624,7 @@
                     <span id="step6" class="step"></span>
                     <span id="step7" class="step"></span>
                     <span id="step8" class="step"></span>
+                    <span id="step9" class="step"></span>
                   </div>
                 </div>
                 <div class="col-6">
@@ -783,6 +824,8 @@
         let DT = document.getElementById("DT") || "";
         let CG = document.getElementById("CG") || "";
         let QG = document.getElementById("QG") || "";
+        let kilV = document.getElementById("kilV") || "";
+        let voiture = document.getElementById("voiture") || "";
 
         set(ref(db, "rapport/" + dateNb), {
           infos: {
@@ -804,6 +847,8 @@
             DT: DT.value,
             CG: CG.value,
             QG: QG.value,
+            kilV: kilV,
+            voiture: voiture,
           },
           date: date,
           dateTimestamp: new Date().getTime(),
@@ -927,7 +972,9 @@
       }
       function populateMachineDataList() {
         const machineDataList = document.getElementById("machines");
+        const voitureDataList = document.getElementById("voitures");
         machineDataList.innerHTML = "";
+        voitureDataList.innerHTML = "";
 
         const sortedMachinesIds = Object.keys(machinesData).sort((a, b) =>
           machinesData[a].Nmatériel.localeCompare(machinesData[b].Nmatériel)
@@ -944,6 +991,12 @@
             option.value = machineName;
             option.dataset.machineId = machineId;
             machineDataList.appendChild(option);
+          } else {
+            const machineName = machinesData[machineId].Nmatériel;
+            const option = document.createElement("option");
+            option.value = machineName;
+            option.dataset.machineId = machineId;
+            voitureDataList.appendChild(option);
           }
         }
       }
@@ -1030,6 +1083,7 @@
           reportType = "simplified";
           isSimple = true;
           document.getElementById("step3").style.display = "none";
+          document.getElementById("step5").style.display = "none";
           document.getElementById("step7").style.display = "none";
           document.getElementById("step8").style.display = "none";
           nextPrev(1);

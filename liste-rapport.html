@@ -130,6 +130,7 @@
             <button id="filterButton" class="btn btn-primary">Filtrer</button>
           </div>
         </div>
+
         <table id="reportsTable" class="table table-striped table-bordered">
           <thead class="thead-dark">
             <tr>
@@ -531,6 +532,12 @@
                 }
               }
             }
+            $("#reportsTable").DataTable({
+              order: [[0, "asc"]],
+              columnDefs: [{ orderable: true, targets: [0, 1] }],
+              paging: true,
+              searching: true,
+            });
           });
         });
       }
