@@ -398,7 +398,9 @@
                         aria-label="Carrière"
                         aria-describedby="addon-wrapping"
                         id="numF"
+                        list="machines"
                       />
+                      <datalist id="machines"> </datalist>
                     </div>
                     <div class="input-group">
                       <span
@@ -885,10 +887,12 @@
       });
       let clientsData = {};
       let carrieresData = {};
+      let machinesData = {};
 
       function fetchClientsAndCarrieres() {
         const clientsRef = ref(db, "clients");
         const carrieresRef = ref(db, "chantiers");
+        const machinesRef = ref(db, "machine");
 
         get(clientsRef).then((clientsSnapshot) => {
           clientsData = clientsSnapshot.val() || {};
@@ -898,6 +902,10 @@
         get(carrieresRef).then((carrieresSnapshot) => {
           carrieresData = carrieresSnapshot.val() || {};
           populateCarrieresDataList();
+        });
+        get(machinesRef).then((machinesSnapshot) => {
+          machinesData = machinesSnapshot.val() || {};
+          populateMachineDataList();
         });
       }
 
@@ -915,6 +923,28 @@
           option.value = clientName;
           option.dataset.clientId = clientId;
           clientDataList.appendChild(option);
+        }
+      }
+      function populateMachineDataList() {
+        const machineDataList = document.getElementById("machines");
+        machineDataList.innerHTML = "";
+
+        const sortedMachinesIds = Object.keys(machinesData).sort((a, b) =>
+          machinesData[a].Nmatériel.localeCompare(machinesData[b].Nmatériel)
+        );
+
+        for (const machineId of sortedMachinesIds) {
+          if (
+            machinesData[machineId].Nmatériel.startsWith("15") ||
+            machinesData[machineId].Nmatériel.startsWith("TMF") ||
+            machinesData[machineId].Nmatériel.startsWith("F")
+          ) {
+            const machineName = machinesData[machineId].Nmatériel;
+            const option = document.createElement("option");
+            option.value = machineName;
+            option.dataset.machineId = machineId;
+            machineDataList.appendChild(option);
+          }
         }
       }
 
@@ -944,6 +974,16 @@
         if (selectedClient) {
           selectedClientId = selectedClient.id;
           filterCarrieresByClient(selectedClientId);
+        }
+      });
+      document.getElementById("numF").addEventListener("input", () => {
+        const selectedMachineName = document.getElementById("numF").value;
+        const selectedMachine = Object.values(machinesData).find(
+          (machine) => machine.name === selectedMachineName
+        );
+
+        if (selectedMachine) {
+          populateMachineDataList();
         }
       });
 
