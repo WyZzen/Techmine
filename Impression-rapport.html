@@ -23,12 +23,14 @@
     <div id="chantier"></div>
     <br />
     <div id="HForreuse"></div>
+    <div id="NbMF"></div>
     <br />
     <div id="HArret"></div>
     <div id="CommA"></div>
     <br />
     <div id="HPanne"></div>
     <div id="CommP"></div>
+
     <button id="btnPrint" class="btn btn-primary m-4">
       Imprimer l'attachement
     </button>
@@ -86,6 +88,7 @@
         const divCommA = document.getElementById("CommA");
         const divHPanne = document.getElementById("HPanne");
         const divCommP = document.getElementById("CommP");
+        const divNbHF = document.getElementById("NbMF");
         let Hforreuse = 0;
 
         const snapshot = await get(attachmentRef);
@@ -100,6 +103,7 @@
         divCommA.textContent = "commentaire : " + infos.CommA;
         divHPanne.textContent = "heures de panne : " + infos.NbHP;
         divCommP.textContent = "commentaire : " + infos.CommP;
+        divNbHF.textContent = "Nombre de mètres forés : " + infos.NbMF;
       }
       document.getElementById("btnPrint").addEventListener("click", () => {
         document.getElementById("btnPrint").style.display = "none";

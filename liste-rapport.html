@@ -509,6 +509,21 @@
                   actionsCell.appendChild(editButton);
                   actionsCell.appendChild(deleteButton);
                 } else {
+                  console.log(currentUserRole === "responsable exploitation");
+                  if (
+                    currentUserRole === "cadre" ||
+                    currentUserRole === "responsable exploitation" ||
+                    currentUserRole === "directeur" ||
+                    currentUserRole === "responsable agence"
+                  ) {
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "btn btn-danger btn-sm mr-2";
+                    deleteButton.textContent = "Supprimer";
+                    deleteButton.onclick = () => {
+                      deleteRapport(dateNb);
+                    };
+                    actionsCell.appendChild(deleteButton);
+                  }
                   const editButton = createEditButton(id);
                   const ViewButton = createViewButton(id);
                   actionsCell.appendChild(ViewButton);
@@ -517,6 +532,18 @@
               }
             }
           });
+        });
+      }
+      function deleteRapport(rapportId) {
+        const rapportsRef = ref(db, `rapport/${rapportId}`);
+
+        // Supprimer l'attachement de la base de données
+        remove(rapportsRef).catch((error) => {
+          console.error(
+            "Erreur lors de la suppression de l'attachement:",
+            error
+          );
+          alert("Erreur lors de la suppression de l'attachement.");
         });
       }
       function createEditButton(id) {

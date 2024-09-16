@@ -585,6 +585,20 @@
                   };
 
                   const editButton = createEditButton(dateNb);
+                  if (
+                    currentUserRole === "cadre" ||
+                    currentUserRole === "responsable exploitation" ||
+                    currentUserRole === "directeur" ||
+                    currentUserRole === "responsable agence"
+                  ) {
+                    const deleteButton = document.createElement("button");
+                    deleteButton.className = "btn btn-danger btn-sm mr-2";
+                    deleteButton.textContent = "Supprimer";
+                    deleteButton.onclick = () => {
+                      deleteAttachment(dateNb);
+                    };
+                    actionsCell.appendChild(deleteButton);
+                  }
                   actionsCell.appendChild(editButton);
                   actionsCell.appendChild(viewFilesButton);
                   actionsCell.appendChild(viewButton);
