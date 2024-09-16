@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="UTF-8" />
     <title>Attachement</title>
     <link
       rel="stylesheet"
@@ -219,14 +218,20 @@
                     type="text"
                     class="border border-white input-table"
                     id="client"
+                    list="clients"
                   />
+                  <datalist id="clients"> </datalist>
                 </td>
                 <td>
                   <input
                     type="text"
                     class="border border-white input-table"
                     id="chantier"
+                    list="chantiers"
                   />
+                  <datalist id="chantiers">
+                    <!-- Options will be dynamically added here -->
+                  </datalist>
                 </td>
                 <td>
                   <input
@@ -803,8 +808,12 @@
         ref,
         get,
         set,
+        onValue,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
-      import { getAuth } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
       import {
         getStorage,
         ref as storageRef,
@@ -827,6 +836,7 @@
       const db = getDatabase();
       const storage = getStorage();
       const auth = getAuth(app);
+      let selectedClientId = null;
       function checkUserAuthentication() {
         onAuthStateChanged(auth, (user) => {
           if (user) {
@@ -1036,7 +1046,111 @@
         }
         return "";
       }
+      // Fetch clients and carrieres data from Firebase database
+      let clientsData = {};
+      let carrieresData = {};
 
+      function fetchClientsAndCarrieres() {
+        const clientsRef = ref(db, "clients");
+        const carrieresRef = ref(db, "chantiers");
+
+        get(clientsRef).then((clientsSnapshot) => {
+          clientsData = clientsSnapshot.val() || {};
+          populateClientsDataList();
+        });
+
+        get(carrieresRef).then((carrieresSnapshot) => {
+          carrieresData = carrieresSnapshot.val() || {};
+          populateCarrieresDataList();
+        });
+      }
+
+      // Populate clients data into the client datalist
+      function populateClientsDataList() {
+        const clientDataList = document.getElementById("clients");
+        clientDataList.innerHTML = "";
+
+        const sortedClientIds = Object.keys(clientsData).sort((a, b) =>
+          clientsData[a].name.localeCompare(clientsData[b].name)
+        );
+
+        for (const clientId of sortedClientIds) {
+          const clientName = clientsData[clientId].name;
+          const option = document.createElement("option");
+          option.value = clientName;
+          option.dataset.clientId = clientId;
+          clientDataList.appendChild(option);
+        }
+      }
+
+      // Populate carrieres data into the chantier datalist
+      function populateCarrieresDataList() {
+        const carriereDataList = document.getElementById("chantiers");
+        carriereDataList.innerHTML = "";
+
+        const sortedCarriereIds = Object.keys(carrieresData).sort((a, b) =>
+          carrieresData[a].name.localeCompare(carrieresData[b].name)
+        );
+
+        for (const carriereId of sortedCarriereIds) {
+          const carriereName = carrieresData[carriereId].name;
+          const option = document.createElement("option");
+          option.value = carriereName;
+          option.dataset.carriereId = carriereId;
+          carriereDataList.appendChild(option);
+        }
+      }
+
+      // Filter carrieres data based on the selected client
+      document.getElementById("client").addEventListener("input", () => {
+        const selectedClientName = document.getElementById("client").value;
+        const selectedClient = Object.values(clientsData).find(
+          (clients) => clients.name === selectedClientName
+        );
+
+        if (selectedClient) {
+          selectedClientId = selectedClient.id;
+          filterCarrieresByClient(selectedClientId);
+        }
+      });
+
+      function filterCarrieresByClient(clientId) {
+        const carriereDataList = document.getElementById("chantiers");
+        carriereDataList.innerHTML = "";
+
+        const filteredCarrieres = Object.values(carrieresData).filter(
+          (carriere) => carriere.clientId === clientId
+        );
+
+        const sortedCarriereIds = filteredCarrieres.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        for (const carriere of sortedCarriereIds) {
+          const option = document.createElement("option");
+          option.value = carriere.name;
+          option.dataset.carriereId = carriere.id;
+          carriereDataList.appendChild(option);
+        }
+      }
+
+      // Update the client input with the corresponding client name
+      document.getElementById("chantier").addEventListener("input", () => {
+        const selectedCarriereName = document.getElementById("chantier").value;
+        const selectedCarriere = Object.values(carrieresData).find(
+          (carriere) => carriere.name === selectedCarriereName
+        );
+
+        if (selectedCarriere) {
+          const clientName = clientsData[selectedCarriere.clientId].name;
+          document.getElementById("client").value = clientName;
+        }
+      });
+
+      // Fetch clients and carrieres data on page load
+      window.onload = function () {
+        fetchClientsAndCarrieres();
+      };
       document.getElementById("selectFiles").addEventListener("change", (e) => {
         selectedFiles = e.target.files;
       });
