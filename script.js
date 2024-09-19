@@ -6,7 +6,7 @@ function showTab(n) {
   // This function will display the specified tab of the form ...
   var x = document.getElementsByClassName("tab");
   var y = document.getElementsByClassName("tab-title");
-  if (n == 7 && reportType == "simplified") {
+  if (n == 8 && reportType == "simplified") {
     x[n].style.display = "block";
     y[n].style.display = "block";
     document.getElementById("submitBtn").style.display = "inline";
@@ -87,8 +87,8 @@ function nextPrev(n) {
     if (
       currentTab == 2 ||
       currentTab == 4 ||
-      currentTab == 7 ||
-      currentTab == 8
+      currentTab == 8 ||
+      currentTab == 9
     ) {
       console.log("a detruire");
       x[currentTab].style.display = "none";

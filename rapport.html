@@ -187,13 +187,19 @@
                   >
                     <br />Informations arrêt :
                   </div>
-                  <div class="custom-font-sub-title fw-bold text-primary tab-title">
-                    <br />Informations panne :
-                  </div>
-                  <div class="custom-font-sub-title fw-bold text-primary tab-title">
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
                     <br />Informations perte :
                   </div>
-                  <div class="custom-font-sub-title fw-bold text-primary tab-title">
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations panne :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
                     <br />Informations transfert :
                   </div>
                   <div
@@ -508,27 +514,35 @@
                   <!-- tab 7 -->
                   <div class="tab" id="tab7">
                     <div class="input-group">
-                      <span class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white" id="addon-wrapping">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                      >
                         perte barre :
                       </span>
-                      <input type="number" class="form-control custom-height-input custom-margin-input border border-primary-subtle" placeholder="" aria-label="Carrière"
+                      <input
+                        type="number"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
                         aria-describedby="addon-wrapping"
-                        id="NbHP"
+                        id="nbPB"
                       />
                     </div>
                     <div class="input-group">
                       <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
                         id="addon-wrapping"
-                        >commentaire :</span
                       >
+                        perte taillant :
+                      </span>
                       <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
+                        type="number"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
                         placeholder=""
-                        aria-label="Client"
+                        aria-label="Carrière"
                         aria-describedby="addon-wrapping"
-                        id="CommP"
+                        id="nbPT"
                       />
                     </div>
                   </div>
@@ -881,11 +895,9 @@
           user: user,
         })
           .then(() => {
-            if (isSimple == true) {
-              setTimeout(() => {
-                window.location.href = "Impression-rapport.html?id=" + dateNb;
-              }, 3000);
-            }
+            setTimeout(() => {
+              window.location.href = "Impression-rapport.html?id=" + dateNb;
+            }, 3000);
             showMessage("Données sauvegardées avec succès !", "success");
           })
           .catch((error) => {
@@ -1110,8 +1122,8 @@
           isSimple = true;
           document.getElementById("step3").style.display = "none";
           document.getElementById("step5").style.display = "none";
-          document.getElementById("step7").style.display = "none";
-          document.getElementById("step8").style.display = "none";
+          document.getElementById("step9").style.display = "none";
+          document.getElementById("step10").style.display = "none";
           nextPrev(1);
         });
 
