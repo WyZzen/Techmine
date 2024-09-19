@@ -445,6 +445,33 @@
     <button onclick="BtnPrint()" id="btnPrint" class="btn btn-primary mt-2">
       Imprimer l'attachement
     </button>
+    <button type="button" id="shareBtn" class="btn btn-secondary BtnStep">
+      Partager
+    </button>
+    <script>
+      document
+        .getElementById("shareBtn")
+        .addEventListener("click", function () {
+          if (navigator.share) {
+            navigator
+              .share({
+                title: "Titre de la page",
+                text: "Découvrez ce contenu intéressant !",
+                url: window.location.href, // URL de la page
+              })
+              .then(() => console.log("Contenu partagé avec succès !"))
+              .catch((error) =>
+                console.error("Erreur lors du partage :", error)
+              );
+          } else {
+            alert(
+              "L'API de partage Web n'est pas disponible sur votre navigateur."
+            );
+          }
+        });
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
       function BtnPrint() {
         document.getElementById("btnPrint").style.display = "none";

@@ -229,6 +229,11 @@
         return get(userRef).then((snapshot) => {
           const userData = snapshot.val();
           console.log("Données utilisateur :", userData.role);
+          console.log("Données utilisateur :", userData.nom, userData.prenom);
+          document.getElementById(
+            "operator"
+          ).value = `${userData.prenom} ${userData.nom}`;
+          document.getElementById("operatorId").value = userId;
           return (
             userData.role === "cadre" ||
             userData.role === "responsable exploitation" ||
@@ -265,15 +270,28 @@
       });
 
       const usersRef = ref(db, "users");
+
       function loadUserInfo(userId) {
+        // const userRef = ref(db, `users/${userId}`);
+        // return get(userRef).then((snapshot) => {
+        //   const userData = snapshot.val();
+        //   console.log("Données utilisateur :", userData.role);
+        //   console.log("Données utilisateur :", userData.role);
+        //   return (
+        //     userData.role === "cadre" ||
+        //     userData.role === "responsable exploitation" ||
+        //     userData.role === "directeur" ||
+        //     userData.role === "responsable agence"
+        //   );
+        // });
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
-          const userInfo = snapshot.val();
-          if (userInfo) {
-            console.log(userInfo.prenom, userInfo.nom);
+          const userData = snapshot.val();
+          console.log(userData.prenom, userData.nom);
+          if (userData) {
             document.getElementById(
               "operator"
-            ).value = `${userInfo.prenom} ${userInfo.nom}`;
+            ).value = `${userData.prenom} ${userData.nom}`;
             document.getElementById("operatorId").value = userId;
           }
         });

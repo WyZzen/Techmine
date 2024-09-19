@@ -665,6 +665,7 @@
                     <span id="step7" class="step"></span>
                     <span id="step8" class="step"></span>
                     <span id="step9" class="step"></span>
+                    <span id="step10" class="step"></span>
                   </div>
                 </div>
                 <div class="col-6">
@@ -1133,6 +1134,10 @@
           $("#reportTypeModal").modal("hide");
           reportType = "comprehensive";
           isSimple = false;
+          document.getElementById("step3").style.display = "inline";
+          document.getElementById("step5").style.display = "inline";
+          document.getElementById("step9").style.display = "inline";
+          document.getElementById("step10").style.display = "inline";
           nextPrev(1);
         });
 

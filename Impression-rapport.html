@@ -39,9 +39,18 @@
     <div id="HPanne"></div>
     <div id="CommP"></div>
 
-    <button id="btnShare" class="btn btn-primary m-4">
-      Partager l'attachement en PDF
+    <button id="btnWhatsApp" class="btn btn-primary m-4">
+      Partager le rapport sur whatsapp
     </button>
+    <button class="btn btn-secondary m-4" onclick="goHome()">
+      Retour à l'accueil
+    </button>
+    <script>
+      function goHome() {
+        // Replace 'index.html' with the path to your homepage
+        window.location.href = "accueil.html";
+      }
+    </script>
     <script type="module">
       let UserCreds = JSON.parse(sessionStorage.getItem("UserCreds"));
       let UserInfo = JSON.parse(sessionStorage.getItem("UserInfo"));
@@ -165,11 +174,44 @@
           alert("Le partage de fichiers n'est pas supporté sur ce navigateur.");
         }
       }
+      async function generateWhatsAppMessage() {
+        const attachmentRef = ref(db, "rapport/" + number);
+        const snapshot = await get(attachmentRef);
+        const infos = snapshot.val().infos;
+        const chantier = infos.Carriere;
+        const client = infos.client;
+        const HForreuse = infos.NbHF - infos.NbHD;
+        const NbMF = infos.NbMF;
+        const HArret = infos.NbHA;
+        const CommA = infos.CommA;
+        const HPanne = infos.NbHP;
+        const CommP = infos.CommP;
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, "0");
+        const month = String(today.getMonth() + 1).padStart(2, "0"); // Les mois commencent à 0
+        const year = today.getFullYear();
+        const formattedDate = `${day}/${month}/${year}`;
 
-      // Écouteur pour le bouton de partage
-      document
-        .getElementById("btnShare")
-        .addEventListener("click", generateAndSharePDF);
+        return `${formattedDate}\nChantier: ${chantier}\nMl: ${NbMF}\nHF: ${HForreuse}\nH arrêt: ${HArret}\nCommentaire: ${CommA}\nH Panne: ${HPanne}\nCommentaire: ${CommP}`;
+      }
+      document.getElementById("btnWhatsApp").addEventListener("click", () => {
+        const newWindow = window.open("about:blank", "_blank");
+
+        generateWhatsAppMessage()
+          .then((message) => {
+            const whatsappURL = `https://wa.me/?text=${encodeURIComponent(
+              message
+            )}`;
+            newWindow.location.href = whatsappURL;
+          })
+          .catch((error) => {
+            newWindow.close();
+            console.error(
+              "Erreur lors de la génération du message WhatsApp:",
+              error
+            );
+          });
+      });
     </script>
   </body>
 </html>

@@ -473,6 +473,7 @@
       let user = sessionStorage.getItem("user-uid");
       let currentUserId = null;
       let currentUserRole = null;
+
       function fetchAttachements() {
         const attachementsRef = ref(db, "Attachement");
         const usersRef = ref(db, "users");
@@ -619,53 +620,62 @@
           });
         });
       }
-
-      function exportRapportsToCSV() {
-        const reportsRef = ref(db, "rapport");
+      function exportAttachmentsToCSV() {
+        const attachmentsRef = ref(db, "Attachement");
         const usersRef = ref(db, "users");
 
-        Promise.all([get(reportsRef), get(usersRef)])
+        Promise.all([get(attachmentsRef), get(usersRef)])
           .then((results) => {
-            const reportsSnapshot = results[0];
+            const attachmentsSnapshot = results[0];
             const usersSnapshot = results[1];
 
-            const reports = reportsSnapshot.val();
+            const attachments = attachmentsSnapshot.val();
             const users = usersSnapshot.val();
 
-            if (!reports) {
-              alert("Aucun rapport trouvé.");
+            if (!attachments) {
+              alert("Aucun attachement trouvé.");
               return;
             }
 
             let csvContent =
-              "\uFEFFClient;Carriere;Nombre d'heure de travail;Nombre de mètres forés;Temps de route;Nombre d'heure au début;Nombre d'heure à la fin;Nombre d'heure d'arret;Commentaire sur les arrêts;Nombre d'heure de panne;Commentaire sur les pannes;Chargé du transfert;Durée du transfert;Chargé du gnr;Quantité de gnr;Date;Utilisateur\n";
+              "\uFEFFClient;Chantier;Observation;Forage;HMFDebut;NPlanForage;HMFFin;HeuresPanne;HeuresArret;DiametreForage;QuantiteForage;UniteForage;Minage;NPlanTir;NbSismographes;QuantiteMinage;UniteMinage;Autre;GNR;DatesForage;DatesMinage;Implantation;Transfert;CommP;CommA;QuantiteGNR;PerteOutillageTir;Utilisateur\n";
 
-            Object.keys(reports).forEach((key) => {
-              const report = reports[key].infos;
-              const date = reports[key].date;
-              const userId = reports[key].user;
+            Object.keys(attachments).forEach((key) => {
+              const attachment = attachments[key].infos;
+              const userId = attachments[key].user;
 
               const user = users[userId]
                 ? `${users[userId].prenom} ${users[userId].nom}`
                 : "Utilisateur Inconnu";
 
               const row = [
-                report.client,
-                report.Carriere,
-                report.NbHTravail,
-                report.NbMF,
-                report.TDR,
-                report.NbHD,
-                report.NbHF,
-                report.NbHA,
-                report.CommA,
-                report.NbHP,
-                report.CommP,
-                report.CT,
-                report.DT,
-                report.CG,
-                report.QG,
-                date,
+                attachment.client,
+                attachment.chantier,
+                attachment.observation,
+                attachment.forage,
+                attachment.HMFDebut,
+                attachment.NPlanForage,
+                attachment.HMFFin,
+                attachment.HeuresPanne,
+                attachment.HeuresArret,
+                attachment.DiametreForage,
+                attachment.QuantiteForage,
+                attachment.UniteForage,
+                attachment.minage,
+                attachment.NPlanTir,
+                attachment.NbSismographes,
+                attachment.QuantiteMinage,
+                attachment.UniteMinage,
+                attachment.autre,
+                attachment.GNR,
+                attachment.datesForage,
+                attachment.datesMinage,
+                attachment.implantation,
+                attachment.Transfert,
+                attachment.CommP,
+                attachment.CommA,
+                attachment.QuantiteGNR,
+                attachment.perteOutillageTir,
                 user,
               ].join(";");
 
@@ -678,7 +688,7 @@
               "href",
               "data:text/csv;charset=utf-8," + encodedUri
             );
-            link.setAttribute("download", "rapports.csv");
+            link.setAttribute("download", "attachments.csv");
             document.body.appendChild(link);
 
             link.click();
@@ -686,14 +696,15 @@
           })
           .catch((error) => {
             console.error(
-              "Erreur lors de la récupération des rapports:",
+              "Erreur lors de la récupération des pièces jointes:",
               error
             );
             alert(
-              "Erreur lors de la récupération des rapports. Veuillez consulter la console pour plus de détails."
+              "Erreur lors de la récupération des pièces jointes. Veuillez consulter la console pour plus de détails."
             );
           });
       }
+
       function deleteAttachment(attachmentId) {
         const attachementsRef = ref(db, `Attachement/${attachmentId}`);
 
@@ -788,7 +799,7 @@
 
       document
         .getElementById("exportButton")
-        .addEventListener("click", exportRapportsToCSV);
+        .addEventListener("click", exportAttachmentsToCSV);
 
       document
         .getElementById("filterButton")
