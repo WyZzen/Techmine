@@ -953,9 +953,9 @@
         let CommA = document.getElementById("CommA").value || "";
         let QuantiteGNR = document.getElementById("QuantiteGNR").value || "";
         let perteOutillageTir = document.getElementById("oui_perte").checked
-          ? "true"
+          ? "oui"
           : document.getElementById("non_perte").checked
-          ? "false"
+          ? "non"
           : "";
 
         const lastNumber = await getLastAttachementNumber();
