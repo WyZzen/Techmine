@@ -899,6 +899,7 @@
         }
         const attachements = snapshot.val();
         const numbers = Object.keys(attachements).map((key) => parseInt(key));
+
         return Math.max(...numbers);
       }
 
@@ -1162,7 +1163,8 @@
 
       validateFiles.addEventListener("click", async () => {
         AddData();
-        newNumber = await getLastAttachementNumber(); // Get the new attachement number
+        const lastNumber = await getLastAttachementNumber();
+        newNumber = lastNumber + 1;
         for (let i = 0; i < selectedFiles.length; i++) {
           try {
             const file = selectedFiles[i];

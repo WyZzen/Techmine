@@ -41,6 +41,17 @@
       .daterangepicker .calendar-table td {
         font-size: 20px;
       }
+      .btn-type-rapport {
+        height: 10vh;
+        width: 50vh;
+      }
+      @media screen and (max-width: 1000px) {
+        .btn-type-rapport {
+          height: 10vh;
+          width: 25vh;
+          font-size: 3rem;
+        }
+      }
     </style>
 
     <div class="container-fluid align-items-center custom-height-top">
@@ -227,17 +238,15 @@
                     <div class="text-center">
                       <button
                         type="button"
-                        class="btn btn-primary"
+                        class="btn btn-primary btn-type-rapport"
                         id="simplifiedBtn"
-                        style="height: 10vh; width: 50vh"
                       >
                         Rapport simplifié
                       </button>
                       <button
                         type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-secondary btn-type-rapport"
                         id="comprehensiveBtn"
-                        style="height: 10vh; width: 50vh"
                       >
                         Rapport complet
                       </button>
@@ -330,6 +339,21 @@
                         aria-label="Client"
                         aria-describedby="addon-wrapping"
                         id="NbMF"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Commentaire :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="CommMF"
                       />
                     </div>
                   </div>
@@ -867,6 +891,7 @@
         let QG = document.getElementById("QG") || "";
         let kilV = document.getElementById("kilV") || "";
         let voiture = document.getElementById("voiture") || "";
+        let CommMF = document.getElementById("CommMF") || "";
 
         set(ref(db, "rapport/" + dateNb), {
           infos: {
@@ -884,6 +909,7 @@
             CommA: CommA.value,
             NbHP: NbHP.value,
             CommP: CommP.value,
+            CommMF: CommMF.value,
             CT: CT.value,
             DT: DT.value,
             CG: CG.value,

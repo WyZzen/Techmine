@@ -575,7 +575,14 @@
         try {
           const snapshot = await get(attachmentRef);
           const userRef = ref(db, "users/" + snapshot.val().user);
-          const snapshot2 = await get(userRef);
+          if (snapshot.val().user != null) {
+            const userSnapshot = await get(userRef);
+            document.getElementById("Nom").value =
+              userSnapshot.val().nom + "" + userSnapshot.val().prenom;
+          } else {
+            document.getElementById("Nom").value = "Techmine";
+          }
+
           if (snapshot.exists()) {
             document.getElementById("num").value = "ATTACHEMENT N°" + number;
             document.getElementById("client").value =
@@ -675,8 +682,6 @@
             document.getElementById("transfert&1").value =
               "Transfert: " + snapshot.val().infos.Transfert;
             document.getElementById("Date").value = snapshot.val().date;
-            document.getElementById("Nom").value =
-              snapshot2.val().nom + " " + snapshot2.val().prenom;
 
             const diametres = snapshot.val().infos.DiametreForage;
             const unites = snapshot.val().infos.UniteForage;

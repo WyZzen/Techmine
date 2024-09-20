@@ -1,3 +1,4 @@
 {
-    "trivy.binaryPath": ""
+  "trivy.binaryPath": "",
+  "clockify.apiKey": "MTU1NTY2MDUtMWNiOC00OWFlLWJlZDktODBmZmY2YTc3YjZl"
 }
