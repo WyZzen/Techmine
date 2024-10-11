@@ -236,14 +236,39 @@
                 <td>
                   Perte outillage dans tir :
                   <form>
-                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group" id="perte_outillage_tir"></div>
-                      <input type="radio" class="btn-check" name="radio-perte" id="oui_perte" value="true" autocomplete="off" required/>
-                      <label class="btn btn-outline-primary" for="oui_perte">OUI</label>
-                      <input type="radio" class="btn-check" name="radio-perte" id="non_perte" value="false" autocomplete="off" checked/>
-                      <label class="btn btn-outline-primary" for="non_perte">NON</label>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic radio toggle button group"
+                      id="perte_outillage_tir"
+                    >
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="radio-perte"
+                        id="oui_perte"
+                        value="true"
+                        autocomplete="off"
+                        required
+                      />
+                      <label class="btn btn-outline-primary" for="oui_perte"
+                        >OUI</label
+                      >
+                      <input
+                        type="radio"
+                        class="btn-check"
+                        name="radio-perte"
+                        id="non_perte"
+                        value="false"
+                        autocomplete="off"
+                        checked
+                      />
+                      <label class="btn btn-outline-primary" for="non_perte"
+                        >NON</label
+                      >
                     </div>
                   </form>
-                  
+
                   <input
                     type="text"
                     class="border border-white input-table"
@@ -839,14 +864,16 @@
       const storage = getStorage();
       const auth = getAuth(app);
       let selectedClientId = null;
-      function checkUserAuthentication() {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-          } else {
-            window.location.href = "index.html";
-          }
-        });
-      }
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       let submitBtn = document.getElementById("submit");
 
@@ -858,13 +885,26 @@
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
           const userData = snapshot.val();
-          console.log("Données utilisateur :", userData.role);
+          console.log("Données utilisateur :", userData.nom);
           return (
             userData.role === "cadre" ||
             userData.role === "responsable exploitation" ||
             userData.role === "directeur" ||
             userData.role === "responsable agence"
           );
+        });
+      }
+      function checkUserAuthentication() {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log(user);
+          } else {
+            console.log("pas d'utilisateur");
+            window.location.href = "index.html";
+          }
+          if (sessionStorage.getItem("user-uid") == null) {
+            window.location.href = "index.html";
+          }
         });
       }
       auth.onAuthStateChanged((user) => {
@@ -963,7 +1003,7 @@
         const newNumber = lastNumber + 1;
 
         const date = new Date().toLocaleDateString("fr-FR");
-        const user = sessionStorage.getItem("user-uid");
+        let user = sessionStorage.getItem("user-uid");
 
         set(ref(db, "Attachement/" + newNumber), {
           infos: {
@@ -1181,6 +1221,8 @@
         }
       });
       checkUserAuthentication();
+
+      console.log(sessionStorage.getItem("user-uid"));
     </script>
   </body>
 </html>

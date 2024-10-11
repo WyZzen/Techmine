@@ -126,6 +126,7 @@
         getDatabase,
         ref,
         get,
+        onValue,
       } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
       import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -160,6 +161,16 @@
           );
         });
       }
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       // Gestion de l'état d'authentification
       auth.onAuthStateChanged((user) => {

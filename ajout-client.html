@@ -168,6 +168,7 @@
         set,
         get,
         ref,
+        onValue,
       } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
       import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
@@ -191,6 +192,16 @@
 
       const MainForm = document.getElementById("MainForm");
 
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
       function AddData(event) {
         event.preventDefault();
         const nom = document.getElementById("Nom").value;

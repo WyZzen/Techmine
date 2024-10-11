@@ -473,6 +473,16 @@
       let user = sessionStorage.getItem("user-uid");
       let currentUserId = null;
       let currentUserRole = null;
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       function fetchAttachements() {
         const attachementsRef = ref(db, "Attachement");

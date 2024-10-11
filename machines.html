@@ -342,6 +342,16 @@
       let isMachineSelected = false;
       let selectedMachineKey = null; // Added to keep track of the selected machine key
       let selectedSignalementId = null;
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);

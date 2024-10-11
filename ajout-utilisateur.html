@@ -303,6 +303,7 @@
       set,
       get,
       ref,
+      onValue,
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
     import {
       getAuth,
@@ -338,6 +339,16 @@
     function fetchRole() {
       const roleSelect = document.getElementById("role");
       const rolesRef = ref(db, "role");
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       get(rolesRef)
         .then((snapshot) => {

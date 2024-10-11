@@ -345,6 +345,21 @@
                       <span
                         class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
                         id="addon-wrapping"
+                        >Nombre d'heure Marteau :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="NbHM"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
                         >Commentaire :</span
                       >
                       <input
@@ -820,8 +835,19 @@
 
       const db = getDatabase();
       const auth = getAuth();
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       let user = sessionStorage.getItem("user-uid");
+      console.log(sessionStorage.getItem("user-uid"));
       let dateNb = Date.now();
       let selectedClientId = null;
       let isSimple = null;
@@ -831,6 +857,9 @@
             console.log(user);
           } else {
             console.log("pas d'utilisateur");
+            window.location.href = "index.html";
+          }
+          if (sessionStorage.getItem("user-uid") == null) {
             window.location.href = "index.html";
           }
         });
@@ -881,6 +910,7 @@
         let numF = document.getElementById("numF") || "";
         let NbHD = document.getElementById("NbHD") || "";
         let NbHF = document.getElementById("NbHF") || "";
+        let NbHM = document.getElementById("NbHM") || "";
         let NbHA = document.getElementById("NbHA") || "";
         let CommA = document.getElementById("CommA") || "";
         let NbHP = document.getElementById("NbHP") || "";
@@ -905,6 +935,7 @@
             numF: numF.value,
             NbHD: NbHD.value,
             NbHF: NbHF.value,
+            NbHM: NbHM.value,
             NbHA: NbHA.value,
             CommA: CommA.value,
             NbHP: NbHP.value,

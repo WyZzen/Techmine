@@ -80,12 +80,23 @@
         getDatabase,
         ref,
         get,
+        onValue,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
 
       const db = getDatabase();
       const auth = getAuth();
       const number = getURLParameter("id");
 
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
       function getURLParameter(name) {
         return new URLSearchParams(window.location.search).get(name);
       }
@@ -106,8 +117,19 @@
         const snapshot = await get(attachmentRef);
         const infos = snapshot.val().infos;
 
-        Hforreuse = infos.NbHF - infos.NbHD;
-
+        const NbHF = parseFloat(infos.NbHF.replace(",", "."));
+        const NbHD = parseFloat(infos.NbHD.replace(",", "."));
+        Hforreuse = (NbHF - NbHD).toFixed(1);
+        console.log(
+          "Hforreuse : " +
+            Hforreuse +
+            " infos.NbHF : " +
+            infos.NbHF +
+            " infos.NbHD : " +
+            infos.NbHD
+        );
+        console.log(infos);
+        console.log(infos.CommA);
         divChantier.textContent = "chantier : " + infos.Carriere;
         divClient.textContent = "client : " + infos.client;
         divHForreuse.textContent = "heures forreuse : " + Hforreuse;

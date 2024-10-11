@@ -282,6 +282,16 @@
       let currentSignalementKey = "";
       let selectedMachine = null;
       let filteredSignalements = [];
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
 
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);

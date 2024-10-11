@@ -162,6 +162,7 @@
               <th>Temps de route</th>
               <th>Gd ou Panier</th>
               <th>Foreuse</th>
+              <th>Nombre d'heure Marteau</th>
               <th>Nombre d'heure au début</th>
               <th>Nombre d'heure à la fin</th>
               <th>Nombre d'heure d'arrêt</th>
@@ -442,6 +443,16 @@
 
     let currentUserRole = null;
     let currentUserId = null;
+    const versionRef = ref(db, "appInfo/version");
+
+    onValue(versionRef, (snapshot) => {
+      const latestVersion = snapshot.val();
+      const currentVersion = localStorage.getItem("appVersion");
+      if (currentVersion != latestVersion) {
+        localStorage.setItem("appVersion", latestVersion);
+        window.location.reload();
+      }
+    });
 
     function fetchRapports() {
       const rapportRef = ref(db, "rapport");
@@ -672,6 +683,7 @@
         infos.TDR,
         infos.GdP,
         infos.numF,
+        infos.NbHM,
         infos.NbHD,
         infos.NbHF,
         infos.NbHA,

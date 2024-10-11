@@ -7,10 +7,15 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+      defer
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
 
     <title>&ensp;</title>
   </head>
-  <body>
+  <body id="content">
     <style>
       input {
         border: none;
@@ -35,6 +40,48 @@
           width: 300px;
           height: 150px;
         }
+      }
+      @media print {
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        .border {
+          border: 1px solid black !important;
+        }
+        .signatureCanvas,
+        .signatureTable {
+          width: 100%; /* Ajustez selon vos besoins */
+          height: auto; /* Ajustez selon vos besoins */
+        }
+      }
+      body {
+        font-size: 1em; /* Augmente la taille de la police de tout le document */
+        font-weight: bold;
+        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+      }
+
+      h1 {
+        font-size: 1.5em; /* Taille de police pour le h1 */
+        font-weight: bold;
+        word-spacing: 20px; /* Ajustez la valeur selon vos besoins */
+      }
+
+      h5 {
+        font-size: 1em; /* Taille de police pour le h5 */
+        font-weight: bold;
+        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+      }
+
+      input {
+        font-size: 1em; /* Taille de police pour les inputs */
+        font-weight: bold;
+        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+      }
+      p {
+        font-size: 1em; /* Taille de police pour les paragraphes */
+        font-weight: bold;
+        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
       }
     </style>
     <div class="container-fluid">
@@ -71,7 +118,7 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-4 text-start">
+        <div class="col-3 text-start">
           <img
             src="logo techmine.svg"
             alt=""
@@ -79,13 +126,15 @@
             style="height: 25vh; width: 100%"
           />
         </div>
-        <div class="col-8">
-          <h1 class="text-start">
+        <div class="col-9">
+          <h1 class="text-start d-flex align-items-center">
+            <p class="mt-3" style="width: 500px">ATTACHEMENT</p>
+
             <input
               type="text"
               id="num"
-              class="border-0 text-start m-1 text-dark"
-              disabled
+              class="border-0 text-start ms-5 text-dark"
+              style="font-size: 1.5em; font-weight: bold"
             />
           </h1>
         </div>
@@ -93,7 +142,7 @@
       <div class="row text-center">
         <div class="col-3 border border-dark"><h5>NOM CLIENT</h5></div>
         <div class="col-6 border border-dark">
-          <h5>NOM CARRIERE / CHANTIER</h5>
+          <h5>NOM CARRIERE &ensp;/ CHANTIER</h5>
         </div>
         <div class="col-3 border border-dark"><h5>OBSERVATION</h5></div>
       </div>
@@ -103,7 +152,6 @@
             type="text"
             id="client"
             class="border-0 text-center m-1 text-dark"
-            disabled
           />
         </div>
         <div class="col-6 border border-dark">
@@ -111,7 +159,6 @@
             type="text"
             id="carriere"
             class="border-0 text-center m-1 text-dark"
-            disabled
           />
         </div>
         <div class="col-3 border border-dark">
@@ -119,7 +166,6 @@
             type="text"
             id="obs"
             class="border-0 text-center m-1 text-dark"
-            disabled
           />
         </div>
       </div>
@@ -142,7 +188,6 @@
             type="text"
             id="datesForage"
             class="border-0 text-center text-dark"
-            disabled
           />
         </div>
         <div class="col-3 border border-dark text-start">
@@ -161,20 +206,17 @@
             type="text"
             id="NPlanForage"
             class="border-0 text-start text-dark"
-            disabled
           /><br />
           <input
             type="text"
             id="DiametreForage"
             class="border-0 text-start text-dark"
-            disabled
           />
           <br />
           <input
             type="text"
             id="transfert"
             class="border-0 text-start text-dark"
-            disabled
           />
         </div>
         <div class="col-4 border border-dark text-start">
@@ -182,25 +224,21 @@
             type="text"
             id="HMFDebut"
             class="border-0 text-start mt-2 text-dark"
-            disabled
           />
           <input
             type="text"
             id="HMFFin"
             class="border-0 text-start text-dark"
-            disabled
           />
           <input
             type="text"
             id="HeuresPanne"
             class="border-0 text-start text-dark"
-            disabled
           />
           <input
             type="text"
             id="HeuresArret"
             class="border-0 text-start mb-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark">
@@ -208,7 +246,6 @@
             type="text"
             id="QuantiteForage"
             class="border-0 text-center mt-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark">
@@ -216,7 +253,6 @@
             type="text"
             id="UniteForage"
             class="border-0 text-center mt-2 text-dark"
-            disabled
           />
         </div>
       </div>
@@ -227,7 +263,6 @@
             type="text"
             id="datesForage&1"
             class="border-0 text-center text-dark"
-            disabled
           />
         </div>
         <div class="col-5 border border-dark text-start">
@@ -246,13 +281,11 @@
             type="text"
             id="NPlanForage&1"
             class="border-0 text-start text-dark"
-            disabled
           /><br />
           <input
             type="text"
             id="transfert&1"
             class="border-0 text-start text-dark"
-            disabled
           />
         </div>
         <div class="col-2 border border-dark text-start">
@@ -274,25 +307,21 @@
             type="text"
             id="HMFDebut&1"
             class="border-0 text-start mt-2 text-dark"
-            disabled
           />
           <input
             type="text"
             id="HMFFin&1"
             class="border-0 text-start text-dark"
-            disabled
           />
           <input
             type="text"
             id="HeuresPanne&1"
             class="border-0 text-start text-dark"
-            disabled
           />
           <input
             type="text"
             id="HeuresArret&1"
             class="border-0 text-start mb-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark"></div>
@@ -305,7 +334,6 @@
             type="text"
             id="datesMinage"
             class="border-0 text-center mt-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-7 text-start border border-dark">
@@ -324,19 +352,16 @@
             type="text"
             id="NPlanTir"
             class="border-0 text-start text-dark"
-            disabled
           />
           <input
             type="text"
             id="implantation"
             class="border-0 text-start text-dark"
-            disabled
           />
           <input
             type="text"
             id="NbSismographes"
             class="border-0 text-start mb-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark">
@@ -344,7 +369,6 @@
             type="text"
             id="QuantiteMinage"
             class="border-0 text-start my-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark">
@@ -352,7 +376,6 @@
             type="text"
             id="UniteMinage"
             class="border-0 text-start my-2 text-dark"
-            disabled
           />
         </div>
       </div>
@@ -363,7 +386,6 @@
             type="text"
             id="autre"
             class="border-0 text-start my-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark"></div>
@@ -376,7 +398,6 @@
             type="text"
             id="Gnr"
             class="border-0 text-start my-2 text-dark"
-            disabled
           />
         </div>
         <div class="col-1 border border-dark"></div>
@@ -388,8 +409,8 @@
       <div class="row">
         <div class="col-12 text-center border border-dark">
           <h5>
-            ATTESTATION DE L'EXACTITUDE DES INSCRIPTIONS PORTEES SUR LE PRESENT
-            ATTACHEMENT
+            ATTESTATION DE L'EXACTITUDE &emsp13; DES INSCRIPTIONS PORTEES SUR LE
+            PRESENT ATTACHEMENT
           </h5>
         </div>
       </div>
@@ -401,7 +422,6 @@
             type="text"
             id="Date"
             class="border-0 text-start my-2 text-dark text-center"
-            disabled
           />
         </div>
         <div class="col-3 border border-dark">POUR LE CLIENT</div>
@@ -421,7 +441,6 @@
             type="text"
             id="Nom"
             class="border-0 text-start my-2 text-dark text-center"
-            disabled
           />
         </div>
         <div class="col-3 border border-dark">
@@ -442,36 +461,14 @@
         </div>
       </div>
     </div>
-    <button onclick="BtnPrint()" id="btnPrint" class="btn btn-primary mt-2">
-      Imprimer l'attachement
-    </button>
-    <button type="button" id="shareBtn" class="btn btn-secondary BtnStep">
+    <button id="captureBtn" class="btn btn-primary mt-3">Creer un PDF</button>
+    <button id="shareBtn" class="btn btn-primary mt-3" style="display: none">
       Partager
     </button>
-    <script>
-      document
-        .getElementById("shareBtn")
-        .addEventListener("click", function () {
-          if (navigator.share) {
-            navigator
-              .share({
-                title: "Titre de la page",
-                text: "Découvrez ce contenu intéressant !",
-                url: window.location.href, // URL de la page
-              })
-              .then(() => console.log("Contenu partagé avec succès !"))
-              .catch((error) =>
-                console.error("Erreur lors du partage :", error)
-              );
-          } else {
-            alert(
-              "L'API de partage Web n'est pas disponible sur votre navigateur."
-            );
-          }
-        });
-    </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js"></script>
+
     <script>
       function BtnPrint() {
         document.getElementById("btnPrint").style.display = "none";
@@ -533,9 +530,7 @@
     </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -547,6 +542,16 @@
       } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
       import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
       import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+      import {
+        getStorage,
+        ref as storageRef,
+        uploadBytes,
+        listAll,
+        getDownloadURL,
+        deleteObject,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+      import { PDFDocument } from "https://unpkg.com/pdf-lib/dist/pdf-lib.esm.js";
+      // import de JsPDF
 
       const firebaseConfig = {
         apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
@@ -564,9 +569,38 @@
       const analytics = getAnalytics(app);
       const db = getDatabase(app);
       const auth = getAuth(app);
+      const storage = getStorage(app);
+      const whatsappURL = "";
 
+      const versionRef = ref(db, "appInfo/version");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
       function getURLParameter(name) {
         return new URLSearchParams(window.location.search).get(name);
+      }
+      // fonction qui va verifier si un pdf a été créé
+      function checkPDF() {
+        const number = getURLParameter("number");
+        const pdfRef = storageRef(
+          storage,
+          "attachments/" + number + "/attachement" + number + ".pdf"
+        );
+        getDownloadURL(pdfRef)
+          .then((url) => {
+            console.log("PDF found");
+            document.getElementById("shareBtn").style.display = "inline";
+            document.getElementById("captureBtn").style.display = "none";
+          })
+          .catch((error) => {
+            console.log("PDF not found");
+          });
       }
       const number = getURLParameter("number");
       async function getAttachement() {
@@ -584,7 +618,7 @@
           }
 
           if (snapshot.exists()) {
-            document.getElementById("num").value = "ATTACHEMENT N°" + number;
+            document.getElementById("num").value = "N°" + number;
             document.getElementById("client").value =
               snapshot.val().infos.client;
             document.getElementById("carriere").value =
@@ -702,9 +736,8 @@
               inputElement.type = "text";
               inputElement.id = "DiametreForage&" + (index + 1);
               inputElement.className = "border-0 text-start text-dark";
-              inputElement.disabled = true;
               inputElement.value =
-                "Diamètre de forage " + (index + 1) + ": " + diametre + " mm";
+                "Diamètre " + (index + 1) + ": " + diametre + " mm";
               diametreContainer.appendChild(inputElement);
             });
 
@@ -714,7 +747,6 @@
               inputElement.type = "text";
               inputElement.id = "UniteMinage&" + (index + 1);
               inputElement.className = "border-0 text-start text-dark";
-              inputElement.disabled = true;
               inputElement.value = unite;
               uniteContainer.appendChild(inputElement);
             });
@@ -725,7 +757,6 @@
               inputElement.type = "text";
               inputElement.id = "QuantiteMinage&" + (index + 1);
               inputElement.className = "border-0 text-start text-dark";
-              inputElement.disabled = true;
               inputElement.value = qte;
               quantiteContainer.appendChild(inputElement);
             });
@@ -807,6 +838,100 @@
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
+      async function createCombinedPdfFromStorageFolder(folderPath) {
+        try {
+          const folderRef = storageRef(storage, folderPath);
+          const res = await listAll(folderRef);
+          const pdfDoc = await PDFDocument.create();
+          const existingFileName = `AttachementN°${number}.pdf`;
+          let fileExists = false;
+          let fileRefToDelete;
+
+          for (let itemRef of res.items) {
+            const fileName = itemRef.name;
+            if (fileName === existingFileName) {
+              alert("Le fichier PDF combiné existe déjà.");
+              const downloadURL = await getDownloadURL(itemRef);
+              const whatsappURL = `https://wa.me/?text=${encodeURIComponent(
+                downloadURL
+              )}`;
+              window.open(whatsappURL, "_blank");
+              console.log("downloadURL: ", downloadURL);
+              return;
+            }
+          }
+          for (let itemRef of res.items) {
+            const fileUrl = await getDownloadURL(itemRef);
+            const fileName = itemRef.name;
+            const fileExtension = fileName.split(".").pop().toLowerCase();
+
+            if (fileExtension === "pdf") {
+              const existingPdfBytes = await fetch(fileUrl).then((res) =>
+                res.arrayBuffer()
+              );
+              const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
+
+              // Copie chaque page du PDF existant dans le nouveau PDF
+              const pages = await pdfDoc.copyPages(
+                existingPdfDoc,
+                existingPdfDoc.getPageIndices()
+              );
+              pages.forEach((page) => pdfDoc.addPage(page));
+            } else if (["jpg", "jpeg", "png"].includes(fileExtension)) {
+              const imageBytes = await fetch(fileUrl).then((res) =>
+                res.arrayBuffer()
+              );
+              let image;
+              if (fileExtension === "png") {
+                image = await pdfDoc.embedPng(imageBytes);
+              } else if (["jpg", "jpeg"].includes(fileExtension)) {
+                image = await pdfDoc.embedJpg(imageBytes);
+              }
+
+              // Taille A4 en points (595.28 x 841.89)
+              const page = pdfDoc.addPage([595.28, 841.89]);
+
+              // Ajustement de l'image à la taille A4 en conservant son ratio
+              const scale = Math.min(
+                595.28 / image.width,
+                841.89 / image.height
+              );
+              const imageWidth = image.width * scale;
+              const imageHeight = image.height * scale;
+
+              // Centrer l'image sur la page
+              page.drawImage(image, {
+                x: (595.28 - imageWidth) / 2, // Centrer horizontalement
+                y: (841.89 - imageHeight) / 2, // Centrer verticalement
+                width: imageWidth,
+                height: imageHeight,
+              });
+            }
+          }
+
+          const pdfBytes = await pdfDoc.save();
+
+          const blob = new Blob([pdfBytes], { type: "application/pdf" });
+          const pdfFile = new File([blob], existingFileName, {
+            type: "application/pdf",
+          });
+
+          const storagePath = `${folderPath}/${existingFileName}`;
+          const storageRefPath = storageRef(storage, storagePath);
+
+          await uploadBytes(storageRefPath, pdfFile);
+
+          // on va recuperer le lien de telechargement du fichier
+          const downloadURL = await getDownloadURL(storageRefPath);
+          console.log("downloadURL: ", downloadURL);
+
+          console.log("Fichier PDF combiné et téléchargé avec succès!");
+          alert("Fichier PDF combiné et téléchargé avec succès!");
+        } catch (error) {
+          console.error("Erreur lors de la création du PDF combiné:", error);
+          alert("Erreur lors de la création du PDF combiné.");
+        }
+      }
 
       let activeCanvas;
 
@@ -840,7 +965,103 @@
           );
           $("#signatureModal").modal("hide");
         });
+      document
+        .getElementById("captureBtn")
+        .addEventListener("click", function () {
+          const buttons = document.querySelectorAll("button");
+          buttons.forEach((button) => {
+            button.style.display = "none"; // Masquer les boutons
+          });
+
+          // Récupérer le body
+          const body = document.body;
+
+          // Sauvegarder les styles originaux
+          const originalStyles = body.style.cssText;
+
+          // Définir des styles temporaires pour A4
+          body.style.overflow = "hidden"; // Éviter le débordement
+          body.style.width = "297mm"; // Largeur A4 en mm (paysage)
+          body.style.height = "210mm"; // Hauteur A4 en mm (paysage)
+
+          // Capture de l'image
+          domtoimage
+            .toPng(body, { width: 297 * 4, height: 210 * 4 }) // Dimensions en pixels (210mm * 10 pour 72 DPI)
+            .then(function (dataUrl) {
+              // Rétablir les styles originaux
+              body.style.cssText = originalStyles;
+
+              const { jsPDF } = window.jspdf;
+              if (window.jspdf && window.jspdf.jsPDF) {
+                console.log("jsPDF est bien importé et disponible !");
+              } else {
+                console.error("Erreur : jsPDF n'est pas importé !");
+              }
+
+              var pdf = new jsPDF("landscape", "mm", "a4"); // Changer "portrait" en "landscape"
+
+              // Calculer le positionnement centré
+              var imgWidth = 297; // Largeur de l'image
+              var imgHeight = 210; // Hauteur de l'image
+              var xPos = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; // Position x centrée
+              var yPos = 0; // Position y
+
+              // Ajout de l'image au PDF
+              pdf.addImage(dataUrl, "PNG", xPos, yPos, imgWidth, imgHeight); // Largeur et hauteur A4 en mode paysage
+
+              // Vérifiez si le contenu déborde
+              let heightLeft = imgHeight - pdf.internal.pageSize.getHeight(); // Hauteur restante après la première page
+
+              // Ajouter des pages si nécessaire
+              while (heightLeft >= 0) {
+                pdf.addPage();
+                pdf.addImage(
+                  dataUrl,
+                  "PNG",
+                  xPos,
+                  -heightLeft,
+                  imgWidth,
+                  imgHeight
+                ); // Positionner l'image pour la page suivante
+                heightLeft -= pdf.internal.pageSize.getHeight();
+              }
+
+              var pdfBlob = pdf.output("blob");
+
+              const pdfStorageRef = storageRef(
+                storage,
+                "attachments/" + number + "/attachement" + number + ".pdf"
+              );
+
+              uploadBytes(pdfStorageRef, pdfBlob)
+                .then((snapshot) => {
+                  alert("Le fichier a été téléchargé avec succès !");
+                })
+                .catch((error) => {
+                  alert("Erreur lors du téléchargement du fichier :", error);
+                });
+
+              buttons.forEach((button) => {
+                button.style.display = "inline"; // Réafficher les boutons
+              });
+            })
+            .catch(function (error) {
+              console.error("Erreur lors de la capture de l'image :", error);
+              buttons.forEach((button) => {
+                button.style.display = "inline"; // Réafficher les boutons en cas d'erreur
+              });
+            });
+
+          checkPDF();
+        });
+
+      document
+        .getElementById("shareBtn")
+        .addEventListener("click", function () {
+          createCombinedPdfFromStorageFolder("attachments/" + number);
+        });
       getAttachement();
+      checkPDF();
     </script>
   </body>
 </html>
