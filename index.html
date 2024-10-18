@@ -36,7 +36,6 @@
           <div
             class="container-fluid bg-white p-3 rounded-4 form-contain align-items-center align-self-center text-center custom-size-auth"
           >
-            <!-- Container for messages -->
             <div id="alert-container"></div>
             <form id="MainForm" class="m-4">
               <h2 class="mb-3">Se connecter</h2>
@@ -108,8 +107,12 @@
       const auth = getAuth(app);
       const dbref = ref(db);
 
-      const versionRef = ref(db, "appInfo/version");
+      let email = document.getElementById("emailInp");
+      let password = document.getElementById("passwordInp");
+      let MainForm = document.getElementById("MainForm");
 
+      // verifier la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -118,10 +121,8 @@
           window.location.reload();
         }
       });
-      let email = document.getElementById("emailInp");
-      let password = document.getElementById("passwordInp");
-      let MainForm = document.getElementById("MainForm");
 
+      // fonction pour se connecter
       let SignInUser = (evt) => {
         evt.preventDefault();
         signInWithEmailAndPassword(auth, email.value, password.value)
@@ -157,6 +158,7 @@
           });
       };
 
+      // fonction pour afficher les messages d'erreur
       function showMessage(message, type) {
         const messageContainer = document.getElementById("alert-container");
         messageContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">

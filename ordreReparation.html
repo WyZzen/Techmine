@@ -1,3 +1,4 @@
+<!--cette page n'est que au début de sa création et ne contient pas toute les fonctionnalités attendues, la mise en page et l'accessibilité est également en cous-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -183,8 +184,13 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase();
       const auth = getAuth();
-      const versionRef = ref(db, "appInfo/version");
 
+      const urlParams = new URLSearchParams(window.location.search);
+      const selectedMachineId = urlParams.get("machineId");
+      let newNumber = 0;
+
+      // vérification de la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -194,11 +200,7 @@
         }
       });
 
-      const urlParams = new URLSearchParams(window.location.search);
-      const selectedMachineId = urlParams.get("machineId");
-
-      let newNumber = 0;
-
+      //récupération des données de la machine et affichage des données
       const machineRef = ref(db, `machine/${selectedMachineId}`);
       get(machineRef).then((snapshot) => {
         const machineData = snapshot.val();
@@ -307,11 +309,13 @@
         }
       });
 
+      // Fonction pour imprimer la page
       document
         .getElementById("printButton")
         .addEventListener("click", function () {
           window.print();
         });
+      // Fonction pour ajouter une ligne au tableau
       document
         .getElementById("addRowButton")
         .addEventListener("click", function () {
@@ -334,6 +338,7 @@
           signalementTableBody.appendChild(newRow);
         });
 
+      // Fonction pour valider les données du tableau
       document
         .getElementById("validateButton")
         .addEventListener("click", function () {
@@ -438,6 +443,7 @@
           const currentDate = new Date().toISOString().split("T")[0];
           const pageUrl = window.location.href;
           const machineRef = ref(db, `machine/${selectedMachineId}`);
+          // Récupération du numéro de la machine
           get(machineRef).then((snapshot) => {
             const machineData = snapshot.val();
             if (machineData) {

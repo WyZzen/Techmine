@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -210,7 +210,6 @@
                       </option>
                     </select>
                   </div>
-                  <!-- Popup Modal -->
                   <div
                     class="modal fade"
                     id="userListModal"
@@ -250,9 +249,7 @@
                                 <th>Rôle</th>
                               </tr>
                             </thead>
-                            <tbody id="userListTableBody">
-                              <!-- Les utilisateurs seront ajoutés ici sous forme de lignes -->
-                            </tbody>
+                            <tbody id="userListTableBody"></tbody>
                           </table>
                         </div>
                         <div class="modal-footer">
@@ -328,6 +325,17 @@
     const db = getDatabase();
     const auth = getAuth(app);
 
+    // Vérification de la version de l'application
+    const versionRef = ref(db, "appInfo/version");
+    onValue(versionRef, (snapshot) => {
+      const latestVersion = snapshot.val();
+      const currentVersion = localStorage.getItem("appVersion");
+      if (currentVersion != latestVersion) {
+        localStorage.setItem("appVersion", latestVersion);
+        window.location.reload();
+      }
+    });
+
     let email = document.getElementById("Email");
     let password = document.getElementById("MDP");
     let nom = document.getElementById("Nom");
@@ -336,36 +344,26 @@
     let MainForm = document.getElementById("MainForm");
     let popupButton = document.getElementById("popup");
 
+    // Récupérer les roles depuis la base de données
     function fetchRole() {
       const roleSelect = document.getElementById("role");
       const rolesRef = ref(db, "role");
-      const versionRef = ref(db, "appInfo/version");
-
-      onValue(versionRef, (snapshot) => {
-        const latestVersion = snapshot.val();
-        const currentVersion = localStorage.getItem("appVersion");
-        if (currentVersion != latestVersion) {
-          localStorage.setItem("appVersion", latestVersion);
-          window.location.reload();
-        }
-      });
 
       get(rolesRef)
         .then((snapshot) => {
           if (snapshot.exists()) {
             const roles = snapshot.val();
 
-            // Effacer les options existantes
             roleSelect.innerHTML = "";
 
-            // Ajouter l'option par défaut désactivée
+            // Ajout des options par défaut
             const defaultOption = document.createElement("option");
             defaultOption.setAttribute("selected", "selected");
             defaultOption.setAttribute("disabled", "disabled");
             defaultOption.textContent = "Sélectionner un role";
             roleSelect.appendChild(defaultOption);
 
-            // Ajouter les options pour chaque client
+            // Ajout des options pour chaque client
             Object.keys(roles).forEach((roleId) => {
               const option = document.createElement("option");
               option.value = roles[roleId].nom;
@@ -381,8 +379,8 @@
           console.error("Erreur lors de la récupération des roles :", error);
         });
     }
-    window.onload = fetchRole;
 
+    // Ajouter un utilisateur
     let RegisterUser = (evt) => {
       evt.preventDefault();
       createUserWithEmailAndPassword(auth, email.value, password.value)
@@ -411,6 +409,7 @@
         });
     };
 
+    // Vérification du rôle de l'utilisateur
     function checkUserRole(userId) {
       const userRef = ref(db, `users/${userId}`);
       return get(userRef).then((snapshot) => {
@@ -425,6 +424,7 @@
       });
     }
 
+    // Gestion de l'état d'authentification
     auth.onAuthStateChanged((user) => {
       if (user) {
         checkUserRole(user.uid)
@@ -450,6 +450,8 @@
         });
       }
     });
+
+    // Afficher un message d'alerte
     function showMessage(message, type) {
       const messageContainer = document.getElementById("alert-container");
       messageContainer.style.display = "block";
@@ -470,6 +472,7 @@
       }, 5000);
     }
 
+    // Ouvrir la popup de la liste des utilisateurs
     function openPopup() {
       const userListTableBody = document.getElementById("userListTableBody");
       const usersRef = ref(db, "users");
@@ -508,6 +511,7 @@
         });
     }
 
+    // Trier la table des utilisateurs
     function sortTable(criteria) {
       const table = document.querySelector("table tbody");
       const rows = Array.from(table.querySelectorAll("tr"));
@@ -526,5 +530,6 @@
 
     MainForm.addEventListener("submit", RegisterUser);
     popupButton.addEventListener("click", openPopup);
+    window.onload = fetchRole;
   </script>
 </html>

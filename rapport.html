@@ -52,6 +52,12 @@
           font-size: 3rem;
         }
       }
+      .is-invalid {
+        border: 20px solid red;
+      }
+      .is-valid {
+        border: 20px solid green;
+      }
     </style>
 
     <div class="container-fluid align-items-center custom-height-top">
@@ -262,7 +268,7 @@
                       >
                       <input
                         type="text"
-                        class="form-control custom-height-input border border-primary-subtle custom-font-input"
+                        class="form-control custom-height-input border border-primary-subtle custom-font-input is-invalid"
                         placeholder=""
                         aria-label="Client"
                         aria-describedby="addon-wrapping"
@@ -282,7 +288,7 @@
                       >
                       <input
                         type="text"
-                        class="form-control custom-height-input border border-primary-subtle custom-margin-input"
+                        class="form-control custom-height-input border border-primary-subtle custom-margin-input is-invalid"
                         placeholder=""
                         aria-label="Carriere"
                         aria-describedby="addon-wrapping"
@@ -759,7 +765,6 @@
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
       $(document).ready(function () {
@@ -835,8 +840,17 @@
 
       const db = getDatabase();
       const auth = getAuth();
-      const versionRef = ref(db, "appInfo/version");
 
+      let user = sessionStorage.getItem("user-uid");
+      let dateNb = Date.now();
+      let selectedClientId = null;
+      let isSimple = null;
+      let clientsData = {};
+      let carrieresData = {};
+      let machinesData = {};
+
+      //vérfication de la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -846,11 +860,7 @@
         }
       });
 
-      let user = sessionStorage.getItem("user-uid");
-      console.log(sessionStorage.getItem("user-uid"));
-      let dateNb = Date.now();
-      let selectedClientId = null;
-      let isSimple = null;
+      // vérification de l'authentification de l'utilisateur
       function checkUserAuthentication() {
         onAuthStateChanged(auth, (user) => {
           if (user) {
@@ -865,6 +875,7 @@
         });
       }
 
+      // récupération des clients
       function fetchClients() {
         const clientDataList = document.getElementById("clients");
         const clientsRef = ref(db, "clients");
@@ -894,6 +905,7 @@
         );
       }
 
+      // enregistrement des données du rapport
       function AddData() {
         let client = document.getElementById("client") || "";
         let Carriere = document.getElementById("Carriere") || "";
@@ -966,6 +978,7 @@
           });
       }
 
+      // affichage des messages
       function showMessage(message, type) {
         const messageContainer = document.getElementById("alert-container");
         messageContainer.style.display = "block";
@@ -986,6 +999,7 @@
         }, 5000);
       }
 
+      // vérification de l'authentification de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
@@ -1026,10 +1040,8 @@
           });
         }
       });
-      let clientsData = {};
-      let carrieresData = {};
-      let machinesData = {};
 
+      // récupération des données des clients et des carrières
       function fetchClientsAndCarrieres() {
         const clientsRef = ref(db, "clients");
         const carrieresRef = ref(db, "chantiers");
@@ -1050,6 +1062,7 @@
         });
       }
 
+      //affichage des données des clients
       function populateClientsDataList() {
         const clientDataList = document.getElementById("clients");
         clientDataList.innerHTML = "";
@@ -1066,6 +1079,8 @@
           clientDataList.appendChild(option);
         }
       }
+
+      //affichage des données des machines
       function populateMachineDataList() {
         const machineDataList = document.getElementById("machines");
         const voitureDataList = document.getElementById("voitures");
@@ -1097,6 +1112,7 @@
         }
       }
 
+      //affichage des données des carrières
       function populateCarrieresDataList() {
         const carriereDataList = document.getElementById("carrieres");
         carriereDataList.innerHTML = "";
@@ -1114,6 +1130,7 @@
         }
       }
 
+      // fonction qui récupere le client selectionné et filtre les carrières par client
       document.getElementById("client").addEventListener("input", () => {
         const selectedClientName = document.getElementById("client").value;
         const selectedClient = Object.values(clientsData).find(
@@ -1136,6 +1153,7 @@
         }
       });
 
+      // fonction qui filtre les carrières par client
       function filterCarrieresByClient(clientId) {
         const carriereDataList = document.getElementById("carrieres");
         carriereDataList.innerHTML = "";
@@ -1155,7 +1173,68 @@
           carriereDataList.appendChild(option);
         }
       }
+      // fonction qui verifie si le nom de la carriere existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkCarriereName() {
+        const selectedCarriereName = document.getElementById("Carriere").value;
+        const selectedCarriere = Object.values(carrieresData).find(
+          (carriere) => carriere.name === selectedCarriereName
+        );
 
+        if (selectedCarriere) {
+          document.getElementById("Carriere").classList.remove("is-invalid");
+          document.getElementById("Carriere").classList.add("is-valid");
+        } else {
+          document.getElementById("Carriere").classList.remove("is-valid");
+          document.getElementById("Carriere").classList.add("is-invalid");
+        }
+      }
+      // fonction qui verifie si le nom de la machine existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkMachineName() {
+        const selectedMachineName = document.getElementById("numF").value;
+        const selectedMachine = Object.values(machinesData).find(
+          (machine) => machine.name === selectedMachineName
+        );
+
+        if (selectedMachine) {
+          document.getElementById("numF").classList.remove("is-invalid");
+          document.getElementById("numF").classList.add("is-valid");
+        } else {
+          document.getElementById("numF").classList.remove("is-valid");
+          document.getElementById("numF").classList.add("is-invalid");
+        }
+      }
+      // fonction qui verifie si le nom de la voiture existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkVoitureName() {
+        const selectedVoitureName = document.getElementById("voiture").value;
+        const selectedVoiture = Object.values(machinesData).find(
+          (machine) => machine.name === selectedVoitureName
+        );
+
+        if (selectedVoiture) {
+          document.getElementById("voiture").classList.remove("is-invalid");
+          document.getElementById("voiture").classList.add("is-valid");
+        } else {
+          document.getElementById("voiture").classList.remove("is-valid");
+          document.getElementById("voiture").classList.add("is-invalid");
+        }
+      }
+      // fonction qui verifie si le nom du client existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkClientName() {
+        const selectedClientName = document.getElementById("client").value;
+        const selectedClient = Object.values(clientsData).find(
+          (client) => client.name === selectedClientName
+        );
+
+        if (selectedClient) {
+          document.getElementById("client").classList.remove("is-invalid");
+          document.getElementById("client").classList.add("is-valid");
+        } else {
+          document.getElementById("client").classList.remove("is-valid");
+          document.getElementById("client").classList.add("is-invalid");
+        }
+      }
+
+      // fonction qui récupere le nom de la carriere selectionnée et affiche le nom du client
       document.getElementById("Carriere").addEventListener("input", () => {
         const selectedCarriereName = document.getElementById("Carriere").value;
         const selectedCarriere = Object.values(carrieresData).find(
@@ -1163,15 +1242,13 @@
         );
 
         if (selectedCarriere) {
+          checkCarriereName();
           const clientName = clientsData[selectedCarriere.clientId].name;
           document.getElementById("client").value = clientName;
         }
       });
-      window.onload = function () {
-        fetchClients();
-        fetchClientsAndCarrieres();
-      };
 
+      // fonction qui initialise une version simplifiée du rapport avec moins d'étapes
       document
         .getElementById("simplifiedBtn")
         .addEventListener("click", function () {
@@ -1185,6 +1262,7 @@
           nextPrev(1);
         });
 
+      // fonction qui initialise une version complète du rapport avec toutes les étapes
       document
         .getElementById("comprehensiveBtn")
         .addEventListener("click", function () {
@@ -1199,7 +1277,13 @@
         });
 
       submitBtn.addEventListener("click", AddData);
-      checkUserAuthentication();
+      window.onload = function () {
+        fetchClients();
+        fetchClientsAndCarrieres();
+        checkUserAuthentication();
+      };
     </script>
+
+    <script src="script.js"></script>
   </body>
 </html>

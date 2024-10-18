@@ -1,5 +1,6 @@
 let stepValid = [false, false, false, false, false, false];
 
+// affiche l'étape asouhaitée
 function showTab(n) {
   let tabs = document.getElementsByClassName("tab");
   for (let i = 0; i < tabs.length; i++) {
@@ -8,11 +9,13 @@ function showTab(n) {
   tabs[n].style.display = "block";
 }
 
+// change la couleur du bouton de l'étape
 function changeColorBtn(n) {
   let elements = document.getElementsByClassName("BtnStep")[n];
   elements.classList.add("tab-finish");
 }
 
+// valide l'étape
 function validStep(stepIndex) {
   let steps = document.querySelectorAll(".tab");
   let step = steps[stepIndex];
@@ -33,57 +36,18 @@ function validStep(stepIndex) {
   }
 }
 
-function validateStep(step) {
-  let inputs = step.querySelectorAll("input, select");
-  let isValid = true;
-
-  inputs.forEach((input) => {
-    console.log(input.type === "checkbox", input.checked);
-    if (
-      input.value === "" ||
-      (input.type === "checkbox" && input.checked === false)
-    ) {
-      isValid = false;
-    }
-  });
-
-  return isValid;
-}
-
+// vérifie si les étapes requises sont valides
 function allStepsValid() {
   if (stepValid[0] && stepValid[1] && stepValid[4] && stepValid[5]) {
-    console.log(
-      "chantier forage et gnr",
-      stepValid[0],
-      stepValid[1],
-      stepValid[4],
-      stepValid[5]
-    );
     return true;
   } else if (stepValid[0] && stepValid[5] && (stepValid[2] || stepValid[3])) {
-    console.log(
-      "chantier, minage/autre et gnr",
-      stepValid[0],
-      stepValid[2],
-      stepValid[3],
-      stepValid[4],
-      stepValid[5]
-    );
     return true;
   } else {
-    console.log(
-      "pas assez",
-      stepValid[0],
-      stepValid[1],
-      stepValid[2],
-      stepValid[3],
-      stepValid[4],
-      stepValid[5]
-    );
     return false;
   }
 }
 
+// affiche un message
 function showMessage(message, type, newNumber) {
   const messageContainer = document.getElementById("alert-container");
   messageContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -107,6 +71,8 @@ function showMessageError(message, type, newNumber) {
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                           </div>`;
 }
+
+// ajoute une nouvelle ligne pour les diamètres/... de forage
 function addRow() {
   // Récupère le tableau
   const tableBody = document.getElementById("tableBody");
@@ -131,6 +97,7 @@ function addRow() {
   tableBody.appendChild(newRow);
 }
 
+// récupère les valeurs de chaque ligne des diamètres/... de forage
 function getElementsValuesFromNodeList(NodeList) {
   let valeurs = [];
 

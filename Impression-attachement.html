@@ -12,10 +12,8 @@
       defer
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 
-    <title>&ensp;</title>
-  </head>
-  <body id="content">
     <style>
       input {
         border: none;
@@ -51,40 +49,44 @@
         }
         .signatureCanvas,
         .signatureTable {
-          width: 100%; /* Ajustez selon vos besoins */
-          height: auto; /* Ajustez selon vos besoins */
+          width: 100%;
+          height: auto;
         }
       }
       body {
-        font-size: 1em; /* Augmente la taille de la police de tout le document */
+        font-size: 1em;
         font-weight: bold;
-        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+        word-spacing: 10px;
       }
 
       h1 {
-        font-size: 1.5em; /* Taille de police pour le h1 */
+        font-size: 1.5em;
         font-weight: bold;
-        word-spacing: 20px; /* Ajustez la valeur selon vos besoins */
+        word-spacing: 20px;
       }
 
       h5 {
-        font-size: 1em; /* Taille de police pour le h5 */
+        font-size: 1em;
         font-weight: bold;
-        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+        word-spacing: 10px;
       }
 
       input {
-        font-size: 1em; /* Taille de police pour les inputs */
+        font-size: 1em;
         font-weight: bold;
-        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+        word-spacing: 10px;
       }
       p {
-        font-size: 1em; /* Taille de police pour les paragraphes */
+        font-size: 1em;
         font-weight: bold;
-        word-spacing: 10px; /* Ajustez la valeur selon vos besoins */
+        word-spacing: 10px;
       }
     </style>
+    <title>&ensp;</title>
+  </head>
+  <body id="content">
     <div class="container-fluid">
+      <!-- Modal de signature -->
       <div class="modal" tabindex="-1" role="dialog" id="signatureModal">
         <div class="modal-dialog" role="document">
           <div class="modal-content modal-custom">
@@ -117,6 +119,7 @@
           </div>
         </div>
       </div>
+      <!-- structure de l'attachement correspondant à la fiche de forage existante -->
       <div class="row">
         <div class="col-3 text-start">
           <img
@@ -571,9 +574,10 @@
       const auth = getAuth(app);
       const storage = getStorage(app);
       const whatsappURL = "";
+      const number = getURLParameter("number");
 
+      // Vérification de la version de l'application
       const versionRef = ref(db, "appInfo/version");
-
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -582,9 +586,12 @@
           window.location.reload();
         }
       });
+
+      // fonction qui va récupérer les paramètres de l'url
       function getURLParameter(name) {
         return new URLSearchParams(window.location.search).get(name);
       }
+
       // fonction qui va verifier si un pdf a été créé
       function checkPDF() {
         const number = getURLParameter("number");
@@ -602,7 +609,8 @@
             console.log("PDF not found");
           });
       }
-      const number = getURLParameter("number");
+
+      // fonction qui récupère les informations de l'attachement
       async function getAttachement() {
         const attachmentRef = ref(db, "Attachement/" + number);
 
@@ -834,19 +842,22 @@
           console.error("Error fetching data: ", error);
         }
       }
+
+      // Fonction pour effacer le contenu du canvas
       function clearCanvas(canvas) {
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
+
+      // Fonction qui creer un PDF a partir de ce qu'il y a dans le storage
       async function createCombinedPdfFromStorageFolder(folderPath) {
         try {
           const folderRef = storageRef(storage, folderPath);
           const res = await listAll(folderRef);
           const pdfDoc = await PDFDocument.create();
           const existingFileName = `AttachementN°${number}.pdf`;
-          let fileExists = false;
-          let fileRefToDelete;
 
+          // Vérifier si le fichier combiné existe déjà
           for (let itemRef of res.items) {
             const fileName = itemRef.name;
             if (fileName === existingFileName) {
@@ -860,57 +871,84 @@
               return;
             }
           }
+
+          // Traiter chaque fichier du dossier
           for (let itemRef of res.items) {
             const fileUrl = await getDownloadURL(itemRef);
             const fileName = itemRef.name;
             const fileExtension = fileName.split(".").pop().toLowerCase();
 
             if (fileExtension === "pdf") {
+              // Charger chaque PDF et copier ses pages
               const existingPdfBytes = await fetch(fileUrl).then((res) =>
                 res.arrayBuffer()
               );
               const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
-
-              // Copie chaque page du PDF existant dans le nouveau PDF
               const pages = await pdfDoc.copyPages(
                 existingPdfDoc,
                 existingPdfDoc.getPageIndices()
               );
+              // Nouvelle page pour chaque page du PDF
               pages.forEach((page) => pdfDoc.addPage(page));
-            } else if (["jpg", "jpeg", "png"].includes(fileExtension)) {
-              const imageBytes = await fetch(fileUrl).then((res) =>
+            } else if (["jpg", "jpeg", "png", "heic"].includes(fileExtension)) {
+              // Traiter les images
+              let imageBytes = await fetch(fileUrl).then((res) =>
                 res.arrayBuffer()
               );
               let image;
-              if (fileExtension === "png") {
+
+              if (fileExtension === "heic") {
+                // Convertir HEIC en PNG
+                imageBytes = await heic2any({
+                  blob: new Blob([imageBytes]),
+                  toType: "image/png",
+                });
+                image = await pdfDoc.embedPng(await imageBytes.arrayBuffer());
+              } else if (fileExtension === "png") {
                 image = await pdfDoc.embedPng(imageBytes);
               } else if (["jpg", "jpeg"].includes(fileExtension)) {
                 image = await pdfDoc.embedJpg(imageBytes);
               }
 
-              // Taille A4 en points (595.28 x 841.89)
-              const page = pdfDoc.addPage([595.28, 841.89]);
+              // Obtenir les dimensions de l'image
+              const imageWidth = image.width;
+              const imageHeight = image.height;
 
-              // Ajustement de l'image à la taille A4 en conservant son ratio
+              // Déterminer l'orientation de l'image
+              let pageWidth, pageHeight;
+              if (imageWidth >= imageHeight) {
+                // Orientation paysage
+                pageWidth = 841.89; // Largeur A4 en paysage
+                pageHeight = 595.28; // Hauteur A4 en paysage
+              } else {
+                // Orientation portrait
+                pageWidth = 595.28; // Largeur A4 en portrait
+                pageHeight = 841.89; // Hauteur A4 en portrait
+              }
+
+              // Créer une nouvelle page avec les dimensions appropriées
+              const page = pdfDoc.addPage([pageWidth, pageHeight]);
+
+              // Ajustement de l'image pour s'adapter à la page en conservant le ratio
               const scale = Math.min(
-                595.28 / image.width,
-                841.89 / image.height
+                pageWidth / imageWidth,
+                pageHeight / imageHeight
               );
-              const imageWidth = image.width * scale;
-              const imageHeight = image.height * scale;
+              const scaledWidth = imageWidth * scale;
+              const scaledHeight = imageHeight * scale;
 
               // Centrer l'image sur la page
               page.drawImage(image, {
-                x: (595.28 - imageWidth) / 2, // Centrer horizontalement
-                y: (841.89 - imageHeight) / 2, // Centrer verticalement
-                width: imageWidth,
-                height: imageHeight,
+                x: (pageWidth - scaledWidth) / 2,
+                y: (pageHeight - scaledHeight) / 2,
+                width: scaledWidth,
+                height: scaledHeight,
               });
             }
           }
 
+          // Sauvegarder le PDF combiné
           const pdfBytes = await pdfDoc.save();
-
           const blob = new Blob([pdfBytes], { type: "application/pdf" });
           const pdfFile = new File([blob], existingFileName, {
             type: "application/pdf",
@@ -918,14 +956,11 @@
 
           const storagePath = `${folderPath}/${existingFileName}`;
           const storageRefPath = storageRef(storage, storagePath);
-
           await uploadBytes(storageRefPath, pdfFile);
 
-          // on va recuperer le lien de telechargement du fichier
+          // Obtenir l'URL de téléchargement
           const downloadURL = await getDownloadURL(storageRefPath);
           console.log("downloadURL: ", downloadURL);
-
-          console.log("Fichier PDF combiné et téléchargé avec succès!");
           alert("Fichier PDF combiné et téléchargé avec succès!");
         } catch (error) {
           console.error("Erreur lors de la création du PDF combiné:", error);
@@ -935,6 +970,7 @@
 
       let activeCanvas;
 
+      // Gestion des événements de clic pour les signatures
       document
         .getElementById("signature")
         .addEventListener("click", function () {
@@ -942,7 +978,6 @@
           clearCanvas(document.getElementById("signatureCanvas"));
           $("#signatureModal").modal("show");
         });
-
       document
         .getElementById("signatureClient")
         .addEventListener("click", function () {
@@ -951,6 +986,7 @@
           $("#signatureModal").modal("show");
         });
 
+      // bouton pour sauvegarder la signature
       document
         .getElementById("saveSignature")
         .addEventListener("click", function () {
@@ -965,6 +1001,8 @@
           );
           $("#signatureModal").modal("hide");
         });
+
+      // creation du PDF a partir de la page
       document
         .getElementById("captureBtn")
         .addEventListener("click", function () {

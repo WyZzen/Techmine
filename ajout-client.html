@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -189,11 +189,10 @@
       const analytics = getAnalytics(app);
       const db = getDatabase();
       const auth = getAuth(app);
-
       const MainForm = document.getElementById("MainForm");
 
+      // Vérification de la version de l'application
       const versionRef = ref(db, "appInfo/version");
-
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -202,6 +201,7 @@
           window.location.reload();
         }
       });
+      // Submition du formulaire
       function AddData(event) {
         event.preventDefault();
         const nom = document.getElementById("Nom").value;
@@ -221,6 +221,7 @@
           });
       }
 
+      // Affichage des messages
       function showMessage(message, type) {
         const messageContainer = document.getElementById("alert-container");
         messageContainer.style.display = "block";
@@ -241,6 +242,7 @@
         }, 5000);
       }
 
+      // Vérification du rôle de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {

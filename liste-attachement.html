@@ -11,14 +11,14 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style-top.css" />
-  </head>
-  <body>
     <style>
       #table {
         height: 600px;
         overflow-x: auto;
       }
     </style>
+  </head>
+  <body>
     <div class="container-fluid align-items-center custom-height-top">
       <div
         class="row bg-gradient bg-primary p-4 align-items-center custom-height-top"
@@ -134,7 +134,7 @@
           id="attachementsTable"
           class="table table-striped table-bordered"
         >
-          <thead class="thead-dark">
+          <thead class="thead-dark sticky-top">
             <tr>
               <th>Numéro d'Attachement</th>
               <th>Client</th>
@@ -191,7 +191,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <!-- Add form fields for editing attachment information -->
+                <!-- formulaire de modification -->
                 <form id="editForm">
                   <input type="hidden" id="editModalNumber" />
                   <div class="form-group">
@@ -473,8 +473,9 @@
       let user = sessionStorage.getItem("user-uid");
       let currentUserId = null;
       let currentUserRole = null;
-      const versionRef = ref(db, "appInfo/version");
 
+      // vérificationn de la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -484,6 +485,7 @@
         }
       });
 
+      // récupération des informations de l'attachement
       function fetchAttachements() {
         const attachementsRef = ref(db, "Attachement");
         const usersRef = ref(db, "users");
@@ -630,6 +632,8 @@
           });
         });
       }
+
+      // exportation des attachements en CSV
       function exportAttachmentsToCSV() {
         const attachmentsRef = ref(db, "Attachement");
         const usersRef = ref(db, "users");
@@ -715,6 +719,7 @@
           });
       }
 
+      // suppression d'un attachement
       function deleteAttachment(attachmentId) {
         const attachementsRef = ref(db, `Attachement/${attachmentId}`);
 
@@ -763,6 +768,7 @@
           });
       }
 
+      // vérification du rôle de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
@@ -778,6 +784,7 @@
         });
       }
 
+      // vérification de l'utilisateur connecté
       auth.onAuthStateChanged((user) => {
         if (user) {
           currentUserId = user.uid;
@@ -807,10 +814,12 @@
         }
       });
 
+      // gestion du bouton d'exportation
       document
         .getElementById("exportButton")
         .addEventListener("click", exportAttachmentsToCSV);
 
+      // gestion du bouton de filtrage
       document
         .getElementById("filterButton")
         .addEventListener("click", function () {
@@ -821,6 +830,8 @@
 
           fetchFilteredAttachments(startDate, endDate);
         });
+
+      // gestion du bouton d'affichage des fichiers joints
       function viewAttachedFiles(attachmentId) {
         const storageReference = firebaseStorageRef(
           storage,
@@ -877,6 +888,8 @@
             alert("Error listing files.");
           });
       }
+
+      // fonction pour filtrer les attachements
       function fetchFilteredAttachments(startDate, endDate) {
         const attachementsRef = ref(db, "Attachement");
         const userRef = ref(db, "users");
@@ -923,6 +936,7 @@
         });
       }
 
+      // fonction pour ajouter une ligne à la table
       function populateRow(row, dateNb, attachement, user) {
         const infos = attachement.infos || {};
         const fields = [
@@ -989,6 +1003,8 @@
           actionsCell.appendChild(deleteButton);
         }
       }
+
+      // fonction pour ouvrir le modal de modification
       function openEditModal(dateNb) {
         const attachementRef = ref(db, `Attachement/${dateNb}`);
         get(attachementRef).then((snapshot) => {
@@ -1039,6 +1055,8 @@
           $("#editModal").modal("show");
         });
       }
+
+      // gestion du bouton de sauvegarde des modifications
       document
         .getElementById("saveChangesButton")
         .addEventListener("click", function () {
@@ -1103,6 +1121,7 @@
             });
         });
 
+      // fonction pour créer un bouton de suppression
       function createDeleteButton(dateNb) {
         console.log("bouton delete");
         const deleteButton = document.createElement("button");
@@ -1114,6 +1133,7 @@
         return deleteButton;
       }
 
+      // fonction pour créer un bouton de visualisation
       function createViewButton(dateNb) {
         console.log("bouton voir");
         const viewButton = document.createElement("button");
@@ -1124,6 +1144,8 @@
         };
         return viewButton;
       }
+
+      // fonction pour créer un bouton de modification
       function createEditButton(dateNb) {
         const editButton = document.createElement("button");
         editButton.className = "btn btn-warning btn-sm mr-2";
@@ -1134,6 +1156,7 @@
         return editButton;
       }
 
+      // fonction pour réinitialiser et initialiser le tableau
       function resetAndInitializeDataTable() {
         if ($.fn.DataTable.isDataTable("#attachementsTable")) {
           $("#attachementsTable").DataTable().clear().destroy();

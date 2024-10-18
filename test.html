@@ -1,42 +1,357 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <title>Upload de fichiers</title>
-  </head>
-  <body>
-    <div class="container mt-5">
-      <h2>Sélectionnez des fichiers (PDF ou images) à envoyer</h2>
-      <form id="uploadForm" enctype="multipart/form-data">
-        <div class="form-group">
-          <input
-            type="file"
-            class="form-control-file"
-            id="fileInput"
-            accept=".pdf, image/*"
-            multiple
-            required
-          />
-        </div>
-        <button type="submit" class="btn btn-primary">
-          Créer et envoyer le PDF
-        </button>
-      </form>
-    </div>
+    <title>Document</title>
 
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+      body {
+        font-size: 36px;
+        letter-spacing: 2px;
+        margin-left: 100px;
+      }
+      .signatureCanvas {
+        border: 1px solid black;
+        touch-action: auto;
+        width: 300px;
+        height: 150px;
+      }
+      .signatureTable {
+        touch-action: auto;
+        width: 250px;
+        height: 100px;
+      }
+    </style>
+  </head>
+  <body style="max-height: 2480px; max-width: 3508px">
+    <div class="modal" tabindex="-1" role="dialog" id="signatureModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content modal-custom">
+          <div class="modal-header">
+            <h5 class="modal-title">Sign Here</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <canvas id="signatureCanvas" class="signatureCanvas"></canvas>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary" id="saveSignature">
+              Save changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <table
+      style="height: 248px; width: 3508px; font-size: 55px; font-weight: bold"
+      class="text-start"
+    >
+      <tr>
+        <td style="height: 248px; width: 1254px">
+          <img
+            src="./logo techmine.svg"
+            alt="Techmine"
+            style="height: 248px; width: 754px"
+          />
+        </td>
+        <td style="height: 248px; width: 2254px"><div id="Num"></div></td>
+      </tr>
+    </table>
+    <table
+      style="max-height: 124px; max-width: 3508px"
+      class="border border-dark text-center"
+    >
+      <tr>
+        <td style="height: 124px; width: 876px" class="border border-dark">
+          NOM CLIENT
+        </td>
+        <td style="height: 124px; width: 1557px" class="border border-dark">
+          NOM CARRIERE / CHANTIER
+        </td>
+        <td style="height: 124px; width: 876px" class="border border-dark">
+          OBSERVATION
+        </td>
+      </tr>
+      <tr>
+        <td class="border border-dark"><div id="Client"></div></td>
+        <td class="border border-dark"><div id="Chantier"></div></td>
+        <td class="border border-dark"><div id="Observation"></div></td>
+      </tr>
+    </table>
+    <table class="border border-dark text-start" style="margin-top: 50px">
+      <tr class="text-center">
+        <td class="border border-dark" style="height: 124px; width: 876px">
+          Date de début et de fin de travaux
+        </td>
+        <td
+          class="border border-dark"
+          style="height: 124px; width: 1850px"
+          colspan="2"
+        >
+          Désignation des travaux
+        </td>
+        <td class="border border-dark" style="height: 124px; width: 292px">
+          Quantités
+        </td>
+        <td class="border border-dark" style="height: 124px; width: 292px">
+          Unités
+        </td>
+      </tr>
+      <tr class="r">
+        <td
+          class="border border-dark text-center"
+          style="height: 124px; width: 876px"
+        >
+          <div id="date"></div>
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 1508px"
+        >
+          <div id="forage"></div>
+          <div id="NumPF"></div>
+          <div id="Transfert"></div>
+        </td>
+        <td
+          class="border border-dark text-center"
+          style="height: 124px; width: 342px"
+        >
+          <div id="diametreContainer"></div>
+        </td>
+        <td
+          class="border border-dark text-center"
+          style="height: 124px; width: 292px"
+        >
+          <div id="quantiteContainer"></div>
+        </td>
+        <td
+          class="border border-dark text-center"
+          style="height: 124px; width: 292px"
+        >
+          <div id="uniteContainer"></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="border border-dark" style="height: 124px; width: 876px"></td>
+        <td
+          class="border border-dark"
+          style="height: 124px; width: 1850px"
+          colspan="2"
+        >
+          <div id="HFD"></div>
+          <div id="HFF"></div>
+          <div id="HP"></div>
+          <div id="HA"></div>
+        </td>
+        <td class="border border-dark" style="height: 124px; width: 292px"></td>
+        <td class="border border-dark" style="height: 124px; width: 292px"></td>
+      </tr>
+      <tr>
+        <td class="border border-dark" style="height: 124px; width: 876px"></td>
+        <td
+          class="border border-dark"
+          style="height: 124px; width: 1850px"
+          colspan="2"
+        >
+          <div id="GNR"></div>
+        </td>
+        <td class="border border-dark" style="height: 124px; width: 292px"></td>
+        <td class="border border-dark" style="height: 124px; width: 292px"></td>
+      </tr>
+    </table>
+    <table class="border border-dark text-start" style="margin-top: 50px">
+      <tr>
+        <td
+          class="border border-dark"
+          style="height: 124px; width: 876px"
+          colspan="4"
+        >
+          ATTESTATION DE L'EXACTITUDE DES INSCRIPTIONS PORTÉE SUR LE PRÉSENT
+          ATTACHEMENT
+        </td>
+      </tr>
+      <tr class="text-start">
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          POUR TECHMINE
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          DATE:
+          <div id="dateSignature" class="text-center"></div>
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          POUR LE CLIENT
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          DATE:
+          <br />
+        </td>
+      </tr>
+      <tr>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          NOM:
+          <div id="NomTechmine"></div>
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          SIGNATURE
+          <br />
+          <div class="text-center">
+            <canvas id="signature" class="signatureTable"></canvas>
+          </div>
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          NOM:
+          <br />
+        </td>
+        <td
+          class="border border-dark text-start"
+          style="height: 124px; width: 830px"
+        >
+          SIGNATURE
+          <br />
+          <div class="text-center">
+            <canvas id="signatureClient" class="signatureTable"></canvas>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <button class="btn btn-primary mt-4" id="download-pdf">
+      Télécharger en PDF
+    </button>
+    <script>
+      document
+        .getElementById("download-pdf")
+        .addEventListener("click", function () {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [3508, 2480],
+          });
+          doc.setFontSize(36); // Ajustez la taille de la police
+          doc.setFont("helvetica", "bold");
+
+          doc.html(document.body, {
+            callback: function (doc) {
+              doc.save("document.pdf");
+            },
+          });
+        });
+    </script>
+    <script>
+      function BtnPrint() {
+        document.getElementById("btnPrint").style.display = "none";
+        window.print();
+        setTimeout(function () {
+          document.getElementById("btnPrint").style.display = "block";
+        }, 3000);
+      }
+
+      function setupCanvas() {
+        const canvas = document.getElementById("signatureCanvas");
+        const ctx = canvas.getContext("2d");
+        let drawing = false;
+
+        canvas.addEventListener("mousedown", (event) => {
+          drawing = true;
+          ctx.beginPath();
+          ctx.moveTo(event.offsetX, event.offsetY);
+        });
+        canvas.addEventListener("mouseup", () => (drawing = false));
+        canvas.addEventListener("mousemove", (event) => {
+          if (drawing) {
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+          }
+        });
+        canvas.addEventListener("touchstart", (e) => {
+          e.preventDefault();
+          drawing = true;
+          const touch = e.touches[0];
+          draw(touch);
+        });
+        canvas.addEventListener("touchend", () => (drawing = false));
+        canvas.addEventListener("touchmove", (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          draw(touch);
+        });
+
+        function draw(event) {
+          if (!drawing) return;
+
+          const rect = canvas.getBoundingClientRect();
+          const x = (event.clientX || event.touches[0].clientX) - rect.left;
+          const y = (event.clientY || event.touches[0].clientY) - rect.top;
+
+          ctx.lineWidth = 2;
+          ctx.lineCap = "round";
+          ctx.strokeStyle = "#000";
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+        }
+      }
+
+      setupCanvas("signature");
+      setupCanvas("signatureClient");
+    </script>
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
       import {
-        getStorage,
-        ref as storageRef,
-        uploadBytes,
-      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-storage.js";
-      import { PDFDocument } from "https://unpkg.com/pdf-lib/dist/pdf-lib.esm.js";
+        getDatabase,
+        ref,
+        onValue,
+        get,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
@@ -51,70 +366,145 @@
       };
 
       const app = initializeApp(firebaseConfig);
-      const storage = getStorage(app);
+      const analytics = getAnalytics(app);
+      const db = getDatabase(app);
+      const auth = getAuth(app);
+
+      let clientsData = {};
+      let carrieresData = {};
+      const versionRef = ref(db, "appInfo/version");
+      const number = getURLParameter("number");
+
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
+      function getURLParameter(name) {
+        return new URLSearchParams(window.location.search).get(name);
+      }
+
+      async function getAttachement() {
+        const attachmentRef = ref(db, "Attachement/" + number);
+
+        try {
+          const snapshot = await get(attachmentRef);
+          const userRef = ref(db, "users/" + snapshot.val().user);
+
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            onValue(userRef, (userSnapshot) => {
+              const user = userSnapshot.val();
+              const infos = snapshot.val().infos;
+              document.getElementById("Num").innerText =
+                "Attachement N°" + number;
+              document.getElementById("Client").innerText = infos.client;
+              document.getElementById("Chantier").innerText = infos.chantier;
+              document.getElementById("Observation").innerText =
+                infos.observation;
+              document.getElementById("date").innerText = infos.datesForage;
+              document.getElementById("forage").innerText = infos.forage;
+              document.getElementById("NumPF").innerText =
+                "Plan de forage N°" + infos.NPlanForage;
+              document.getElementById("Transfert").innerText =
+                "Transfert : " + infos.Transfert;
+              const diametres = snapshot.val().infos.DiametreForage;
+              const unites = snapshot.val().infos.UniteForage;
+              const quantite = snapshot.val().infos.QuantiteForage;
+              const diametreContainer =
+                document.getElementById("diametreContainer");
+              const uniteContainer = document.getElementById("uniteContainer");
+              const quantiteContainer =
+                document.getElementById("quantiteContainer");
+
+              diametreContainer.innerHTML = "";
+              uniteContainer.innerHTML = "";
+              quantiteContainer.innerHTML = "";
+
+              // Gestion des diamètres
+              diametres.forEach((diametre, index) => {
+                const divElement = document.createElement("div");
+                divElement.innerText =
+                  "Diamètre " + (index + 1) + " : " + diametre;
+                diametreContainer.appendChild(divElement);
+              });
+
+              // Gestion des unités
+              unites.forEach((unite, index) => {
+                const divElement = document.createElement("div");
+                divElement.innerText = unite;
+                uniteContainer.appendChild(divElement);
+              });
+
+              // Gestion des quantités
+              quantite.forEach((qte, index) => {
+                const divElement = document.createElement("div");
+                divElement.innerText = qte;
+                quantiteContainer.appendChild(divElement);
+              });
+              document.getElementById("HFD").innerText =
+                "Heures moteur foreuse début de travaux: " + infos.HMFDebut;
+              document.getElementById("HFF").innerText =
+                "Heures moteur foreuse fin de travaux: " + infos.HMFFin;
+              document.getElementById("HP").innerText =
+                "Heures de panne: " + infos.HeuresPanne + "h : " + infos.CommP;
+              document.getElementById("HA").innerText =
+                "Heures d'arrêt: " + infos.HeuresArret + "h : " + infos.CommA;
+              document.getElementById("GNR").innerText =
+                "Gnr fourni par le client :" +
+                infos.GNR +
+                " / " +
+                infos.QuantiteGNR;
+              document.getElementById("dateSignature").innerText =
+                snapshot.val().date;
+            });
+          } else {
+            console.log("No data available");
+            return null;
+          }
+        } catch (error) {
+          console.error("Error fetching data: ", error);
+        }
+      }
+      function clearCanvas(canvas) {
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      let activeCanvas;
+      document
+        .getElementById("signature")
+        .addEventListener("click", function () {
+          activeCanvas = this;
+          clearCanvas(document.getElementById("signatureCanvas"));
+          $("#signatureModal").modal("show");
+        });
 
       document
-        .getElementById("uploadForm")
-        .addEventListener("submit", async function (event) {
-          event.preventDefault();
-          const fileInput = document.getElementById("fileInput");
-          const files = fileInput.files;
-
-          if (files.length > 0) {
-            const pdfDoc = await PDFDocument.create();
-
-            for (let i = 0; i < files.length; i++) {
-              const file = files[i];
-
-              if (file.type === "application/pdf") {
-                const existingPdfBytes = await file.arrayBuffer();
-                const existingPdfDoc = await PDFDocument.load(existingPdfBytes);
-                const pages = await pdfDoc.copyPages(
-                  existingPdfDoc,
-                  existingPdfDoc.getPageIndices()
-                );
-                pages.forEach((page) => pdfDoc.addPage(page));
-              } else if (file.type.startsWith("image/")) {
-                const imageBytes = await file.arrayBuffer();
-                let image;
-                if (file.type === "image/png") {
-                  image = await pdfDoc.embedPng(imageBytes);
-                } else if (file.type === "image/jpeg") {
-                  image = await pdfDoc.embedJpg(imageBytes);
-                }
-                const page = pdfDoc.addPage([image.width, image.height]);
-                page.drawImage(image, {
-                  x: 0,
-                  y: 0,
-                  width: image.width,
-                  height: image.height,
-                });
-              }
-            }
-
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: "application/pdf" });
-            const pdfFile = new File([blob], "combined.pdf", {
-              type: "application/pdf",
-            });
-
-            const storagePath = "uploads/combined.pdf"; // Chemin où le fichier sera stocké
-            const storageRefPath = storageRef(storage, storagePath);
-
-            uploadBytes(storageRefPath, pdfFile)
-              .then((snapshot) => {
-                console.log(
-                  "Fichier PDF créé et envoyé avec succès:",
-                  snapshot
-                );
-                alert("Fichier PDF créé et envoyé avec succès!");
-              })
-              .catch((error) => {
-                console.error("Erreur lors de l'envoi du PDF:", error);
-                alert("Erreur lors de l'envoi du PDF.");
-              });
-          }
+        .getElementById("signatureClient")
+        .addEventListener("click", function () {
+          activeCanvas = this;
+          clearCanvas(document.getElementById("signatureCanvas"));
+          $("#signatureModal").modal("show");
         });
+
+      document
+        .getElementById("saveSignature")
+        .addEventListener("click", function () {
+          const signatureCanvas = document.getElementById("signatureCanvas");
+          const ctx = activeCanvas.getContext("2d");
+          ctx.drawImage(
+            signatureCanvas,
+            0,
+            0,
+            activeCanvas.width,
+            activeCanvas.height
+          );
+          $("#signatureModal").modal("hide");
+        });
+      getAttachement();
     </script>
   </body>
 </html>

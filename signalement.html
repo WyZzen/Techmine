@@ -215,8 +215,9 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase();
       const auth = getAuth();
-      const versionRef = ref(db, "appInfo/version");
 
+      // Vérifier la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -225,6 +226,8 @@
           window.location.reload();
         }
       });
+
+      // Vérifier l'authentification de l'utilisateur
       function checkUserAuthentication() {
         onAuthStateChanged(auth, (user) => {
           if (user) {
@@ -233,7 +236,8 @@
           }
         });
       }
-      checkUserAuthentication();
+
+      // Vérifier le rôle de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
@@ -252,6 +256,7 @@
           );
         });
       }
+      // Vérifier le rôle de l'utilisateur
       auth.onAuthStateChanged((user) => {
         if (user) {
           checkUserRole(user.uid)
@@ -280,20 +285,7 @@
       });
 
       const usersRef = ref(db, "users");
-
       function loadUserInfo(userId) {
-        // const userRef = ref(db, `users/${userId}`);
-        // return get(userRef).then((snapshot) => {
-        //   const userData = snapshot.val();
-        //   console.log("Données utilisateur :", userData.role);
-        //   console.log("Données utilisateur :", userData.role);
-        //   return (
-        //     userData.role === "cadre" ||
-        //     userData.role === "responsable exploitation" ||
-        //     userData.role === "directeur" ||
-        //     userData.role === "responsable agence"
-        //   );
-        // });
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
           const userData = snapshot.val();
@@ -307,11 +299,13 @@
         });
       }
 
+      // récupère la date actuelle et l'assigne à l'élément d'entrée de date
       document.addEventListener("DOMContentLoaded", () => {
         const today = new Date().toISOString().split("T")[0];
         document.getElementById("reportDate").value = today;
 
         const machinesRef = ref(db, "machine");
+        // Récupérer les machines
         get(machinesRef)
           .then((snapshot) => {
             if (snapshot.exists()) {
@@ -345,7 +339,7 @@
       document
         .getElementById("reportForm")
         .addEventListener("submit", (event) => {
-          event.preventDefault(); // Empêche la soumission par défaut du formulaire
+          event.preventDefault();
 
           const signalementDate = document.getElementById("reportDate").value;
           const operatorId = document.getElementById("operatorId").value;
@@ -365,10 +359,6 @@
             const machineInfo = snapshot.val();
             const nmat = machineInfo.Nmatériel;
 
-            // if (!user) {
-            //   console.error("Utilisateur non authentifié");
-            //   return;
-            // }
             if (nmat.startsWith("15")) {
               if (!heuresForreuseInput.value || !heuresMarteauInput.value) {
                 alert("Veuillez remplir les champs H Foreuse et H Marteau.");
@@ -421,6 +411,7 @@
             }
           });
         });
+      // Ajouter gestionnaire d'événements pour le changement de machine
       document
         .getElementById("machine")
         .addEventListener("change", function () {
@@ -453,6 +444,7 @@
             }
           });
         });
+      checkUserAuthentication();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

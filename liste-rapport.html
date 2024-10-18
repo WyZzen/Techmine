@@ -443,8 +443,9 @@
 
     let currentUserRole = null;
     let currentUserId = null;
-    const versionRef = ref(db, "appInfo/version");
 
+    //vérification de l'utilisateur
+    const versionRef = ref(db, "appInfo/version");
     onValue(versionRef, (snapshot) => {
       const latestVersion = snapshot.val();
       const currentVersion = localStorage.getItem("appVersion");
@@ -454,6 +455,7 @@
       }
     });
 
+    //récupération des données du rapport
     function fetchRapports() {
       const rapportRef = ref(db, "rapport");
       const usersRef = ref(db, "users");
@@ -498,6 +500,7 @@
               row.insertCell().textContent = infos.TDR || "";
               row.insertCell().textContent = infos.GdP || "";
               row.insertCell().textContent = infos.numF || "";
+              row.insertCell().textContent = infos.NbHM || "";
               row.insertCell().textContent = infos.NbHD || "";
               row.insertCell().textContent = infos.NbHF || "";
               row.insertCell().textContent = infos.NbHA || "";
@@ -566,14 +569,16 @@
             $("#rapportsTable").DataTable().destroy();
           }
           $("#rapportsTable").DataTable({
-            order: [[19, "asc"]],
-            columnDefs: [{ orderable: true, targets: [19, 0] }],
+            order: [[0, "dsc"]],
+            columnDefs: [{ orderable: true, targets: [0, 0] }],
             paging: true,
             searching: true,
           });
         });
       });
     }
+
+    //filtrage des rapports par date
     function fetchFilteredRapports(startDate, endDate) {
       const rapportRef = ref(db, "rapport");
       const usersRef = ref(db, "users");
@@ -617,6 +622,8 @@
         });
       });
     }
+
+    //fonction pour filtrer les rapports par secteur
     function fetchFilteredRapportsBySector(secteur) {
       const rapportRef = ref(db, "rapport");
       const usersRef = ref(db, "users");
@@ -671,6 +678,7 @@
         });
       });
     }
+    //fonction pour ajouter une ligne à la table
     function populateRow(row, dateNb, rapport, user) {
       const infos = rapport.infos || {};
       const fields = [
@@ -752,6 +760,7 @@
       }
     }
 
+    // vérification de l'utilisateur connecté
     auth.onAuthStateChanged((user) => {
       if (user) {
         currentUserId = user.uid;
@@ -766,6 +775,7 @@
       }
     });
 
+    // vérification du rôle de l'utilisateur
     function checkUserRole(userId) {
       const userRef = ref(db, `users/${userId}`);
       return get(userRef).then((snapshot) => {
@@ -780,6 +790,7 @@
         };
       });
     }
+    //fonction pour créer un bouton de modification
     function createEditButton(dateNb) {
       const editButton = document.createElement("button");
       editButton.className = "btn btn-warning btn-sm mr-2";
@@ -789,6 +800,7 @@
       };
       return editButton;
     }
+    //fonction pour réinitialiser et initialiser le tableau
     function resetAndInitializeDataTable() {
       if ($.fn.DataTable.isDataTable("#rapportsTable")) {
         $("#rapportsTable").DataTable().clear().destroy();
@@ -800,6 +812,7 @@
         searching: true,
       });
     }
+    //fonction pour ouvrir le modal de modification
     function openEditModal(dateNb) {
       const rapportRef = ref(db, `rapport/${dateNb}`);
       get(rapportRef).then((snapshot) => {
@@ -834,9 +847,14 @@
       .getElementById("saveChangesButton")
       .addEventListener("click", function () {
         const dateNb = document.getElementById("editModalNumber").value;
+        let editDateValue = document.getElementById("editDate").value;
+        let formattedDate = new Date(editDateValue)
+          .toISOString()
+          .slice(0, 10)
+          .replace(/-/g, "-");
         const updatedData = {
           infos: {
-            date: document.getElementById("editDate").value,
+            date: formattedDate,
             client: document.getElementById("editClient").value,
             Carriere: document.getElementById("editCarriere").value,
             NbHTravail: document.getElementById("editNbHTravail").value,
@@ -869,6 +887,7 @@
             );
           });
       });
+    //fonction pour filtrer les rapports par date
     document
       .getElementById("filterButton")
       .addEventListener("click", function () {
@@ -876,6 +895,7 @@
         const endDate = document.getElementById("endDate").value;
         fetchFilteredRapports(startDate, endDate);
       });
+    //fonction pour filtrer les rapports par secteur
     document
       .getElementById("filterBySectorButton")
       .addEventListener("click", function () {

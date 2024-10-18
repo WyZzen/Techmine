@@ -863,9 +863,15 @@
       const db = getDatabase();
       const storage = getStorage();
       const auth = getAuth(app);
-      let selectedClientId = null;
-      const versionRef = ref(db, "appInfo/version");
 
+      let selectedClientId = null;
+      let submitBtn = document.getElementById("submit");
+      let selectedFiles = [];
+      let validateFiles = document.getElementById("submit");
+      let newNumber;
+
+      // vérification de la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -875,12 +881,7 @@
         }
       });
 
-      let submitBtn = document.getElementById("submit");
-
-      let selectedFiles = [];
-      let validateFiles = document.getElementById("submit");
-      let newNumber;
-
+      // vérification de l'authentification de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
@@ -894,6 +895,8 @@
           );
         });
       }
+
+      // vérification de l'authentification de l'utilisateur
       function checkUserAuthentication() {
         onAuthStateChanged(auth, (user) => {
           if (user) {
@@ -907,6 +910,8 @@
           }
         });
       }
+
+      // vérification du rôle de l'utilisateur
       auth.onAuthStateChanged((user) => {
         if (user) {
           checkUserRole(user.uid)
@@ -932,6 +937,8 @@
           });
         }
       });
+
+      // vérification de l'authentification de l'utilisateur
       async function getLastAttachementNumber() {
         const snapshot = await get(ref(db, "Attachement"));
         if (!snapshot.exists()) {
@@ -943,6 +950,7 @@
         return Math.max(...numbers);
       }
 
+      // Ajout des données dans la base de données
       async function AddData() {
         if (!allStepsValid()) {
           showMessageError(
@@ -1054,6 +1062,7 @@
           });
       }
 
+      // fonction pour afficher les messages d'alerte
       function showMessage(message, type, newNumber) {
         const messageContainer = document.getElementById("alert-container");
         messageContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -1073,6 +1082,7 @@
         }, 3000);
       }
 
+      // fonction pour afficher les messages d'alerte d'erreur
       function showMessageError(message, type, newNumber) {
         const messageContainer = document.getElementById("alert-container");
         messageContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -1081,6 +1091,7 @@
                                 </div>`;
       }
 
+      // fonction pour récupérer la valeur de implantation
       function getImplantationValue() {
         let radios = document
           .getElementById("Implantation")
@@ -1092,10 +1103,10 @@
         }
         return "";
       }
-      // Fetch clients and carrieres data from Firebase database
       let clientsData = {};
       let carrieresData = {};
 
+      // récupération des données clients et carrieres
       function fetchClientsAndCarrieres() {
         const clientsRef = ref(db, "clients");
         const carrieresRef = ref(db, "chantiers");
@@ -1111,7 +1122,7 @@
         });
       }
 
-      // Populate clients data into the client datalist
+      // ajout d'une ligne de client dans le tableau
       function populateClientsDataList() {
         const clientDataList = document.getElementById("clients");
         clientDataList.innerHTML = "";
@@ -1129,7 +1140,7 @@
         }
       }
 
-      // Populate carrieres data into the chantier datalist
+      // ajout d'une ligne de carrieres dans le tableau
       function populateCarrieresDataList() {
         const carriereDataList = document.getElementById("chantiers");
         carriereDataList.innerHTML = "";
@@ -1147,7 +1158,7 @@
         }
       }
 
-      // Filter carrieres data based on the selected client
+      // Filtrage des carrieres par client
       document.getElementById("client").addEventListener("input", () => {
         const selectedClientName = document.getElementById("client").value;
         const selectedClient = Object.values(clientsData).find(
@@ -1160,6 +1171,7 @@
         }
       });
 
+      // Filtrage des carrieres par client
       function filterCarrieresByClient(clientId) {
         const carriereDataList = document.getElementById("chantiers");
         carriereDataList.innerHTML = "";
@@ -1180,7 +1192,7 @@
         }
       }
 
-      // Update the client input with the corresponding client name
+      // remplissage du client avec la carriere selectionnée
       document.getElementById("chantier").addEventListener("input", () => {
         const selectedCarriereName = document.getElementById("chantier").value;
         const selectedCarriere = Object.values(carrieresData).find(
@@ -1193,14 +1205,12 @@
         }
       });
 
-      // Fetch clients and carrieres data on page load
-      window.onload = function () {
-        fetchClientsAndCarrieres();
-      };
+      // recuperation des documents sélectionnés
       document.getElementById("selectFiles").addEventListener("change", (e) => {
         selectedFiles = e.target.files;
       });
 
+      //envoi des documents sélectionnés dans le storage
       validateFiles.addEventListener("click", async () => {
         AddData();
         const lastNumber = await getLastAttachementNumber();
@@ -1211,7 +1221,7 @@
             const storageRef1 = storageRef(
               storage,
               `attachments/${newNumber}/${file.name}`
-            ); // Use template literals to include newNumber in the path
+            );
             uploadBytes(storageRef1, file).then((snapshot) => {
               console.log("Uploaded a file:", file.name);
             });
@@ -1220,9 +1230,11 @@
           }
         }
       });
-      checkUserAuthentication();
 
-      console.log(sessionStorage.getItem("user-uid"));
+      window.onload = function () {
+        fetchClientsAndCarrieres();
+        checkUserAuthentication();
+      };
     </script>
   </body>
 </html>
