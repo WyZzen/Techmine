@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="fr" dir="ltr">
   <head>
     <meta charset="utf-8" />
     <title>Page d'accueil</title>
@@ -148,6 +148,7 @@
       const db = getDatabase(app);
       const auth = getAuth(app);
 
+      //fonction pour vérifier le rôle de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
@@ -161,8 +162,9 @@
           );
         });
       }
-      const versionRef = ref(db, "appInfo/version");
 
+      // Vérification de la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");

@@ -1,3 +1,4 @@
+<!--cette page n'est que au début de sa création et ne contient pas toute les fonctionnalités attendues, la mise en page et l'accessibilité est également en cous-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -340,10 +341,11 @@
       let selectedMachineData = {};
       let selectedMachineReports = [];
       let isMachineSelected = false;
-      let selectedMachineKey = null; // Added to keep track of the selected machine key
+      let selectedMachineKey = null;
       let selectedSignalementId = null;
-      const versionRef = ref(db, "appInfo/version");
 
+      // vérifier la version de l'application
+      const versionRef = ref(db, "appInfo/version");
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -353,6 +355,7 @@
         }
       });
 
+      // vérifier le rôle de l'utilisateur
       function checkUserRole(userId) {
         const userRef = ref(db, `users/${userId}`);
         return get(userRef).then((snapshot) => {
@@ -366,6 +369,7 @@
           );
         });
       }
+      // Gestion de l'état d'authentification
       auth.onAuthStateChanged((user) => {
         if (user) {
           checkUserRole(user.uid)
@@ -391,28 +395,28 @@
           });
         }
       });
+
+      // récupération des signalements
       function fetchSignalements() {
         const signalementsRef = ref(db, "signalement/");
         onValue(signalementsRef, (snapshot) => {
           const signalementsData = snapshot.val();
           if (signalementsData) {
-            // Iterate over each signalement and retrieve its ID
             Object.keys(signalementsData).forEach((signalementId) => {
               const signalement = signalementsData[signalementId];
 
-              // Access individual fields
               const machineId = signalement.machineId;
               const commentaire = signalement.commentaire;
               const compteur = signalement.compteur;
               const isFinished = signalement.isFinished;
-
-              // Use signalementId and data as needed
             });
           } else {
             console.log("No signalements found.");
           }
         });
       }
+
+      //récupération des machines
       function fetchMachines() {
         const machinesRef = ref(db, "machine/");
         get(machinesRef).then((snapshot) => {
@@ -442,6 +446,7 @@
         });
       }
 
+      // récupération des rapports
       function fetchReports(machineId) {
         if (!machineId) {
           console.error("ID de machine invalide ou non défini");
@@ -459,7 +464,7 @@
           selectedMachineReports = [];
           snapshot.forEach((childSnapshot) => {
             const report = childSnapshot.val();
-            report.id = childSnapshot.key; // Store the signalement ID for later use
+            report.id = childSnapshot.key;
             selectedMachineReports.push(report);
           });
           populateTable();
@@ -469,15 +474,15 @@
         });
       }
 
+      // ajout des ordres de réparation
       function populateOrdreReparationTable() {
         const tableBody = document.getElementById("ordreReparationTableBody");
-        tableBody.innerHTML = ""; // Clear existing table content
+        tableBody.innerHTML = "";
 
         const signalementsRef = ref(db, "signalement/");
         onValue(signalementsRef, (snapshot) => {
           const signalementsData = snapshot.val();
           if (signalementsData) {
-            // Convert the object into an array and sort it in descending order based on IDs
             const sortedSignalements = Object.keys(signalementsData)
               .map((signalementId) => ({
                 id: signalementId,
@@ -491,7 +496,6 @@
                   signalement.machine == selectedMachineKey &&
                   signalement.isFinished === "non"
                 ) {
-                  // Create a new row for each signalement
                   const row = document.createElement("tr");
 
                   if (selectedMachineData.Nmatériel.startsWith("15")) {
@@ -520,7 +524,7 @@
                   checkboxCell.appendChild(checkbox);
                   row.appendChild(checkboxCell);
 
-                  tableBody.appendChild(row); // Append row to the table body
+                  tableBody.appendChild(row);
                 }
               }
             );
@@ -530,11 +534,11 @@
         });
       }
 
+      // affichage des signalements dans le tableau
       function populateDashBoardTable() {
         const tableBody = document.getElementById("dashboardTableBody");
-        tableBody.innerHTML = ""; // Clear existing table content
+        tableBody.innerHTML = "";
 
-        // Fetch data from "signalement" node
         const signalementsRef = ref(db, "signalement/");
         const signalementsPromise = get(signalementsRef).then((snapshot) => {
           const signalementsData = snapshot.val();
@@ -548,7 +552,6 @@
           return [];
         });
 
-        // Fetch data from "ordreReparation" node
         const ordresReparationRef = ref(db, "ordreReparation/");
         const ordresReparationPromise = get(ordresReparationRef).then(
           (snapshot) => {
@@ -566,14 +569,12 @@
           }
         );
 
-        // Merge data from both sources and sort it
         Promise.all([signalementsPromise, ordresReparationPromise]).then(
           ([signalements, ordresReparation]) => {
             const mergedData = [...signalements, ...ordresReparation].sort(
               (a, b) => new Date(b.data.date) - new Date(a.data.date)
             );
 
-            // Display the merged data in the table
             mergedData.forEach((item) => {
               const row = document.createElement("tr");
 
@@ -609,8 +610,6 @@
               } else if (item.type === "ordreReparation") {
                 const ordreReparation = item.data;
                 if (ordreReparation.machine == selectedMachineKey) {
-                  // Display ordre de réparation data in the table
-                  // Customize the row content based on your ordre de réparation data structure
                   row.innerHTML = `
               <td>${ordreReparation.date || "N/A"}</td>
               <td>Ordre de réparation</td>
@@ -622,7 +621,6 @@
                 }
               }
 
-              // Add event listener to the checkbox (if applicable)
               const checkbox = row.querySelector(".validation-checkbox");
               if (checkbox) {
                 checkbox.addEventListener("change", (event) => {
@@ -634,18 +632,18 @@
                 });
               }
 
-              tableBody.appendChild(row); // Append row to the table body
+              tableBody.appendChild(row);
             });
           }
         );
       }
 
+      // affichage des entretiens périodiques dans le tableau
       function populateEntretiensPeriodiquesTable() {
         const tableBody = document.getElementById("entretiensTableBody");
-        tableBody.innerHTML = ""; // Clear existing table content
+        tableBody.innerHTML = "";
 
         if (selectedMachineData.Nmatériel.startsWith("15")) {
-          // Display existing entretiens schedule
           const entretiensSchedule = [
             { entretien: "250H", compteur: 250 },
             { entretien: "500H", compteur: 500 },
@@ -680,7 +678,6 @@
             tableBody.appendChild(row);
           });
         } else {
-          // Display PVidange for the next oil change
           const nextOilChange = selectedMachineData.PVidange || "N/A";
 
           const row = document.createElement("tr");
@@ -710,7 +707,7 @@
         });
       }
 
-      // Function to update the isFinished status in the database
+      // fonction de mise à jour de l'état de l'entretien
       function updateSignalementStatus(signalementId, status) {
         const signalementRef = ref(db, `signalement/${signalementId}`);
         update(signalementRef, { isFinished: status })
@@ -725,17 +722,15 @@
           });
       }
 
+      // affichage des entretiens périodiques dans le tableau
       function populateTable() {
         const tableBody = document.getElementById("visiteTableBody");
         tableBody.innerHTML = "";
 
         if (Object.keys(selectedMachineData).length > 0) {
-          // If the selected item is a machine
           if (selectedMachineData.Nmatériel.startsWith("15")) {
-            // Machine starts with '15', display VGP
             const nextVisitDate = selectedMachineData.PVGP || "N/A";
 
-            // Calculate last visit date based on next visit date
             const [day, month, year] = nextVisitDate.split("/").map(Number);
             const nextDate = new Date(year, month - 1, day);
             const lastDate = new Date(nextDate);
@@ -748,7 +743,6 @@
               "0"
             )}/${lastDate.getFullYear()}`;
 
-            // Create the table row
             const row = document.createElement("tr");
             row.innerHTML = `
         <td>${lastVisitDate}</td>
@@ -758,11 +752,9 @@
 
             tableBody.appendChild(row);
           } else {
-            // If the selected item is not a machine, display last control technique and last control anti-pollution
             const nextControlTechnique = selectedMachineData.PCT || "N/A";
             const nextControlAntiPollution = selectedMachineData.PCAP || "N/A";
 
-            // Calculate last visit dates based on next visit dates
             const [dayCT, monthCT, yearCT] = nextControlTechnique
               .split("/")
               .map(Number);
@@ -786,7 +778,6 @@
               lastControlAntiPollutionDate.getFullYear() - 1
             );
 
-            // Format the last visit dates to "dd/mm/yyyy"
             const formattedLastControlTechniqueDate = `${String(
               lastControlTechniqueDate.getDate()
             ).padStart(2, "0")}/${String(
@@ -798,7 +789,6 @@
               lastControlAntiPollutionDate.getMonth() + 1
             ).padStart(2, "0")}/${lastControlAntiPollutionDate.getFullYear()}`;
 
-            // Create the table rows
             const row1 = document.createElement("tr");
             row1.innerHTML = `
         <td>${formattedLastControlTechniqueDate}</td>
@@ -827,13 +817,12 @@
         });
       }
 
+      // fonction de gestion de la date de la prochaine visite
       function handleValidation() {
-        // Get current date and calculate next visit date (1 year from today)
         const currentDate = new Date();
         const nextVisitDate = new Date(currentDate);
         nextVisitDate.setFullYear(nextVisitDate.getFullYear() + 1);
 
-        // Format the next visit date to "dd/mm/yyyy"
         const formattedNextVisitDate = `${String(
           nextVisitDate.getDate()
         ).padStart(2, "0")}/${String(nextVisitDate.getMonth() + 1).padStart(
@@ -841,7 +830,6 @@
           "0"
         )}/${nextVisitDate.getFullYear()}`;
 
-        // Update Firebase with the new next visit date
         const machineRef = ref(db, `machine/${selectedMachineKey}`);
         update(machineRef, {
           PVGP: formattedNextVisitDate,
@@ -851,13 +839,13 @@
               "Next visit date updated successfully:",
               formattedNextVisitDate
             );
-            // Update the table with the new dates
             populateTable();
           })
           .catch((error) => {
             console.error("Error updating next visit date:", error);
           });
       }
+      // gestion des évenements de click sur le bouton visite réglementaire
       document
         .getElementById("visiteReglementaireButton")
         .addEventListener("click", () => {
@@ -875,6 +863,7 @@
             "none";
           document.getElementById("entretiensContainer").style.display = "none";
         });
+      // gestion des évenements de click sur le bouton ordre de réparation
       document
         .getElementById("ordreReparationButton")
         .addEventListener("click", () => {
@@ -884,9 +873,7 @@
             );
             return;
           }
-          document.getElementById(
-            "visiteReglementaireContainer"
-          ).style.display = "none";
+          document.getElementById("dashboardContainer").style.display = "none";
           document.getElementById(
             "visiteReglementaireContainer"
           ).style.display = "none";
@@ -894,6 +881,7 @@
           document.getElementById("ordreReparationContainer").style.display =
             "block";
         });
+      // gestion des évenements de click sur le bouton entretiens
       document
         .getElementById("entretiensButton")
         .addEventListener("click", () => {
@@ -914,6 +902,7 @@
           document.getElementById("entretiensContainer").style.display =
             "block";
         });
+      // gestion des évenements de click sur le bouton tableau de bord
       document
         .getElementById("dashboardButton")
         .addEventListener("click", () => {
@@ -942,6 +931,7 @@
           }
         }
       });
+      // gestion des évenements de click sur les checkbox de choix de signalement
       document
         .getElementById("selectSignalementsButton")
         .addEventListener("click", () => {
@@ -949,7 +939,6 @@
             document.querySelectorAll(".signalement-checkbox:checked")
           ).map((checkbox) => checkbox.dataset.signalementId);
 
-          // Redirect to ordreReparation.html with selected signalement IDs and machine ID as query parameters
           if (selectedSignalements.length > 0) {
             const queryParams = selectedSignalements
               .map((id) => `id=${id}`)

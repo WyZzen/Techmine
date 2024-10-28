@@ -122,20 +122,15 @@
       </button>
       <div id="table" class="table-responsive">
         <div class="row mb-3">
-          <div class="col-md-5">
+          <div class="col-md-3">
             <label for="startDate">Date de début :</label>
             <input type="date" id="startDate" class="form-control" />
           </div>
-          <div class="col-md-5">
+          <div class="col-md-3">
             <label for="endDate">Date de début :</label>
             <input type="date" id="endDate" class="form-control" />
           </div>
-          <div class="col-md-2 align-self-end">
-            <button id="filterButton" class="btn btn-primary">Filtrer</button>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-5">
+          <div class="col-md-4">
             <label for="secteur">Secteur :</label>
             <select id="secteur" class="form-control">
               <option value="TS">TS</option>
@@ -146,9 +141,7 @@
             </select>
           </div>
           <div class="col-md-2 align-self-end">
-            <button id="filterBySectorButton" class="btn btn-primary">
-              Filtrer par secteur
-            </button>
+            <button id="filterButton" class="btn btn-primary">Filtrer</button>
           </div>
         </div>
         <div id="fileList"></div>
@@ -580,59 +573,7 @@
       });
     }
 
-    //filtrage des rapports par date
-    function fetchFilteredRapports(startDate, endDate) {
-      const rapportRef = ref(db, "rapport");
-      const usersRef = ref(db, "users");
-
-      // Supprimez l'ancienne instance de DataTable avant de réinitialiser
-      if ($.fn.DataTable.isDataTable("#rapportsTable")) {
-        $("#rapportsTable").DataTable().clear().destroy();
-      }
-
-      onValue(usersRef, (usersSnapshot) => {
-        const users = usersSnapshot.val() || {};
-
-        onValue(rapportRef, (rapportsSnapshot) => {
-          const rapports = rapportsSnapshot.val() || {};
-          const rappotstableBody = document
-            .getElementById("rapportsTable")
-            .getElementsByTagName("tbody")[0];
-          rappotstableBody.innerHTML = "";
-
-          const sortedRapportsIds = Object.keys(rapports).sort((a, b) => b - a);
-
-          sortedRapportsIds.forEach((dateNb) => {
-            const rapport = rapports[dateNb];
-            const userId = rapport.user;
-            const user = users[userId] || {
-              prenom: "Utilisateur",
-              nom: "Inconnu",
-            };
-            const rapportDate = new Date(rapport.dateTimestamp);
-
-            if (
-              rapportDate >= new Date(startDate) &&
-              rapportDate <= new Date(endDate) &&
-              (currentUserRole === "cadre" ||
-                currentUserRole === "responsable exploitation" ||
-                currentUserRole === "directeur" ||
-                currentUserRole === "responsable agence" ||
-                userId === currentUserId)
-            ) {
-              const row = rappotstableBody.insertRow();
-              populateRow(row, dateNb, rapport, user);
-            }
-          });
-
-          // Initialise DataTables une fois les lignes insérées
-          $("#rapportsTable").DataTable();
-        });
-      });
-    }
-
-    //fonction pour filtrer les rapports par secteur
-    function fetchFilteredRapportsBySector(secteur) {
+    function fetchFilteredRapportsBySectorAndDate(secteur, startDate, endDate) {
       const rapportRef = ref(db, "rapport");
       const usersRef = ref(db, "users");
       const chantiersRef = ref(db, "chantiers");
@@ -655,10 +596,6 @@
               .getElementsByTagName("tbody")[0];
             rappotstableBody.innerHTML = "";
 
-            const sortedRapportsIds = Object.keys(rapports).sort(
-              (a, b) => b - a
-            );
-
             // Filtrer les chantiers par secteur
             const chantiersNames = Object.keys(chantiers)
               .filter(
@@ -667,26 +604,63 @@
               )
               .map((chantierId) => chantiers[chantierId].name);
 
-            // Filtrer les rapports en fonction du secteur
-            sortedRapportsIds.forEach((dateNb) => {
-              const rapport = rapports[dateNb];
+            // Préparer les dates de début et de fin
+            const start = startDate ? new Date(startDate) : null;
+            let end = endDate ? new Date(endDate) : null;
+
+            // Si endDate est fourni, ajouter un jour
+            if (end) {
+              end.setDate(end.getDate() + 1); // Ajouter un jour
+            }
+
+            // Filtrer les rapports par secteur, date (si fournie) et rôle d'utilisateur
+            const filteredRapports = Object.entries(rapports)
+              .filter(([dateNb, rapport]) => {
+                const userId = rapport.user;
+                const user = users[userId] || {
+                  prenom: "Utilisateur",
+                  nom: "Inconnu",
+                };
+                const rapportDate = new Date(rapport.dateTimestamp);
+
+                // Vérifier si la date est dans la plage avec les limites incluses
+                const dateInRange =
+                  (!start || rapportDate >= start) &&
+                  (!end || rapportDate < end); // Utiliser < pour ne pas inclure le lendemain
+
+                return (
+                  chantiersNames.includes(rapport.infos.Carriere) &&
+                  dateInRange &&
+                  ([
+                    "cadre",
+                    "responsable exploitation",
+                    "directeur",
+                    "responsable agence",
+                  ].includes(currentUserRole) ||
+                    userId === currentUserId)
+                );
+              })
+              // Trier par date du plus récent au plus ancien
+              .sort(([, a], [, b]) => b.dateTimestamp - a.dateTimestamp);
+
+            // Remplir le tableau avec les rapports filtrés et triés
+            filteredRapports.forEach(([dateNb, rapport]) => {
               const userId = rapport.user;
               const user = users[userId] || {
                 prenom: "Utilisateur",
                 nom: "Inconnu",
               };
-
-              if (
-                chantiersNames.includes(rapport.infos.Carriere) ||
-                secteur === "TS"
-              ) {
-                const row = rappotstableBody.insertRow();
-                populateRow(row, dateNb, rapport, user);
-              }
+              const row = rappotstableBody.insertRow();
+              populateRow(row, dateNb, rapport, user);
             });
 
-            // Initialise DataTables après l'insertion des lignes
-            $("#rapportsTable").DataTable();
+            // Initialise DataTables une fois les lignes insérées
+            $("#rapportsTable").DataTable({
+              order: [[0, "dsc"]],
+              columnDefs: [{ orderable: true, targets: [0, 0] }],
+              paging: true,
+              searching: true,
+            });
           });
         });
       });
@@ -905,17 +879,10 @@
     document
       .getElementById("filterButton")
       .addEventListener("click", function () {
-        const startDate = document.getElementById("startDate").value;
-        const endDate = document.getElementById("endDate").value;
-        fetchFilteredRapports(startDate, endDate);
-      });
-    //fonction pour filtrer les rapports par secteur
-    document
-      .getElementById("filterBySectorButton")
-      .addEventListener("click", function () {
-        const secteur = document.getElementById("secteur").value;
-        console.log(secteur);
-        fetchFilteredRapportsBySector(secteur);
+        const startDate = document.getElementById("startDate").value || "";
+        const endDate = document.getElementById("endDate").value || "";
+        const secteur = document.getElementById("secteur").value || "TS";
+        fetchFilteredRapportsBySectorAndDate(secteur, startDate, endDate);
       });
     fetchRapports();
     document

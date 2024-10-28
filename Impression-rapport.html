@@ -8,15 +8,14 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
     />
-    <!-- Ajout de la bibliothèque jsPDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  </head>
-  <body class="h4">
     <style>
       div {
         margin-left: 5vh;
       }
     </style>
+  </head>
+  <body class="h4">
     <div class="text-start">
       <img
         id="logo"
@@ -47,8 +46,8 @@
       Retour à l'accueil
     </button>
     <script>
+      // Fonction pour retourner à l'accueil
       function goHome() {
-        // Replace 'index.html' with the path to your homepage
         window.location.href = "accueil.html";
       }
     </script>
@@ -87,8 +86,8 @@
       const auth = getAuth();
       const number = getURLParameter("id");
 
+      // Vérification de la version de l'application
       const versionRef = ref(db, "appInfo/version");
-
       onValue(versionRef, (snapshot) => {
         const latestVersion = snapshot.val();
         const currentVersion = localStorage.getItem("appVersion");
@@ -97,11 +96,14 @@
           window.location.reload();
         }
       });
+
+      // Fonction pour récupérer les paramètres de l'URL
       function getURLParameter(name) {
         return new URLSearchParams(window.location.search).get(name);
       }
 
-      async function getAttachement() {
+      // Fonction pour récupérer les informations du rapport
+      async function getRapport() {
         const attachmentRef = ref(db, "rapport/" + number);
         const divChantier = document.getElementById("chantier");
         const divClient = document.getElementById("client");
@@ -141,7 +143,7 @@
         divCommMF.textContent = "commentaire : " + infos.CommMF;
       }
 
-      getAttachement();
+      getRapport();
 
       // Fonction pour convertir l'image en base64
       function getBase64Image(img) {
@@ -152,6 +154,8 @@
         ctx.drawImage(img, 0, 0);
         return canvas.toDataURL("image/png");
       }
+
+      // Fonction pour générer le message WhatsApp
       async function generateWhatsAppMessage() {
         const attachmentRef = ref(db, "rapport/" + number);
         const snapshot = await get(attachmentRef);
@@ -167,12 +171,14 @@
         const CommP = infos.CommP;
         const today = new Date();
         const day = String(today.getDate()).padStart(2, "0");
-        const month = String(today.getMonth() + 1).padStart(2, "0"); // Les mois commencent à 0
+        const month = String(today.getMonth() + 1).padStart(2, "0");
         const year = today.getFullYear();
         const formattedDate = `${day}/${month}/${year}`;
 
         return `${formattedDate}\nChantier: ${chantier}\nMl: ${NbMF}\n Commentaire: ${CommMF}\n HF: ${HForreuse}\nH arrêt: ${HArret}\nCommentaire: ${CommA}\nH Panne: ${HPanne}\nCommentaire: ${CommP}`;
       }
+
+      // Gestion du clic sur le bouton WhatsApp
       document.getElementById("btnWhatsApp").addEventListener("click", () => {
         const newWindow = window.open("about:blank", "_blank");
 

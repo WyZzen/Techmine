@@ -1,11 +1,9 @@
 @import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap");
 
-/* Mark input boxes that gets an error on validation: */
 input.invalid {
   background-color: #ffdddd;
 }
 
-/* Hide all steps by default: */
 .tab {
   display: none;
 }
@@ -18,12 +16,10 @@ input.invalid {
   color: white;
 }
 
-/* Mark the active step: */
 .step.active {
   opacity: 1;
 }
 
-/* Mark the steps that are finished and valid: */
 .step.finish {
   background-color: #183f7c;
 }

@@ -1,3 +1,6 @@
+<!-- cette page permet de télécharger un fichier excel contenant la liste des
+carrières/chantiers de l'entreprise et de l'envoyer à la base de données
+Firebase, elle est accessible unique par l'administrateur-->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +14,6 @@
     <button id="upload">Upload and Save to Firebase</button>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
       import {
@@ -40,6 +42,7 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
 
+      // upload du fichier excel et enregistrement des données dans la base de données
       function uploadFile() {
         const fileUpload = document.getElementById("fileUpload");
         const file = fileUpload.files[0];

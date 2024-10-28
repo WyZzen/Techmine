@@ -1,3 +1,6 @@
+<!-- cette page permet de télécharger un fichier excel contenant la liste des
+machines/véhicules de l'entreprise et de l'envoyer à la base de données
+Firebase, elle est accessible unique par l'administrateur -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -36,6 +39,7 @@
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
 
+      // Fonction pour convertir les dates Excel en dates JavaScript
       function excelSerialDateToJSDate(serial) {
         if (serial < 60) {
           serial += 1;
@@ -45,6 +49,7 @@
         return date.toISOString().split("T")[0];
       }
 
+      // Upload du fichier excel et enregistrement des données dans la base de données
       function uploadFile() {
         const fileUpload = document.getElementById("fileUpload");
         const file = fileUpload.files[0];
