@@ -22,8 +22,6 @@ function validStep(stepIndex) {
   if (validateStep(step)) {
     stepValid[stepIndex] = true;
     changeColorBtn(stepIndex);
-    // Si l'étape est valide, passez à l'étape suivante
-    // Si c'est la dernière étape on ne passe pas à la suivante (il n'y en a pas idiot)
     if (stepIndex + 1 !== steps.length) {
       showTab(stepIndex + 1);
     }
@@ -45,6 +43,26 @@ function allStepsValid() {
   } else {
     return false;
   }
+}
+function validateStep(step) {
+  let inputs = step.querySelectorAll("input, select");
+  let isValid = true;
+
+  inputs.forEach((input) => {
+    if (
+      input.value === "" ||
+      (input.type === "checkbox" && input.checked === false)
+    ) {
+      if (
+        input.value === "" ||
+        (input.type === "checkbox" && input.checked === false)
+      ) {
+        isValid = false;
+      }
+    }
+  });
+
+  return isValid;
 }
 
 // affiche un message

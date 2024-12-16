@@ -861,7 +861,6 @@
           for (let itemRef of res.items) {
             const fileName = itemRef.name;
             if (fileName === existingFileName) {
-              alert("Le fichier PDF combiné existe déjà.");
               const downloadURL = await getDownloadURL(itemRef);
               const whatsappURL = `https://wa.me/?text=${encodeURIComponent(
                 downloadURL

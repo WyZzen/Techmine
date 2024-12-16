@@ -141,8 +141,8 @@
               <th>Chantier</th>
               <th>Observation</th>
               <th>Forage</th>
-              <th>HMF Début</th>
               <th>N° Plan Forage</th>
+              <th>HMF Début</th>
               <th>HMF Fin</th>
               <th>Diamètre Forage</th>
               <th>Transfert</th>
@@ -528,8 +528,8 @@
                 row.insertCell(2).textContent = infos.chantier || "";
                 row.insertCell(3).textContent = infos.observation || "";
                 row.insertCell(4).textContent = infos.forage || "";
-                row.insertCell(5).textContent = infos.HMFDebut || "";
-                row.insertCell(6).textContent = infos.NPlanForage || "";
+                row.insertCell(5).textContent = infos.NPlanForage || "";
+                row.insertCell(6).textContent = infos.HMFDebut || "";
                 row.insertCell(7).textContent = infos.HMFFin || "";
                 row.insertCell(8).textContent = infos.DiametreForage || "";
                 row.insertCell(9).textContent = infos.transfert || "";
@@ -637,66 +637,125 @@
       function exportAttachmentsToCSV() {
         const attachmentsRef = ref(db, "Attachement");
         const usersRef = ref(db, "users");
+        const chantiersRef = ref(db, "chantiers");
 
-        Promise.all([get(attachmentsRef), get(usersRef)])
+        Promise.all([get(attachmentsRef), get(usersRef), get(chantiersRef)])
           .then((results) => {
             const attachmentsSnapshot = results[0];
             const usersSnapshot = results[1];
+            const chantiersSnapshot = results[2];
 
-            const attachments = attachmentsSnapshot.val();
-            const users = usersSnapshot.val();
+            const attachments = attachmentsSnapshot?.val();
+            const users = usersSnapshot?.val();
+            const chantiers = chantiersSnapshot?.val();
 
             if (!attachments) {
               alert("Aucun attachement trouvé.");
               return;
             }
 
+            if (!users) {
+              console.warn("Aucun utilisateur trouvé dans la base de données.");
+            }
+
+            if (!chantiers) {
+              console.warn("Aucun chantier trouvé dans la base de données.");
+            }
+
             let csvContent =
-              "\uFEFFClient;Chantier;Observation;Forage;HMFDebut;NPlanForage;HMFFin;HeuresPanne;HeuresArret;DiametreForage;QuantiteForage;UniteForage;Minage;NPlanTir;NbSismographes;QuantiteMinage;UniteMinage;Autre;GNR;DatesForage;DatesMinage;Implantation;Transfert;CommP;CommA;QuantiteGNR;PerteOutillageTir;Utilisateur\n";
+              "\uFEFFNuméro d'Attachement;Client;Chantier;Observation;Forage;N° Plan Forage;HMF Début;HMF Fin;Diamètre Forage;Transfert;Heures Arrêt;Commentaire Arrêt;Heures Panne;Commentaire Panne;Quantité Forage;Unité Forage;Minage;N° Plan Tir;N° Sismographes;Quantité Minage;Unité Minage;Autre;GNR;Quantité GNR;date;utilisateur\n";
 
             Object.keys(attachments).forEach((key) => {
-              const attachment = attachments[key].infos;
-              const userId = attachments[key].user;
+              const attachment = attachments[key]?.infos || {};
+              const chantierField = attachment.chantier || "Inconnu";
 
-              const user = users[userId]
-                ? `${users[userId].prenom} ${users[userId].nom}`
-                : "Utilisateur Inconnu";
+              const chantierName = chantierField.startsWith("chantier : ")
+                ? chantierField.split("chantier : ")[1].trim()
+                : chantierField;
 
-              const row = [
-                attachment.client,
-                attachment.chantier,
-                attachment.observation,
-                attachment.forage,
-                attachment.HMFDebut,
-                attachment.NPlanForage,
-                attachment.HMFFin,
-                attachment.HeuresPanne,
-                attachment.HeuresArret,
-                attachment.DiametreForage,
-                attachment.QuantiteForage,
-                attachment.UniteForage,
-                attachment.minage,
-                attachment.NPlanTir,
-                attachment.NbSismographes,
-                attachment.QuantiteMinage,
-                attachment.UniteMinage,
-                attachment.autre,
-                attachment.GNR,
-                attachment.datesForage,
-                attachment.datesMinage,
-                attachment.implantation,
-                attachment.Transfert,
-                attachment.CommP,
-                attachment.CommA,
-                attachment.QuantiteGNR,
-                attachment.perteOutillageTir,
-                user,
-              ].join(";");
+              const chantierObj = chantiers
+                ? Object.values(chantiers).find(
+                    (chantier) =>
+                      chantier.name?.toLowerCase().trim() ===
+                      chantierName.toLowerCase().trim()
+                  )
+                : null;
 
-              csvContent += row + "\n";
+              const codeChantier = chantierObj?.code || "Code Inconnu";
+
+              const idAttachment = key;
+
+              const diameters = Array.isArray(attachment.DiametreForage)
+                ? attachment.DiametreForage
+                : [attachment.DiametreForage || ""]; // Tableau des diamètres
+
+              const unitsForage = Array.isArray(attachment.UniteForage)
+                ? attachment.UniteForage
+                : typeof attachment.UniteForage === "string"
+                ? attachment.UniteForage.split(",").map((unit) => unit.trim())
+                : [""];
+
+              const quantitiesForage = Array.isArray(attachment.QuantiteForage)
+                ? attachment.QuantiteForage
+                : typeof attachment.QuantiteForage === "string"
+                ? attachment.QuantiteForage.split(",").map((quantity) =>
+                    quantity.trim()
+                  )
+                : [""];
+
+              const unitsMinage = Array.isArray(attachment.UniteMinage)
+                ? attachment.UniteMinage
+                : typeof attachment.UniteMinage === "string"
+                ? attachment.UniteMinage.split(",").map((unit) => unit.trim())
+                : [""];
+
+              const quantitiesMinage = Array.isArray(attachment.QuantiteMinage)
+                ? attachment.QuantiteMinage
+                : typeof attachment.QuantiteMinage === "string"
+                ? attachment.QuantiteMinage.split(",").map((quantity) =>
+                    quantity.trim()
+                  )
+                : [""];
+
+              diameters.forEach((diameter) => {
+                unitsForage.forEach((unitForage, index) => {
+                  const quantityForage = quantitiesForage[index] || "";
+
+                  const row = [
+                    idAttachment,
+                    attachment.client || "",
+                    chantierName,
+                    attachment.observation || "",
+                    "Forage", // Static Forage
+                    attachment.planForage || "",
+                    attachment.hmfDebut || "",
+                    attachment.hmfFin || "",
+                    diameter || "",
+                    attachment.transfert || "",
+                    attachment.heuresArret || "",
+                    attachment.commentaireArret || "",
+                    attachment.heuresPanne || "",
+                    attachment.commentairePanne || "",
+                    quantityForage || "",
+                    unitForage || "",
+                    "Minage", // Static Minage
+                    attachment.planTir || "",
+                    attachment.sismographes || "",
+                    quantitiesMinage[index] || "",
+                    unitsMinage[index] || "",
+                    attachment.autre || "",
+                    attachment.gnr || "",
+                    attachment.quantiteGnr || "",
+                    attachment.date || "",
+                    attachment.utilisateur || "",
+                  ].join(";");
+
+                  csvContent += row + "\n";
+                });
+              });
             });
 
-            const encodedUri = encodeURI(csvContent);
+            const encodedUri = encodeURIComponent(csvContent);
             const link = document.createElement("a");
             link.setAttribute(
               "href",
