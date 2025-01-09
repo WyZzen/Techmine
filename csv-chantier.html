@@ -12,6 +12,7 @@ Firebase, elle est accessible unique par l'administrateur-->
     <h1>Upload Excel File</h1>
     <input type="file" id="fileUpload" accept=".xlsx, .xls" />
     <button id="upload">Upload and Save to Firebase</button>
+    <button id="removeDuplicates">Remove Duplicates</button>
 
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script type="module">
@@ -25,6 +26,7 @@ Firebase, elle est accessible unique par l'administrateur-->
         query,
         orderByChild,
         equalTo,
+        remove,
       } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
 
       const firebaseConfig = {
@@ -69,6 +71,7 @@ Firebase, elle est accessible unique par l'administrateur-->
             const clientName = entry["client"];
             const chantierCode = entry["code chantier"];
             const chantierName = entry["chantier"];
+            const secteur = entry["secteur"] || "Secteur non spécifié"; // Valeur par défaut
 
             if (!clientsMap.has(clientName)) {
               const newClientRef = push(ref(db, "clients"));
@@ -77,6 +80,7 @@ Firebase, elle est accessible unique par l'administrateur-->
               set(newClientRef, {
                 id: newClientRef.key,
                 name: clientName,
+                secteur: secteur, // Utilise la valeur par défaut si undefined
               })
                 .then(() => console.log("Client added:", clientName))
                 .catch((error) => console.error("Error adding client:", error));
@@ -89,6 +93,7 @@ Firebase, elle est accessible unique par l'administrateur-->
               code: chantierCode,
               name: chantierName,
               clientId: clientId,
+              secteur: secteur,
             })
               .then(() =>
                 console.log("Chantier added:", chantierName, clientName)
@@ -101,6 +106,11 @@ Firebase, elle est accessible unique par l'administrateur-->
       }
 
       document.getElementById("upload").addEventListener("click", uploadFile);
+      document
+        .getElementById("removeDuplicates")
+        .addEventListener("click", () =>
+          removeDuplicates("/chantiers", "code")
+        );
     </script>
   </body>
 </html>

@@ -109,6 +109,11 @@
                   >Gestion des Clients</a
                 >
               </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-chantier.html"
+                  >Gestion des chantiers</a
+                >
+              </li>
             </ul>
           </div>
         </div>
@@ -631,66 +636,60 @@
       });
     }
 
-    //fonction pour filtrer les rapports par secteur
-    function fetchFilteredRapportsBySector(secteur) {
+    //filtrage des rapports par secteur
+    async function fetchFilteredRapportsBySector(secteur) {
+      //on commence par récuperer les rapports
       const rapportRef = ref(db, "rapport");
-      const usersRef = ref(db, "users");
-      const chantiersRef = ref(db, "chantiers");
 
       // Supprimez l'ancienne instance de DataTable avant de réinitialiser
       if ($.fn.DataTable.isDataTable("#rapportsTable")) {
         $("#rapportsTable").DataTable().clear().destroy();
       }
 
-      onValue(usersRef, (usersSnapshot) => {
-        const users = usersSnapshot.val() || {};
+      if (secteur === "TS") {
+        fetchRapports();
+        return;
+      }
+      onValue(rapportRef, (rapportsSnapshot) => {
+        const rapports = rapportsSnapshot.val() || {};
 
-        onValue(chantiersRef, (chantiersSnapshot) => {
-          const chantiers = chantiersSnapshot.val() || {};
+        if (!rapports || Object.keys(rapports).length === 0) {
+          alert("Aucun rapport trouvé pour ce secteur");
+          return;
+        }
 
-          onValue(rapportRef, (rapportsSnapshot) => {
-            const rapports = rapportsSnapshot.val() || {};
-            const rappotstableBody = document
-              .getElementById("rapportsTable")
-              .getElementsByTagName("tbody")[0];
-            rappotstableBody.innerHTML = "";
+        for (const rapportId in rapports) {
+          const rapport = rapports[rapportId];
+          const Carriere = rapport.infos.Carriere;
 
-            const sortedRapportsIds = Object.keys(rapports).sort(
-              (a, b) => b - a
-            );
+          const chantierRef = ref(db, "chantiers");
+          onValue(chantierRef, (chantiersSnapshot) => {
+            const chantiers = chantiersSnapshot.val() || {};
 
-            // Filtrer les chantiers par secteur
-            const chantiersNames = Object.keys(chantiers)
-              .filter(
-                (chantierId) =>
-                  chantiers[chantierId].secteur === secteur || secteur === "TS"
-              )
-              .map((chantierId) => chantiers[chantierId].name);
+            for (const chantierId in chantiers) {
+              const chantier = chantiers[chantierId];
+              if (chantier.secteur == secteur && chantier.name == Carriere) {
+                const usersRef = ref(db, "users");
+                onValue(usersRef, (usersSnapshot) => {
+                  const users = usersSnapshot.val() || {};
+                  const user = users[rapport.user] || {
+                    prenom: "Utilisateur",
+                    nom: "Inconnu",
+                  };
 
-            // Filtrer les rapports en fonction du secteur
-            sortedRapportsIds.forEach((dateNb) => {
-              const rapport = rapports[dateNb];
-              const userId = rapport.user;
-              const user = users[userId] || {
-                prenom: "Utilisateur",
-                nom: "Inconnu",
-              };
-
-              if (
-                chantiersNames.includes(rapport.infos.Carriere) ||
-                secteur === "TS"
-              ) {
-                const row = rappotstableBody.insertRow();
-                populateRow(row, dateNb, rapport, user);
+                  const rappotstableBody = document
+                    .getElementById("rapportsTable")
+                    .getElementsByTagName("tbody")[0];
+                  const row = rappotstableBody.insertRow();
+                  populateRow(row, rapportId, rapport, user);
+                });
               }
-            });
-
-            // Initialise DataTables après l'insertion des lignes
-            $("#rapportsTable").DataTable();
+            }
           });
-        });
+        }
       });
     }
+
     //fonction pour ajouter une ligne à la table
     function populateRow(row, dateNb, rapport, user) {
       const infos = rapport.infos || {};
@@ -915,6 +914,15 @@
         const secteur = document.getElementById("secteur").value;
         console.log(secteur);
         fetchFilteredRapportsBySector(secteur);
+        //on rajoute un delay pour laisser le temps à la table de se recharger
+        setTimeout(() => {
+          $("#rapportsTable").DataTable({
+            order: [[0, "dsc"]],
+            columnDefs: [{ orderable: true, targets: [0, 0] }],
+            paging: true,
+            searching: true,
+          });
+        }, 1000);
       });
     fetchRapports();
     document
@@ -927,7 +935,33 @@
           .toArray()
           .map((row) => row.slice(0, -1)); // Exclude the last column if necessary
 
-        const ws = XLSX.utils.aoa_to_sheet(filteredData);
+        // Ajoutez les titres des colonnes
+        const columnTitles = [
+          "Date",
+          "Utilisateur",
+          "Client",
+          "Carriere",
+          "Nombre d'heure de travail",
+          "Nombre de mètres forés",
+          "Temps de route",
+          "Gd ou Panier",
+          "Foreuse",
+          "Nombre d'heure Marteau",
+          "Nombre d'heure au début",
+          "Nombre d'heure à la fin",
+          "Nombre d'heure d'arrêt",
+          "Commentaire sur les arrêts",
+          "Nombre d'heure de panne",
+          "Commentaire sur les pannes",
+          "Transporteur",
+          "Durée du transfert",
+          "Fournisseur",
+          "Quantité",
+        ];
+
+        const dataWithTitles = [columnTitles, ...filteredData];
+
+        const ws = XLSX.utils.aoa_to_sheet(dataWithTitles);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Rapports");
         const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });

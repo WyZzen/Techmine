@@ -8,528 +8,914 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="style-top.css" />
-    <title>Page d'ajout des utilisateurs</title>
+    <title>Gestion des Utilisateurs - TechMine</title>
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+      h1 {
+        margin: 20px 0;
+      }
+      .card {
+        margin-top: 40px;
+        border: none;
+      }
+      .card-header {
+        background: linear-gradient(90deg, #0d6efd, #0056b3);
+        color: white;
+        font-weight: bold;
+        font-size: 1.5rem;
+        text-align: center;
+        padding: 1rem;
+      }
+      .card-body {
+        background-color: white;
+        border-radius: 0 0 0.5rem 0.5rem;
+        padding: 2rem;
+      }
+      .form-label {
+        font-weight: bold;
+        color: #0d6efd;
+      }
+      .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
+      .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004494;
+      }
+      .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+      }
+      .btn-secondary:hover {
+        background-color: #5a6268;
+        border-color: #545b62;
+      }
+      table thead {
+        background-color: #0d6efd;
+        color: white;
+      }
+      .modal-content {
+        border-radius: 0.5rem;
+      }
+      .modal-dialog {
+        margin-top: 10%;
+      }
+      header {
+        background-color: #0d6efd;
+        color: white;
+        padding: 1rem 0;
+      }
+      header h1 {
+        color: white;
+      }
+      .thick-border {
+        border: 5px solid #0d6efd;
+        border-radius: 1.5rem;
+      }
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 1.5rem;
+        }
+        .btn {
+          font-size: 1rem;
+        }
+      }
+    </style>
   </head>
+
   <body class="text-center">
-    <div class="container-fluid align-items-center custom-height-top">
+    <!-- Barre de navigation -->
+    <header class="container-fluid py-3 shadow-sm">
       <div
-        class="row bg-gradient bg-white p-4 align-items-center custom-height-top"
+        class="d-flex flex-column flex-md-row justify-content-between align-items-center"
       >
-        <div class="col col-2 text-start">
-          <img
-            src="logo techmine.svg"
-            alt="bouton de menu"
-            class="custom-height-logo"
-          />
-        </div>
-        <div class="col col-8 text-center">
-          <h1 class="custom-font-top ms-5">gestion des utilisateurs</h1>
-        </div>
-        <div class="col col-2 text-end h-20">
-          <div class="dropdown text-center">
-            <button
-              class="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                src="symbole-de-menu-pour-android.png"
-                alt="bouton de menu"
-                class="custom-height-menu"
-              />
-            </button>
-            <ul
-              class="dropdown-menu dropdown-menu-dark custom-menu text-center"
-            >
-              <li>
-                <a class="dropdown-item" href="accueil.html"
-                  >Retourner à l'accueil</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
-              <li>
-                <a class="dropdown-item" href="liste-rapport.html"
-                  >Liste des Rapports</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="attachement.html"
-                  >Attachements</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="liste-attachement.html"
-                  >Liste des attachements</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="signalement.html">Signalement</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="liste-intervention.html"
-                  >Liste des Signalements</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="machines.html"
-                  >Gestion des Machines</a
-                >
-              </li>
-              <li><hr class="dropdown-divider menu-item-admin" /></li>
-              <li><hr class="dropdown-divider menu-item-admin" /></li>
-              <li class="menu-item-admin">
-                <div class="dropdown-header" style="font-size: 2rem">
-                  Administrateur
-                </div>
-              </li>
-              <li class="menu-item-admin">
-                <a class="dropdown-item" href="ajout-utilisateur.html"
-                  >Gestion des Utilisateurs</a
-                >
-              </li>
-              <li class="menu-item-admin">
-                <a class="dropdown-item" href="ajout-client.html"
-                  >Gestion des Clients</a
-                >
-              </li>
-            </ul>
-          </div>
+        <img
+          src="logo techmine.svg"
+          alt="Logo TechMine"
+          class="custom-height-logo"
+        />
+        <h1 class="fs-2 text-center" style="margin-right: 10%">
+          Gestion des Utilisateurs
+        </h1>
+        <div class="dropdown">
+          <button
+            class="btn btn-light border dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="symbole-de-menu-pour-android.png"
+              alt="Menu"
+              class="custom-height-menu"
+            />
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="accueil.html">Accueil</a></li>
+            <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
+            <li>
+              <a class="dropdown-item" href="liste-rapport.html"
+                >Liste des Rapports</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="machines.html"
+                >Gestion des Machines</a
+              >
+            </li>
+            <li class="dropdown-header">Administrateur</li>
+            <li>
+              <a class="dropdown-item" href="ajout-utilisateur.html"
+                >Gestion des Utilisateurs</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="ajout-client.html"
+                >Gestion des Clients</a
+              >
+            </li>
+            <li class="menu-item-admin">
+              <a class="dropdown-item" href="ajout-client.html"
+                >Gestion des Clients</a
+              >
+            </li>
+            <li class="menu-item-admin">
+              <a class="dropdown-item" href="ajout-chantier.html"
+                >Gestion des chantiers</a
+              >
+            </li>
+          </ul>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="container-fluid">
-      <div class="row bg-primary custom-height-bot">
-        <div class="col col-1"></div>
-        <div class="col col-10 align-self-center">
-          <!-- bloc de formulaire blanc -->
-          <div
-            class="container-fluid bg-white p-3 rounded-4 form-contain"
-            style="height: 65vh"
-          >
-            <div
-              id="alert-container"
-              class="alert alert-warning"
-              style="display: none"
-            ></div>
-            <div class="col-1"></div>
-            <div class="col-10r" style="height: 10vh">
-              <div class="custom-font-sub-title fw-bold text-primary tab-title">
-                <br />Ajouter un utilisateur :
-              </div>
-              <div>
-                <form id="MainForm" class="w- m-4" method="post">
-                  <div class="input-group mt-4">
-                    <span
-                      class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                      id="addon-wrapping"
-                      style="min-width: 8%"
-                      >Email :</span
-                    >
-                    <input
-                      type="text"
-                      class="form-control custom-height-input border border-primary-subtle"
-                      placeholder=""
-                      aria-label="Email"
-                      aria-describedby="addon-wrapping"
-                      id="Email"
-                    />
-                  </div>
-                  <div class="input-group mt-4">
-                    <span
-                      class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                      id="addon-wrapping"
-                      style="min-width: 8%"
-                      >Mot de Passe :</span
-                    >
-                    <input
-                      type="text"
-                      class="form-control custom-height-input border border-primary-subtle"
-                      placeholder=""
-                      aria-label="MDP"
-                      aria-describedby="addon-wrapping"
-                      id="MDP"
-                    />
-                  </div>
-                  <div class="input-group mt-4">
-                    <span
-                      class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                      id="addon-wrapping"
-                      style="min-width: 8%"
-                      >Prénom :</span
-                    >
-                    <input
-                      type="text"
-                      class="form-control custom-height-input border border-primary-subtle"
-                      placeholder=""
-                      aria-label="Prenom"
-                      aria-describedby="addon-wrapping"
-                      id="Prenom"
-                    />
-                  </div>
-                  <div class="input-group mt-4">
-                    <span
-                      style="min-width: 8%"
-                      class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                      id="addon-wrapping"
-                      >Nom :</span
-                    >
-                    <input
-                      type="text"
-                      class="form-control custom-height-input border border-primary-subtle"
-                      placeholder=""
-                      aria-label="Nom"
-                      aria-describedby="addon-wrapping"
-                      id="Nom"
-                    />
-                  </div>
-                  <div class="input-group">
-                    <span
-                      class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white mt-4"
-                      id="addon-wrapping"
-                      style="min-width: 8%"
-                      >Rôle :</span
-                    >
-                    <select
-                      class="form-select form-control custom-height-input border border-primary-subtle mt-4"
-                      id="role"
-                      aria-label="role"
-                    >
-                      <option
-                        selected
-                        disabled
-                        class="text-white bg-primary"
-                        id="vide"
-                      >
-                        Sélectionner un role
-                      </option>
-                    </select>
-                  </div>
-                  <div
-                    class="modal fade"
-                    id="userListModal"
-                    tabindex="-1"
-                    aria-labelledby="userListModalLabel"
-                    aria-hidden="true"
-                  >
-                    <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="userListModalLabel">
-                            Liste des utilisateurs
-                          </h5>
-                          <button
-                            type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal"
-                            aria-label="Close"
-                          ></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="mb-3">
-                            <label for="sortCriteria" class="form-label"
-                              >Trier par :</label
-                            >
-                            <select class="form-select" id="sortCriteria">
-                              <option value="nom">Nom</option>
-                              <option value="prenom">Prénom</option>
-                              <option value="role">Rôle</option>
-                            </select>
-                          </div>
-                          <table class="table table-bordered">
-                            <thead>
-                              <tr>
-                                <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>Rôle</th>
-                              </tr>
-                            </thead>
-                            <tbody id="userListTableBody"></tbody>
-                          </table>
-                        </div>
-                        <div class="modal-footer">
-                          <button
-                            type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal"
-                          >
-                            Fermer
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    class="btn btn-primary m-3"
-                    style="float: right"
-                  >
-                    Créer un utilisateur
-                  </button>
-                  <button
-                    id="popup"
-                    type="button"
-                    class="btn btn-secondary m-3"
-                    style="float: right"
-                  >
-                    Afficher la liste des utilisateurs
-                  </button>
-                </form>
+    <!-- Contenu principal -->
+    <main class="container my-5 thick-border">
+      <div class="card shadow">
+        <div
+          id="alert-container"
+          class="alert alert-warning"
+          style="display: none"
+        ></div>
+        <div class="card-header">Ajouter un utilisateur</div>
+        <div class="card-body">
+          <form id="MainForm" class="needs-validation" novalidate>
+            <div class="mb-4">
+              <label for="Email" class="form-label">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                id="Email"
+                placeholder="exemple@domaine.com"
+                required
+              />
+              <div class="invalid-feedback">
+                Veuillez fournir un email valide.
               </div>
             </div>
+            <div class="mb-4">
+              <label for="MDP" class="form-label">Mot de Passe</label>
+              <input
+                type="password"
+                class="form-control"
+                id="MDP"
+                placeholder="Mot de passe"
+                required
+              />
+              <div class="invalid-feedback">
+                Veuillez fournir un mot de passe.
+              </div>
+            </div>
+            <div class="mb-4">
+              <label for="Prenom" class="form-label">Prénom</label>
+              <input
+                type="text"
+                class="form-control"
+                id="Prenom"
+                placeholder="Prénom"
+                required
+              />
+              <div class="invalid-feedback">Veuillez fournir un prénom.</div>
+            </div>
+            <div class="mb-4">
+              <label for="Nom" class="form-label">Nom</label>
+              <input
+                type="text"
+                class="form-control"
+                id="Nom"
+                placeholder="Nom"
+                required
+              />
+              <div class="invalid-feedback">Veuillez fournir un nom.</div>
+            </div>
+            <div class="mb-4">
+              <label for="role" class="form-label">Rôle</label>
+              <select class="form-select" id="role" required>
+                <option value="" disabled selected>Sélectionner un rôle</option>
+              </select>
+              <div class="invalid-feedback">Veuillez sélectionner un rôle.</div>
+            </div>
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="btn btn-primary me-3">
+                Ajouter
+              </button>
+              <button type="button" class="btn btn-secondary" id="popup">
+                Voir la liste
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal : Liste des utilisateurs -->
+    <div
+      class="modal fade thick-border"
+      id="userListModal"
+      tabindex="-1"
+      aria-labelledby="userListModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="userListModalLabel">
+              Liste des utilisateurs
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Fermer"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="sortCriteria" class="form-label">Trier par :</label>
+              <select class="form-select" id="sortCriteria">
+                <option value="nom">Nom</option>
+                <option value="prenom">Prénom</option>
+                <option value="role">Rôle</option>
+              </select>
+            </div>
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Rôle</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="userListTableBody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
     </div>
-  </body>
-  <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Modal : Édition des infos (DB) -->
+    <div
+      class="modal fade"
+      id="editUserDbModal"
+      tabindex="-1"
+      aria-labelledby="editUserDbModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered" style="max-width: 50%">
+        <div class="modal-content">
+          <form id="editUserDbForm">
+            <div class="modal-header">
+              <h1 class="modal-title" id="editUserDbModalLabel">
+                Modifier les informations générales
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getDatabase,
-      set,
-      get,
-      ref,
-      onValue,
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-    import {
-      getAuth,
-      createUserWithEmailAndPassword,
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+            <div class="modal-body">
+              <!-- Champ pour le Nom -->
+              <div class="mb-3">
+                <label for="editNom" class="form-label">Nom</label>
+                <input type="text" class="form-control" id="editNom" required />
+              </div>
+              <!-- Champ pour le Prénom -->
+              <div class="mb-3">
+                <label for="editPrenom" class="form-label">Prénom</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editPrenom"
+                  required
+                />
+              </div>
+              <!-- Champ pour le Rôle -->
+              <div class="mb-3">
+                <label for="editRole" class="form-label">Rôle</label>
+                <select class="form-select" id="editRole" required></select>
+              </div>
+            </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
-      authDomain: "test-techmine.firebaseapp.com",
-      databaseURL:
-        "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "test-techmine",
-      storageBucket: "test-techmine.appspot.com",
-      messagingSenderId: "876142620682",
-      appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
-      measurementId: "G-2LKJFXNQ58",
-    };
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary btn-lg"
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-primary btn-lg">
+                Enregistrer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div
+      class="modal fade"
+      id="editUserAuthModal"
+      tabindex="-1"
+      aria-labelledby="editUserAuthModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="editUserAuthForm">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editUserAuthModalLabel">
+                Modifier Email / Mot de passe
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const db = getDatabase();
-    const auth = getAuth(app);
+            <div class="modal-body">
+              <!-- Champ pour l'Email -->
+              <div class="mb-3">
+                <label for="editEmail" class="form-label">Nouvel Email</label>
+                <input
+                  type="email"
+                  class="form-control"
+                  id="editEmail"
+                  placeholder="Laissez vide pour ne pas changer"
+                />
+              </div>
+              <!-- Champ pour le Mot de passe -->
+              <div class="mb-3">
+                <label for="editPassword" class="form-label"
+                  >Nouveau Mot de passe</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="editPassword"
+                  placeholder="Laissez vide pour ne pas changer"
+                />
+              </div>
+            </div>
 
-    // Vérification de la version de l'application
-    const versionRef = ref(db, "appInfo/version");
-    onValue(versionRef, (snapshot) => {
-      const latestVersion = snapshot.val();
-      const currentVersion = localStorage.getItem("appVersion");
-      if (currentVersion != latestVersion) {
-        localStorage.setItem("appVersion", latestVersion);
-        window.location.reload();
-      }
-    });
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Annuler
+              </button>
+              <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
 
-    let email = document.getElementById("Email");
-    let password = document.getElementById("MDP");
-    let nom = document.getElementById("Nom");
-    let prenom = document.getElementById("Prenom");
-    let role = document.getElementById("role");
-    let MainForm = document.getElementById("MainForm");
-    let popupButton = document.getElementById("popup");
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    // Récupérer les roles depuis la base de données
-    function fetchRole() {
-      const roleSelect = document.getElementById("role");
-      const rolesRef = ref(db, "role");
+    <!-- JS externes -->
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-      get(rolesRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const roles = snapshot.val();
+    <!-- Firebase et scripts d'initialisation -->
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"
+    ></script>
+    <script
+      type="module"
+      src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
+    ></script>
 
-            roleSelect.innerHTML = "";
+    <!-- Script principal -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+      import {
+        getDatabase,
+        ref,
+        get,
+        set,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        updateEmail,
+        updatePassword,
+      } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-            // Ajout des options par défaut
-            const defaultOption = document.createElement("option");
-            defaultOption.setAttribute("selected", "selected");
-            defaultOption.setAttribute("disabled", "disabled");
-            defaultOption.textContent = "Sélectionner un role";
-            roleSelect.appendChild(defaultOption);
+      // -------------------------------------------------------------------------
+      // 1) Configuration + initialisation Firebase
+      // -------------------------------------------------------------------------
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const db = getDatabase();
+      const auth = getAuth(app);
 
-            // Ajout des options pour chaque client
-            Object.keys(roles).forEach((roleId) => {
-              const option = document.createElement("option");
-              option.value = roles[roleId].nom;
-              option.textContent = roles[roleId].nom;
-              roleSelect.appendChild(option);
-            });
-          } else {
-            sh;
-          }
-        })
-        .then(() => {})
-        .catch((error) => {
-          console.error("Erreur lors de la récupération des roles :", error);
-        });
-    }
-
-    // Ajouter un utilisateur
-    let RegisterUser = (evt) => {
-      evt.preventDefault();
-      createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then((credential) => {
-          set(ref(db, "users/" + credential.user.uid), {
-            nom: nom.value,
-            prenom: prenom.value,
-            role: role.value,
-          })
-            .then(() => {
-              showMessage("Utilisateur ajouté avec succès !", "success");
-            })
-            .catch((error) => {
-              showMessage(
-                "Erreur lors de l'ajout de l'utilisateur : " + error.message,
-                "danger"
-              );
-            });
-          const user = credential.user;
-          console.log(credential);
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.log(errorCode, errorMessage);
-        });
-    };
-
-    // Vérification du rôle de l'utilisateur
-    function checkUserRole(userId) {
-      const userRef = ref(db, `users/${userId}`);
-      return get(userRef).then((snapshot) => {
-        const userData = snapshot.val();
-        console.log("Données utilisateur :", userData.role);
-        return (
-          userData.role === "cadre" ||
-          userData.role === "responsable exploitation" ||
-          userData.role === "directeur" ||
-          userData.role === "responsable agence"
-        );
+      // Vérification de la version de l'application (pour forcer le cache à se vider)
+      const versionRef = ref(db, "appInfo/version");
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
       });
-    }
 
-    // Gestion de l'état d'authentification
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        checkUserRole(user.uid)
-          .then((isCadre) => {
-            const adminMenuItems =
-              document.querySelectorAll(".menu-item-admin");
-            adminMenuItems.forEach((item) => {
-              item.style.display = isCadre ? "block" : "none";
-            });
+      // -------------------------------------------------------------------------
+      // 2) Références DOM
+      // -------------------------------------------------------------------------
+      const MainForm = document.getElementById("MainForm");
+      const email = document.getElementById("Email");
+      const password = document.getElementById("MDP");
+      const nom = document.getElementById("Nom");
+      const prenom = document.getElementById("Prenom");
+      const role = document.getElementById("role");
+
+      const alertContainer = document.getElementById("alert-container");
+      const popupButton = document.getElementById("popup");
+
+      // Modals (DB Info)
+      const editUserDbForm = document.getElementById("editUserDbForm");
+      let currentEditedUserDbId = null; // id de l'utilisateur qu'on modifie (DB)
+
+      // Modals (Auth Info)
+      const editUserAuthForm = document.getElementById("editUserAuthForm");
+      let currentEditedUserAuthId = null; // id de l'utilisateur qu'on modifie (Auth)
+
+      // -------------------------------------------------------------------------
+      // 3) Charger la liste des rôles dans le Select principal
+      // -------------------------------------------------------------------------
+      function fetchRolesForCreationForm() {
+        const roleSelect = document.getElementById("role");
+        const rolesRef = ref(db, "role");
+
+        get(rolesRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const roles = snapshot.val();
+              roleSelect.innerHTML = "";
+
+              // Option par défaut
+              const defaultOption = document.createElement("option");
+              defaultOption.setAttribute("selected", "selected");
+              defaultOption.setAttribute("disabled", "disabled");
+              defaultOption.textContent = "Sélectionner un rôle";
+              roleSelect.appendChild(defaultOption);
+
+              // Ajout des rôles
+              Object.keys(roles).forEach((roleId) => {
+                const option = document.createElement("option");
+                option.value = roles[roleId].nom;
+                option.textContent = roles[roleId].nom;
+                roleSelect.appendChild(option);
+              });
+            }
           })
           .catch((error) => {
-            console.error("Erreur lors de la vérification du rôle :", error);
-            const adminMenuItems =
-              document.querySelectorAll(".menu-item-admin");
-            adminMenuItems.forEach((item) => {
-              item.style.display = "none";
-            });
+            console.error("Erreur lors de la récupération des rôles :", error);
           });
-      } else {
-        const adminMenuItems = document.querySelectorAll(".menu-item-admin");
-        adminMenuItems.forEach((item) => {
-          item.style.display = "none";
-        });
       }
-    });
 
-    // Afficher un message d'alerte
-    function showMessage(message, type) {
-      const messageContainer = document.getElementById("alert-container");
-      messageContainer.style.display = "block";
-      messageContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                                  ${message}
-                                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>`;
-      setTimeout(() => {
-        const alert = bootstrap.Alert.getInstance(
-          document.querySelector(".alert")
-        );
-        messageContainer.style.display = "none";
-        alert.close();
-      }, 5000);
-
-      setTimeout(() => {
-        location.reload();
-      }, 5000);
-    }
-
-    // Ouvrir la popup de la liste des utilisateurs
-    function openPopup() {
-      const userListTableBody = document.getElementById("userListTableBody");
-      const usersRef = ref(db, "users");
-
-      userListTableBody.innerHTML = "";
-
-      get(usersRef)
-        .then((snapshot) => {
-          if (snapshot.exists()) {
-            const users = snapshot.val();
-            Object.keys(users).forEach((userId) => {
-              const user = users[userId];
-              const row = document.createElement("tr");
-              row.innerHTML = `<td>${user.nom}</td><td>${user.prenom}</td><td>${user.role}</td>`;
-              userListTableBody.appendChild(row);
-            });
-
-            // Trier la table en fonction du critère sélectionné
-            const sortCriteria = document.getElementById("sortCriteria");
-            sortCriteria.addEventListener("change", () => {
-              sortTable(sortCriteria.value);
-            });
-            sortTable(sortCriteria.value);
-
-            const userListModal = new bootstrap.Modal(
-              document.getElementById("userListModal")
+      // -------------------------------------------------------------------------
+      // 4) Création d'un nouvel utilisateur
+      // -------------------------------------------------------------------------
+      function RegisterUser(evt) {
+        evt.preventDefault();
+        createUserWithEmailAndPassword(auth, email.value, password.value)
+          .then((credential) => {
+            // Stocker en DB
+            set(ref(db, "users/" + credential.user.uid), {
+              nom: nom.value,
+              prenom: prenom.value,
+              role: role.value,
+              email: email.value,
+            })
+              .then(() => {
+                showMessage("Utilisateur ajouté avec succès !", "success");
+              })
+              .catch((error) => {
+                showMessage(
+                  "Erreur lors de l'ajout en DB : " + error.message,
+                  "danger"
+                );
+              });
+          })
+          .catch((error) => {
+            console.error(error.code, error.message);
+            showMessage(
+              "Erreur lors de la création dans Auth : " + error.message,
+              "danger"
             );
-            userListModal.show();
-          }
-        })
-        .catch((error) => {
-          console.error(
-            "Erreur lors de la récupération des utilisateurs :",
-            error
-          );
+          });
+      }
+
+      // -------------------------------------------------------------------------
+      // 5) Afficher la liste des utilisateurs (Modal)
+      // -------------------------------------------------------------------------
+      function openPopup() {
+        const userListTableBody = document.getElementById("userListTableBody");
+        const usersRef = ref(db, "users");
+
+        userListTableBody.innerHTML = "";
+
+        get(usersRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const users = snapshot.val();
+              Object.keys(users).forEach((userId) => {
+                const user = users[userId];
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                  <td>${user.nom || ""}</td>
+                  <td>${user.prenom || ""}</td>
+                  <td>${user.role || ""}</td>
+                  <td style="white-space: nowrap;">
+                    <button class="btn btn-primary btn-md" 
+                            onclick="editUserDb('${userId}')">
+                      Modifier infos
+                    </button>
+                    <button class="btn btn-secondary btn-md" 
+                            onclick="editUserAuth('${userId}')"
+                            style="margin-left:5px;">
+                      Modifier identifiants
+                    </button>
+                  </td>
+                `;
+                userListTableBody.appendChild(row);
+              });
+
+              // Gérer le tri
+              const sortCriteria = document.getElementById("sortCriteria");
+              sortCriteria.addEventListener("change", () => {
+                sortTable(sortCriteria.value);
+              });
+              // Tri initial
+              sortTable(sortCriteria.value);
+
+              // Ouvrir le modal
+              const userListModal = new bootstrap.Modal(
+                document.getElementById("userListModal")
+              );
+              userListModal.show();
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "Erreur lors de la récupération des utilisateurs :",
+              error
+            );
+          });
+      }
+
+      // Tri du tableau
+      function sortTable(criteria) {
+        const table = document.getElementById("userListTableBody");
+        const rows = Array.from(table.querySelectorAll("tr"));
+        let columnIndex = 0;
+        if (criteria === "prenom") columnIndex = 1;
+        else if (criteria === "role") columnIndex = 2;
+
+        rows.sort((a, b) => {
+          const cellA = a.children[columnIndex].textContent.trim();
+          const cellB = b.children[columnIndex].textContent.trim();
+          return cellA.localeCompare(cellB);
         });
-    }
 
-    // Trier la table des utilisateurs
-    function sortTable(criteria) {
-      const table = document.querySelector("table tbody");
-      const rows = Array.from(table.querySelectorAll("tr"));
-      const columnIndex =
-        criteria === "nom" ? 0 : criteria === "prenom" ? 1 : 2;
+        table.innerHTML = "";
+        rows.forEach((r) => table.appendChild(r));
+      }
 
-      const sortedRows = rows.sort((a, b) => {
-        const cellA = a.children[columnIndex].textContent.trim();
-        const cellB = b.children[columnIndex].textContent.trim();
-        return cellA.localeCompare(cellB);
+      // -------------------------------------------------------------------------
+      // 6) Édition DES INFOS DB (Modal "editUserDbModal")
+      // -------------------------------------------------------------------------
+      window.editUserDb = function (userId) {
+        currentEditedUserDbId = userId;
+        // Récupérer l'utilisateur dans la DB
+        const userRef = ref(db, "users/" + userId);
+        get(userRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const userData = snapshot.val();
+              // Remplir les champs
+              document.getElementById("editNom").value = userData.nom || "";
+              document.getElementById("editPrenom").value =
+                userData.prenom || "";
+              populateEditRoleSelect(userData.role);
+
+              // Ouvrir le modal
+              const modalDb = new bootstrap.Modal(
+                document.getElementById("editUserDbModal")
+              );
+              modalDb.show();
+            }
+          })
+          .catch((error) => {
+            console.error("Erreur DB (get user) :", error);
+          });
+      };
+
+      // Charger la liste des rôles pour la modification DB
+      function populateEditRoleSelect(selectedRole) {
+        const roleSelect = document.getElementById("editRole");
+        roleSelect.innerHTML = "";
+
+        const rolesRef = ref(db, "role");
+        get(rolesRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const roles = snapshot.val();
+              // Option par défaut
+              const defaultOption = document.createElement("option");
+              defaultOption.textContent = "Sélectionner un rôle";
+              defaultOption.disabled = true;
+              roleSelect.appendChild(defaultOption);
+
+              Object.keys(roles).forEach((roleId) => {
+                const option = document.createElement("option");
+                option.value = roles[roleId].nom;
+                option.textContent = roles[roleId].nom;
+                roleSelect.appendChild(option);
+              });
+
+              // Sélection du rôle actuel
+              roleSelect.value = selectedRole || "";
+            }
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la récupération des rôles :", error);
+          });
+      }
+
+      // Sauvegarde des modifications (DB only)
+      editUserDbForm.addEventListener("submit", async (evt) => {
+        evt.preventDefault();
+        if (!currentEditedUserDbId) return;
+
+        const newNom = document.getElementById("editNom").value;
+        const newPrenom = document.getElementById("editPrenom").value;
+        const newRole = document.getElementById("editRole").value;
+
+        const userRef = ref(db, "users/" + currentEditedUserDbId);
+        // Récupérer l'ancien user
+        get(userRef)
+          .then(async (snapshot) => {
+            if (snapshot.exists()) {
+              const userData = snapshot.val();
+              // Mettre à jour
+              await set(userRef, {
+                ...userData, // conserver email, etc.
+                nom: newNom,
+                prenom: newPrenom,
+                role: newRole,
+              });
+              showMessage("Informations mises à jour (DB) !", "success");
+
+              // Fermer le modal
+              const modalInstance = bootstrap.Modal.getInstance(
+                document.getElementById("editUserDbModal")
+              );
+              modalInstance.hide();
+              // Refresh la liste
+              openPopup();
+            }
+          })
+          .catch((error) => {
+            console.error("Erreur DB update :", error);
+            showMessage("Erreur DB : " + error.message, "danger");
+          });
       });
 
-      table.innerHTML = "";
-      sortedRows.forEach((row) => table.appendChild(row));
-    }
+      // -------------------------------------------------------------------------
+      // 7) Édition AUTH (Email / Mot de passe) — Modal "editUserAuthModal"
+      // -------------------------------------------------------------------------
+      window.editUserAuth = function (userId) {
+        currentEditedUserAuthId = userId;
 
-    MainForm.addEventListener("submit", RegisterUser);
-    popupButton.addEventListener("click", openPopup);
-    window.onload = fetchRole;
-  </script>
+        // Nettoyer les champs (on ne pré-remplit rien ou peu)
+        document.getElementById("editEmail").value = "";
+        document.getElementById("editPassword").value = "";
+
+        // Ouvrir le modal
+        const modalAuth = new bootstrap.Modal(
+          document.getElementById("editUserAuthModal")
+        );
+        modalAuth.show();
+      };
+
+      // Sauvegarde des modifications (Auth only)
+      editUserAuthForm.addEventListener("submit", async (evt) => {
+        evt.preventDefault();
+        if (!currentEditedUserAuthId) return;
+
+        const newEmail = document.getElementById("editEmail").value.trim();
+        const newPassword = document
+          .getElementById("editPassword")
+          .value.trim();
+
+        // Vérifier si c'est le user actuel
+        const currentUser = auth.currentUser;
+        if (!currentUser || currentUser.uid !== currentEditedUserAuthId) {
+          showMessage(
+            "Impossible de modifier l'email/mot de passe d'un autre utilisateur (front-end).",
+            "warning"
+          );
+          return;
+        }
+
+        // 1) Mettre à jour l'email s'il est renseigné
+        try {
+          if (newEmail.length > 0) {
+            await updateEmail(currentUser, newEmail);
+            // Mettre aussi à jour le champ email dans la DB
+            const userRef = ref(db, "users/" + currentUser.uid);
+            const snapshot = await get(userRef);
+            if (snapshot.exists()) {
+              await set(userRef, {
+                ...snapshot.val(),
+                email: newEmail,
+              });
+            }
+          }
+        } catch (error) {
+          console.error("Erreur updateEmail :", error);
+          showMessage("Erreur updateEmail : " + error.message, "danger");
+        }
+
+        // 2) Mettre à jour le mot de passe s'il est renseigné
+        try {
+          if (newPassword.length > 0) {
+            await updatePassword(currentUser, newPassword);
+          }
+        } catch (error) {
+          console.error("Erreur updatePassword :", error);
+          showMessage("Erreur updatePassword : " + error.message, "danger");
+        }
+
+        // Fermer le modal
+        const modalAuth = bootstrap.Modal.getInstance(
+          document.getElementById("editUserAuthModal")
+        );
+        modalAuth.hide();
+        showMessage("Informations Auth mises à jour !", "success");
+      });
+
+      // -------------------------------------------------------------------------
+      // 8) Vérification du rôle de l'utilisateur pour le menu Admin
+      // -------------------------------------------------------------------------
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          checkUserRole(user.uid)
+            .then((isAdmin) => {
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = isAdmin ? "block" : "none";
+              });
+            })
+            .catch((error) => {
+              console.error("Erreur lors de la vérification du rôle :", error);
+            });
+        } else {
+          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
+          adminMenuItems.forEach((item) => {
+            item.style.display = "none";
+          });
+        }
+      });
+
+      function checkUserRole(userId) {
+        const userRef = ref(db, "users/" + userId);
+        return get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          if (!userData || !userData.role) return false;
+          const role = userData.role.toLowerCase();
+          return (
+            role === "cadre" ||
+            role === "responsable exploitation" ||
+            role === "directeur" ||
+            role === "responsable agence"
+          );
+        });
+      }
+
+      // -------------------------------------------------------------------------
+      // 9) Fonction pour afficher un message d'alerte
+      // -------------------------------------------------------------------------
+      function showMessage(message, type) {
+        alertContainer.style.display = "block";
+        alertContainer.innerHTML = `
+          <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>`;
+        setTimeout(() => {
+          const alertEl = document.querySelector(".alert");
+          if (alertEl) {
+            const bsAlert = bootstrap.Alert.getInstance(alertEl);
+            if (bsAlert) bsAlert.close();
+          }
+          alertContainer.style.display = "none";
+        }, 5000);
+      }
+
+      // -------------------------------------------------------------------------
+      // 10) Mise en place des écouteurs
+      // -------------------------------------------------------------------------
+      MainForm.addEventListener("submit", RegisterUser);
+      popupButton.addEventListener("click", openPopup);
+      const userListModal = new bootstrap.Modal(
+        document.getElementById("userListModal")
+      );
+      const editUserDbModal = new bootstrap.Modal(
+        document.getElementById("editUserDbModal")
+      );
+
+      // Quand le modal de modification s'ouvre, on cache la liste des utilisateurs
+      document
+        .getElementById("editUserDbModal")
+        .addEventListener("show.bs.modal", () => {
+          document.getElementById("userListModal").style.display = "none";
+        });
+
+      // Quand le modal de modification auth s'ouvre, on cache la liste des utilisateurs
+      document
+        .getElementById("editUserAuthModal")
+        .addEventListener("show.bs.modal", () => {
+          document.getElementById("userListModal").style.display = "none";
+        });
+
+      // Quand le modal de modification auth se ferme, on réaffiche la liste des utilisateurs
+      document
+        .getElementById("editUserAuthModal")
+        .addEventListener("hidden.bs.modal", () => {
+          document.getElementById("userListModal").style.display = "block";
+        });
+
+      // Quand le modal de modification se ferme, on réaffiche la liste des utilisateurs
+      document
+        .getElementById("editUserDbModal")
+        .addEventListener("hidden.bs.modal", () => {
+          document.getElementById("userListModal").style.display = "block";
+        });
+
+      // Fonction pour ouvrir la liste des utilisateurs
+      document.getElementById("popup").addEventListener("click", openPopup);
+      window.onload = fetchRolesForCreationForm();
+    </script>
+  </body>
 </html>
