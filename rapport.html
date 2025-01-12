@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Rapport</title>
+    <title>Rapport Amélioré</title>
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
@@ -16,756 +16,540 @@
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
       rel="stylesheet"
     />
-  </head>
-
-  <body>
+    
     <style>
-      .daterangepicker {
-        width: 400px;
-        height: auto;
+      body {
+        background-color: #f8f9fa;
       }
-
-      .daterangepicker .drp-calendar {
-        width: 400px;
+      .form-section {
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative;
       }
-
-      .daterangepicker .calendar-table {
-        width: 400px;
+      .form-section.required {
+        border-left: 5px solid #dc3545;
       }
-
-      .daterangepicker .ranges {
-        width: 400px;
+      .form-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #0d6efd;
+        margin-bottom: 10px;
+        position: relative;
       }
-
-      .daterangepicker .calendar-table th,
-      .daterangepicker .calendar-table td {
-        font-size: 20px;
+      .form-title.required::after {
+        content: " (obligatoire)";
+        color: #dc3545;
+        font-size: 1rem;
+        font-weight: normal;
+        position: absolute;
+        margin-left: 5px;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      .input-group-text {
+        width: 150px;
+        background-color: #0d6efd;
+        color: white;
+        font-weight: bold;
+      }
+      .btn {
+        font-size: 1rem;
+        padding: 10px 20px;
       }
       .btn-type-rapport {
-        height: 10vh;
-        width: 50vh;
+        height: 50px;
+        width: 100%;
       }
-      @media screen and (max-width: 1000px) {
+      @media (min-width: 768px) {
         .btn-type-rapport {
-          height: 10vh;
-          width: 25vh;
-          font-size: 3rem;
+          font-size: 1.25rem;
         }
       }
-      .is-invalid {
-        border: 20px solid red;
+      .radio-group {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        flex-grow: 1;
       }
-      .is-valid {
-        border: 20px solid green;
+      .radio-group label {
+        background-color: #f8f9fa;
+        border: 1px solid #0d6efd;
+        border-radius: 0;
+        padding: 5px 15px;
+        color: #0d6efd;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+        flex: 1;
+        text-align: center;
+      }
+      .radio-group label:first-child {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      .radio-group label:last-child {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      .radio-group input[type="radio"] {
+        display: none;
+      }
+      .radio-group input[type="radio"]:checked + label {
+        background-color: #0d6efd;
+        color: white;
+      }
+      .loading-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 1050;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #0d6efd;
       }
     </style>
+  </head>
+  <body>
+    <div class="container py-4">
+      <header class="mb-4 text-center">
+        <img
+          src="logo techmine.svg"
+          alt="Logo"
+          class="mb-3"
+          style="max-height: 80px"
+        />
+        <h1 class="text-primary">Rapport</h1> <button class="btn btn-outline-primary" onclick="window.location.href='rapportOld.html'">Ancienne version du rapport</button>
+        
+      </header>
 
-    <div class="container-fluid align-items-center custom-height-top">
-      <div
-        class="row bg-gradient bg-white p-4 align-items-center custom-height-top"
-      >
-        <div class="col col-2 text-start">
-          <img
-            src="logo techmine.svg"
-            alt="bouton de menu"
-            class="custom-height-logo"
-          />
-        </div>
-        <div class="col col-8 text-center">
-          <h1 class="custom-font-top ms-5">Rapport</h1>
-        </div>
-        <div class="col col-2 text-end">
-          <div class="dropdown text-center">
-            <button
-              class="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              <img
-                src="symbole-de-menu-pour-android.png"
-                alt="bouton de menu"
-                class="custom-height-menu"
+      <div class="loading-overlay" id="loading-overlay">
+        <div>Chargement...</div>
+      </div>
+
+      <form id="rapportForm">
+      <section class="form-section required">
+        <h2 class="form-title required">Informations Générales</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-user"></i> Client</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="client"
+                list="clients"
+                placeholder="Nom du client"
+                required
               />
-            </button>
-            <ul
-              class="dropdown-menu dropdown-menu-dark custom-menu text-center"
-            >
-              <li>
-                <a class="dropdown-item" href="accueil.html"
-                  >Retourner à l'accueil</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
-              <li>
-                <a class="dropdown-item" href="liste-rapport.html"
-                  >Liste des Rapports</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="attachement.html"
-                  >Attachements</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" href="liste-attachement.html"
-                  >Liste des attachements</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="signalement.html">Signalement</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="liste-intervention.html"
-                  >Liste des Signalements</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item" href="machines.html"
-                  >Gestion des Machines</a
-                >
-              </li>
-              <li><hr class="dropdown-divider menu-item-admin" /></li>
-              <li><hr class="dropdown-divider menu-item-admin" /></li>
-              <li class="menu-item-admin">
-                <div class="dropdown-header" style="font-size: 2rem">
-                  Administrateur
-                </div>
-              </li>
-              <li class="menu-item-admin">
-                <a class="dropdown-item" href="ajout-utilisateur.html"
-                  >Gestion des Utilisateurs</a
-                >
-              </li>
-              <li class="menu-item-admin">
-                <a class="dropdown-item" href="ajout-client.html"
-                  >Gestion des Clients</a
-                >
-              </li>
-              <li class="menu-item-admin">
-                <a class="dropdown-item" href="ajout-chantier.html"
-                  >Gestion des chantiers</a
-                >
-              </li>
-            </ul>
+              <datalist id="clients"></datalist>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-industry"></i> Carrière</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="Carriere"
+                list="carrieres"
+                placeholder="Nom de la carrière"
+                required
+              />
+              <datalist id="carrieres"></datalist>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <!-- bloc du bas -->
-    <div class="container-fluid">
-      <div class="row bg-primary custom-height-bot">
-        <div class="col col-1"></div>
-        <div class="col col-10 align-self-center">
-          <!-- bloc de formulaire blanc -->
-          <form id="regForm">
-            <div
-              class="container-fluid bg-white p-3 rounded-4 form-contain"
-              style="height: 65vh"
-            >
-              <!-- ligne sous-titre -->
-              <div
-                class="row align-items-center justify-content-center align-self-center text-center border border-primary rounded-5 rounded-bottom-0 mx-1"
-                style="height: 20vh"
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-calendar-alt"></i> Date</span
               >
-                <div class="col-1"></div>
-                <div class="col-10r" style="height: 10vh">
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Choix du type de rapport :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations client :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations production :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations supplémentaire :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations foreuse :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations voiture :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations arrêt :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations perte :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations panne :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations transfert :
-                  </div>
-                  <div
-                    class="custom-font-sub-title fw-bold text-primary tab-title"
-                  >
-                    <br />Informations gnr :
-                  </div>
-                </div>
-                <div class="col-1"></div>
-              </div>
-
-              <!-- ligne formulaire -->
-              <div
-                class="row align-items-center border border-primary border-top-0 border-bottom-0 mx-1"
-                style="height: 35vh"
+              <input
+                type="text"
+                class="form-control"
+                id="date"
+                placeholder=""
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-clock"></i> Heures Travail</span
               >
-                <div class="col">
-                  <div
-                    id="alert-container"
-                    class="alert alert-warning"
-                    style="display: none"
-                  ></div>
-                  <!-- tab 0 -->
-                  <div class="tab" id="tab0">
-                    <div class="text-center">
-                      <button
-                        type="button"
-                        class="btn btn-primary btn-type-rapport"
-                        id="simplifiedBtn"
-                      >
-                        Rapport simplifié
-                      </button>
-                      <button
-                        type="button"
-                        class="btn btn-secondary btn-type-rapport"
-                        id="comprehensiveBtn"
-                      >
-                        Rapport complet
-                      </button>
-                    </div>
-                  </div>
-                  <!-- tab 1 -->
-                  <div class="tab" id="tab1">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white custom-margin-input"
-                        id="addon-wrapping"
-                        >Client :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle custom-font-input is-invalid"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="client"
-                        list="clients"
-                      />
-                      <datalist id="clients">
-                        <!-- Options will be dynamically added here -->
-                      </datalist>
-                    </div>
+              <input
+                type="text"
+                class="form-control"
+                id="NbHTravail"
+                placeholder="Nombre d'heures"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
 
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Carrière :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle custom-margin-input is-invalid"
-                        placeholder=""
-                        aria-label="Carriere"
-                        aria-describedby="addon-wrapping"
-                        id="Carriere"
-                        list="carrieres"
-                      />
-                      <datalist id="carrieres">
-                        <!-- Options will be dynamically added here -->
-                      </datalist>
-                    </div>
-                    <div class="input-group mt-3">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Date :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle custom-font-input"
-                        placeholder=""
-                        aria-label="date"
-                        aria-describedby="addon-wrapping"
-                        id="date"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 2 -->
-                  <div class="tab" id="tab2">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Nombre d'heure de travail :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="NbHTravail"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Nombre de mètres forés :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="NbMF"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Nombre d'heure Marteau :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="NbHM"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Commentaire :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="CommMF"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 3 -->
-                  <div class="tab" id="tab3">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Temps de route :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="TDR"
-                      />
-                    </div>
-                    <div
-                      class="btn-group"
-                      role="group"
-                      aria-label="Basic radio toggle button group"
-                      id="GdP"
-                    >
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Gd ou panier :</span
-                      >
-
-                      <input
-                        type="radio"
-                        class="btn-check visually-hidden"
-                        name="options"
-                        id="Gd"
-                        autocomplete="off"
-                        aria-describedby="addon-wrapping"
-                      />
-                      <label
-                        class="btn btn-outline-primary d-flex align-items-center justify-content-center custom-height-input custom-font-input mb-0"
-                        for="Gd"
-                        style="width: 4rem"
-                        >Gd</label
-                      >
-
-                      <input
-                        type="radio"
-                        class="btn-check visually-hidden"
-                        name="options"
-                        id="Panier"
-                        autocomplete="off"
-                      />
-                      <label
-                        class="btn btn-outline-primary d-flex align-items-center justify-content-center custom-height-input custom-font-input mb-0"
-                        for="Panier"
-                        style="width: 4rem"
-                        >Panier</label
-                      >
-                    </div>
-                  </div>
-
-                  <!-- tab 4 -->
-                  <div class="tab" id="tab4">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Numéro foreuse :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="numF"
-                        list="machines"
-                      />
-                      <datalist id="machines"> </datalist>
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Compteur heure début de journée :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="NbHD"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Compteur heure de fin de journée :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="NbHF"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 5 -->
-                  <div class="tab" id="tab5">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Numéro voiture :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="voiture"
-                        list="voitures"
-                      />
-                      <datalist id="voitures"> </datalist>
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >kilometrage :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="kilV"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 6 -->
-                  <div class="tab" id="tab6">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >nombre d'heure d'arrêt :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="NbHA"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >commentaire :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="CommA"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 7 -->
-                  <div class="tab" id="tab7">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                      >
-                        perte barre :
-                      </span>
-                      <input
-                        type="number"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="nbPB"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                      >
-                        perte taillant :
-                      </span>
-                      <input
-                        type="number"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="nbPT"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 8 -->
-                  <div class="tab" id="tab8">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >nombre d'heure de panne :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="NbHP"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >commentaire :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="CommP"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 9 -->
-                  <div class="tab" id="tab9">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Nom du transporteur :
-                      </span>
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="CT"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >durée du transfert :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="DT"
-                      />
-                    </div>
-                  </div>
-                  <!-- tab 10 -->
-                  <div class="tab" id="tab10">
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
-                        id="addon-wrapping"
-                        >Nom du fournisseur :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Carrière"
-                        aria-describedby="addon-wrapping"
-                        id="CG"
-                      />
-                    </div>
-                    <div class="input-group">
-                      <span
-                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
-                        id="addon-wrapping"
-                        >Quantité :</span
-                      >
-                      <input
-                        type="text"
-                        class="form-control custom-height-input border border-primary-subtle"
-                        placeholder=""
-                        aria-label="Client"
-                        aria-describedby="addon-wrapping"
-                        id="QG"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- ligne barre de progression et boutons -->
-              <div
-                class="row border border-primary border-top-0 rounded-5 rounded-top-0 mx-1"
-                style="height: 5vh"
+      <section class="form-section required">
+        <h2 class="form-title required">Détails de la Production</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-ruler"></i> Mètres Forés</span
               >
-                <div class="col-6">
-                  <div class="d-flex">
-                    <span id="step0" class="step"></span>
-                    <span id="step1" class="step"></span>
-                    <span id="step2" class="step"></span>
-                    <span id="step3" class="step"></span>
-                    <span id="step4" class="step"></span>
-                    <span id="step5" class="step"></span>
-                    <span id="step6" class="step"></span>
-                    <span id="step7" class="step"></span>
-                    <span id="step8" class="step"></span>
-                    <span id="step9" class="step"></span>
-                    <span id="step10" class="step"></span>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="d-flex" style="float: inline-end">
-                    <button
-                      type="button"
-                      id="prevBtn"
-                      class="btn btn-white custom-font-input border-primary text-primary"
-                      style="height: 4vh; width: 10vh"
-                      onclick="nextPrev(-1)"
-                    >
-                      précédent
-                    </button>
-                    <button
-                      type="button"
-                      id="nextBtn"
-                      class="btn btn-primary custom-font-input border-primary"
-                      style="height: 4vh; width: 10vh; display: none"
-                      onclick="nextPrev(1)"
-                    >
-                      suivant
-                    </button>
-                    <button
-                      type="button"
-                      id="submitBtn"
-                      class="btn btn-primary custom-font-input border-primary"
-                      style="height: 4vh; width: 10vh"
-                      onclick="nextPrev(1)"
-                    >
-                      soumettre
-                    </button>
-                  </div>
-                </div>
+              <input
+                type="text"
+                class="form-control"
+                id="NbMF"
+                placeholder="Nombre de mètres"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-comment"></i> Commentaire</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="CommMF"
+                placeholder="Ajoutez un commentaire"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="form-title">Informations supplémentaire</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-road"></i> Temps de Route</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="TDR"
+                placeholder="Temps de route"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-hotel"></i>
+                Gd ou Panier
+              </span>
+              <div class="radio-group">
+                <input type="radio" id="Gd" name="GdPanier" />
+                <label for="Gd">Gd</label>
+                <input type="radio" id="Panier" name="GdPanier" />
+                <label for="Panier">Panier</label>
               </div>
             </div>
-          </form>
+          </div>
         </div>
-      </div>
-    </div>
-    <div class="col col-1"></div>
+      </section>
 
-    <div class="row">
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
-    </div>
-    <div class="row">
-      <div class="col"></div>
-      <div class="col"></div>
-      <div class="col"></div>
+      <section class="form-section required">
+        <h2 class="form-title required">Informations Foreuse</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-truck"></i> Numéro Foreuse
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                id="numF"
+                list="machines"
+                placeholder="Numéro de la foreuse"
+                required
+              />
+              <datalist id="machines"></datalist>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-stopwatch"></i> Heures Marteau
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                id="NbHM"
+                placeholder="Nombre d'heures"
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-clock"></i> Heure Début
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                id="NbHD"
+                placeholder="Compteur début"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text">
+                <i class="fas fa-clock"></i> Heure Fin
+              </span>
+              <input
+                type="text"
+                class="form-control"
+                id="NbHF"
+                placeholder="Compteur fin"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="form-title">Informations Voiture</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-car"></i> Numéro Voiture</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="voiture"
+                list="voitures"
+                placeholder="Numéro de la voiture"
+              />
+              <datalist id="voitures"></datalist>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-tachometer-alt"></i> Kilométrage</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="kilV"
+                placeholder="Kilométrage"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section required">
+        <h2 class="form-title required">Informations Arrêt</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-stop-circle"></i> Heures d'Arrêt</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="NbHA"
+                placeholder="Nombre d'heures d'arrêt"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-comment"></i> Commentaire</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="CommA"
+                placeholder="Ajoutez un commentaire"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section required">
+        <h2 class="form-title required">Informations Panne</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-tools"></i> Heures de Panne</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="NbHP"
+                placeholder="Nombre d'heures de panne"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-comment"></i> Commentaire</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="CommP"
+                placeholder="Ajoutez un commentaire"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section required">
+        <h2 class="form-title required">Informations Perte</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-exclamation-triangle"></i> Perte Barre</span
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="nbPB"
+                placeholder="Nombre de barres perdues"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-exclamation-triangle"></i> Perte
+                Taillant</span
+              >
+              <input
+                type="number"
+                class="form-control"
+                id="nbPT"
+                placeholder="Nombre de taillants perdus"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+  
+
+      <section class="form-section">
+        <h2 class="form-title">Informations Transfert</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-truck-moving"></i> Transporteur</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="CT"
+                placeholder="Nom du transporteur"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-hourglass-half"></i> Durée</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="DT"
+                placeholder="Durée du transfert"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="form-title">Informations GNR</h2>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-gas-pump"></i> Fournisseur</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="CG"
+                placeholder="Nom du fournisseur"
+              />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="input-group">
+              <span class="input-group-text"
+                ><i class="fas fa-balance-scale"></i> Quantité</span
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="QG"
+                placeholder="Quantité en litres"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="text-end">
+        <button type="submit" class="btn btn-outline-primary" id="submit">
+          soumettre
+        </button>
+        <!-- <button type="button" class="btn btn-outline-secondary" id="second">
+          Creer un deuxieme rapport
+        </button> -->
+      </div>
+    </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -913,33 +697,29 @@
 
       // enregistrement des données du rapport
       function AddData() {
-        let client = document.getElementById("client") || "";
-        let Carriere = document.getElementById("Carriere") || "";
-        let date = document.getElementById("date").value || "";
-        let NbHTravail = document.getElementById("NbHTravail") || "";
-        let NbMF = document.getElementById("NbMF") || "";
-        let TDR = document.getElementById("TDR") || "";
-        let GdP = "";
-        if (document.getElementById("Gd").checked) {
-          GdP = "Gd";
-        } else if (document.getElementById("Panier").checked) {
-          GdP = "Panier";
-        }
-        let numF = document.getElementById("numF") || "";
-        let NbHD = document.getElementById("NbHD") || "";
-        let NbHF = document.getElementById("NbHF") || "";
-        let NbHM = document.getElementById("NbHM") || "";
-        let NbHA = document.getElementById("NbHA") || "";
-        let CommA = document.getElementById("CommA") || "";
-        let NbHP = document.getElementById("NbHP") || "";
-        let CommP = document.getElementById("CommP") || "";
-        let CT = document.getElementById("CT") || "";
-        let DT = document.getElementById("DT") || "";
-        let CG = document.getElementById("CG") || "";
-        let QG = document.getElementById("QG") || "";
-        let kilV = document.getElementById("kilV") || "";
-        let voiture = document.getElementById("voiture") || "";
-        let CommMF = document.getElementById("CommMF") || "";
+        const client = document.getElementById("client");
+        const Carriere = document.getElementById("Carriere");
+        const date = document.getElementById("date").value;
+        const NbHTravail = document.getElementById("NbHTravail");
+        const NbMF = document.getElementById("NbMF");
+        const TDR = document.getElementById("TDR");
+        const GdP = document.getElementById("Gd").checked ? "Gd" : "Panier";
+        const numF = document.getElementById("numF");
+        const NbHD = document.getElementById("NbHD");
+        const NbHF = document.getElementById("NbHF");
+        const NbHM = document.getElementById("NbHM");
+        const NbHA = document.getElementById("NbHA");
+        const CommA = document.getElementById("CommA");
+        const NbHP = document.getElementById("NbHP");
+        const CommP = document.getElementById("CommP");
+        const CommMF = document.getElementById("CommMF");
+        const CT = document.getElementById("CT");
+        const DT = document.getElementById("DT");
+        const CG = document.getElementById("CG");
+        const QG = document.getElementById("QG");
+        const kilV = document.getElementById("kilV");
+        const voiture = document.getElementById("voiture").value;
+
 
         set(ref(db, "rapport/" + dateNb), {
           infos: {
@@ -972,6 +752,7 @@
         })
           .then(() => {
             setTimeout(() => {
+              document.getElementById("loading-overlay").style.add = "D-flex";
               window.location.href = "Impression-rapport.html?id=" + dateNb;
             }, 3000);
             showMessage("Données sauvegardées avec succès !", "success");
@@ -1254,35 +1035,13 @@
         }
       });
 
-      // fonction qui initialise une version simplifiée du rapport avec moins d'étapes
-      document
-        .getElementById("simplifiedBtn")
-        .addEventListener("click", function () {
-          $("#reportTypeModal").modal("hide");
-          reportType = "simplified";
-          isSimple = true;
-          document.getElementById("step3").style.display = "none";
-          document.getElementById("step5").style.display = "none";
-          document.getElementById("step9").style.display = "none";
-          document.getElementById("step10").style.display = "none";
-          nextPrev(1);
-        });
+      // submit du formulaire, appel de AddData()
+      document.getElementById("rapportForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        AddData();
+      });
 
-      // fonction qui initialise une version complète du rapport avec toutes les étapes
-      document
-        .getElementById("comprehensiveBtn")
-        .addEventListener("click", function () {
-          $("#reportTypeModal").modal("hide");
-          reportType = "comprehensive";
-          isSimple = false;
-          document.getElementById("step3").style.display = "inline";
-          document.getElementById("step5").style.display = "inline";
-          document.getElementById("step9").style.display = "inline";
-          document.getElementById("step10").style.display = "inline";
-          nextPrev(1);
-        });
 
-      submitBtn.addEventListener("click", AddData);
       window.onload = function () {
         fetchClients();
         fetchClientsAndCarrieres();
@@ -1290,6 +1049,5 @@
       };
     </script>
 
-    <script src="script.js"></script>
   </body>
 </html>

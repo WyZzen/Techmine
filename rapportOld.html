@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rapport</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style-top.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <style>
+      .daterangepicker {
+        width: 400px;
+        height: auto;
+      }
+
+      .daterangepicker .drp-calendar {
+        width: 400px;
+      }
+
+      .daterangepicker .calendar-table {
+        width: 400px;
+      }
+
+      .daterangepicker .ranges {
+        width: 400px;
+      }
+
+      .daterangepicker .calendar-table th,
+      .daterangepicker .calendar-table td {
+        font-size: 20px;
+      }
+      .btn-type-rapport {
+        height: 10vh;
+        width: 50vh;
+      }
+      @media screen and (max-width: 1000px) {
+        .btn-type-rapport {
+          height: 10vh;
+          width: 25vh;
+          font-size: 3rem;
+        }
+      }
+      .is-invalid {
+        border: 20px solid red;
+      }
+      .is-valid {
+        border: 20px solid green;
+      }
+    </style>
+
+    <div class="container-fluid align-items-center custom-height-top">
+      <div
+        class="row bg-gradient bg-white p-4 align-items-center custom-height-top"
+      >
+        <div class="col col-2 text-start">
+          <img
+            src="logo techmine.svg"
+            alt="bouton de menu"
+            class="custom-height-logo"
+          />
+        </div>
+        <div class="col col-8 text-center">
+          <h1 class="custom-font-top ms-5">Rapport</h1>
+        </div>
+        <div class="col col-2 text-end">
+          <div class="dropdown text-center">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <img
+                src="symbole-de-menu-pour-android.png"
+                alt="bouton de menu"
+                class="custom-height-menu"
+              />
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-dark custom-menu text-center"
+            >
+              <li>
+                <a class="dropdown-item" href="accueil.html"
+                  >Retourner à l'accueil</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
+              <li>
+                <a class="dropdown-item" href="liste-rapport.html"
+                  >Liste des Rapports</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="attachement.html"
+                  >Attachements</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="liste-attachement.html"
+                  >Liste des attachements</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="signalement.html">Signalement</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="liste-intervention.html"
+                  >Liste des Signalements</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item" href="machines.html"
+                  >Gestion des Machines</a
+                >
+              </li>
+              <li><hr class="dropdown-divider menu-item-admin" /></li>
+              <li><hr class="dropdown-divider menu-item-admin" /></li>
+              <li class="menu-item-admin">
+                <div class="dropdown-header" style="font-size: 2rem">
+                  Administrateur
+                </div>
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-utilisateur.html"
+                  >Gestion des Utilisateurs</a
+                >
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-client.html"
+                  >Gestion des Clients</a
+                >
+              </li>
+              <li class="menu-item-admin">
+                <a class="dropdown-item" href="ajout-chantier.html"
+                  >Gestion des chantiers</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- bloc du bas -->
+    <div class="container-fluid">
+      <div class="row bg-primary custom-height-bot">
+        <div class="col col-1"></div>
+        <div class="col col-10 align-self-center">
+          <!-- bloc de formulaire blanc -->
+          <form id="regForm">
+            <div
+              class="container-fluid bg-white p-3 rounded-4 form-contain"
+              style="height: 65vh"
+            >
+              <!-- ligne sous-titre -->
+              <div
+                class="row align-items-center justify-content-center align-self-center text-center border border-primary rounded-5 rounded-bottom-0 mx-1"
+                style="height: 20vh"
+              >
+                <div class="col-1"></div>
+                <div class="col-10r" style="height: 10vh">
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Choix du type de rapport :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations client :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations production :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations supplémentaire :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations foreuse :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations voiture :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations arrêt :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations perte :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations panne :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations transfert :
+                  </div>
+                  <div
+                    class="custom-font-sub-title fw-bold text-primary tab-title"
+                  >
+                    <br />Informations gnr :
+                  </div>
+                </div>
+                <div class="col-1"></div>
+              </div>
+
+              <!-- ligne formulaire -->
+              <div
+                class="row align-items-center border border-primary border-top-0 border-bottom-0 mx-1"
+                style="height: 35vh"
+              >
+                <div class="col">
+                  <div
+                    id="alert-container"
+                    class="alert alert-warning"
+                    style="display: none"
+                  ></div>
+                  <!-- tab 0 -->
+                  <div class="tab" id="tab0">
+                    <div class="text-center">
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-type-rapport"
+                        id="simplifiedBtn"
+                      >
+                        Rapport simplifié
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-secondary btn-type-rapport"
+                        id="comprehensiveBtn"
+                      >
+                        Rapport complet
+                      </button>
+                    </div>
+                  </div>
+                  <!-- tab 1 -->
+                  <div class="tab" id="tab1">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white custom-margin-input"
+                        id="addon-wrapping"
+                        >Client :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle custom-font-input is-invalid"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="client"
+                        list="clients"
+                      />
+                      <datalist id="clients">
+                        <!-- Options will be dynamically added here -->
+                      </datalist>
+                    </div>
+
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Carrière :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle custom-margin-input is-invalid"
+                        placeholder=""
+                        aria-label="Carriere"
+                        aria-describedby="addon-wrapping"
+                        id="Carriere"
+                        list="carrieres"
+                      />
+                      <datalist id="carrieres">
+                        <!-- Options will be dynamically added here -->
+                      </datalist>
+                    </div>
+                    <div class="input-group mt-3">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Date :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle custom-font-input"
+                        placeholder=""
+                        aria-label="date"
+                        aria-describedby="addon-wrapping"
+                        id="date"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 2 -->
+                  <div class="tab" id="tab2">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Nombre d'heure de travail :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="NbHTravail"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Nombre de mètres forés :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="NbMF"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Nombre d'heure Marteau :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="NbHM"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-margin-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Commentaire :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="CommMF"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 3 -->
+                  <div class="tab" id="tab3">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Temps de route :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="TDR"
+                      />
+                    </div>
+                    <div
+                      class="btn-group"
+                      role="group"
+                      aria-label="Basic radio toggle button group"
+                      id="GdP"
+                    >
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Gd ou panier :</span
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check visually-hidden"
+                        name="options"
+                        id="Gd"
+                        autocomplete="off"
+                        aria-describedby="addon-wrapping"
+                      />
+                      <label
+                        class="btn btn-outline-primary d-flex align-items-center justify-content-center custom-height-input custom-font-input mb-0"
+                        for="Gd"
+                        style="width: 4rem"
+                        >Gd</label
+                      >
+
+                      <input
+                        type="radio"
+                        class="btn-check visually-hidden"
+                        name="options"
+                        id="Panier"
+                        autocomplete="off"
+                      />
+                      <label
+                        class="btn btn-outline-primary d-flex align-items-center justify-content-center custom-height-input custom-font-input mb-0"
+                        for="Panier"
+                        style="width: 4rem"
+                        >Panier</label
+                      >
+                    </div>
+                  </div>
+
+                  <!-- tab 4 -->
+                  <div class="tab" id="tab4">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Numéro foreuse :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="numF"
+                        list="machines"
+                      />
+                      <datalist id="machines"> </datalist>
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Compteur heure début de journée :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="NbHD"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Compteur heure de fin de journée :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="NbHF"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 5 -->
+                  <div class="tab" id="tab5">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Numéro voiture :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="voiture"
+                        list="voitures"
+                      />
+                      <datalist id="voitures"> </datalist>
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >kilometrage :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="kilV"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 6 -->
+                  <div class="tab" id="tab6">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >nombre d'heure d'arrêt :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="NbHA"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >commentaire :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="CommA"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 7 -->
+                  <div class="tab" id="tab7">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                      >
+                        perte barre :
+                      </span>
+                      <input
+                        type="number"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="nbPB"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                      >
+                        perte taillant :
+                      </span>
+                      <input
+                        type="number"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="nbPT"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 8 -->
+                  <div class="tab" id="tab8">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >nombre d'heure de panne :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="NbHP"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >commentaire :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="CommP"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 9 -->
+                  <div class="tab" id="tab9">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Nom du transporteur :
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="CT"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >durée du transfert :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="DT"
+                      />
+                    </div>
+                  </div>
+                  <!-- tab 10 -->
+                  <div class="tab" id="tab10">
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-margin-input custom-font-input custom-height-input bg-primary border border border-primary text-white"
+                        id="addon-wrapping"
+                        >Nom du fournisseur :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input custom-margin-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Carrière"
+                        aria-describedby="addon-wrapping"
+                        id="CG"
+                      />
+                    </div>
+                    <div class="input-group">
+                      <span
+                        class="input-group-text custom-font-input custom-height-input bg-primary border border-primary text-white"
+                        id="addon-wrapping"
+                        >Quantité :</span
+                      >
+                      <input
+                        type="text"
+                        class="form-control custom-height-input border border-primary-subtle"
+                        placeholder=""
+                        aria-label="Client"
+                        aria-describedby="addon-wrapping"
+                        id="QG"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ligne barre de progression et boutons -->
+              <div
+                class="row border border-primary border-top-0 rounded-5 rounded-top-0 mx-1"
+                style="height: 5vh"
+              >
+                <div class="col-6">
+                  <div class="d-flex">
+                    <span id="step0" class="step"></span>
+                    <span id="step1" class="step"></span>
+                    <span id="step2" class="step"></span>
+                    <span id="step3" class="step"></span>
+                    <span id="step4" class="step"></span>
+                    <span id="step5" class="step"></span>
+                    <span id="step6" class="step"></span>
+                    <span id="step7" class="step"></span>
+                    <span id="step8" class="step"></span>
+                    <span id="step9" class="step"></span>
+                    <span id="step10" class="step"></span>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="d-flex" style="float: inline-end">
+                    <button
+                      type="button"
+                      id="prevBtn"
+                      class="btn btn-white custom-font-input border-primary text-primary"
+                      style="height: 4vh; width: 10vh"
+                      onclick="nextPrev(-1)"
+                    >
+                      précédent
+                    </button>
+                    <button
+                      type="button"
+                      id="nextBtn"
+                      class="btn btn-primary custom-font-input border-primary"
+                      style="height: 4vh; width: 10vh; display: none"
+                      onclick="nextPrev(1)"
+                    >
+                      suivant
+                    </button>
+                    <button
+                      type="button"
+                      id="submitBtn"
+                      class="btn btn-primary custom-font-input border-primary"
+                      style="height: 4vh; width: 10vh"
+                      onclick="nextPrev(1)"
+                    >
+                      soumettre
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col col-1"></div>
+
+    <div class="row">
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+    <div class="row">
+      <div class="col"></div>
+      <div class="col"></div>
+      <div class="col"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#date").daterangepicker({
+          singleDatePicker: true,
+          locale: {
+            format: " YYYY-MM-DD ",
+            separator: " au ",
+            applyLabel: "Appliquer",
+            cancelLabel: "Annuler",
+            fromLabel: "Du",
+            toLabel: "À",
+            customRangeLabel: "Personnalisé",
+            weekLabel: "S",
+            daysOfWeek: ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"],
+            monthNames: [
+              "Janvier",
+              "Février",
+              "Mars",
+              "Avril",
+              "Mai",
+              "Juin",
+              "Juillet",
+              "Août",
+              "Septembre",
+              "Octobre",
+              "Novembre",
+              "Décembre",
+            ],
+            firstDay: 1,
+          },
+          opens: "right",
+        });
+      });
+    </script>
+    <script type="module">
+      let UserCreds = JSON.parse(sessionStorage.getItem("UserCreds"));
+      let UserInfo = JSON.parse(sessionStorage.getItem("UserInfo"));
+
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
+        authDomain: "test-techmine.firebaseapp.com",
+        databaseURL:
+          "https://test-techmine-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "test-techmine",
+        storageBucket: "test-techmine.appspot.com",
+        messagingSenderId: "876142620682",
+        appId: "1:876142620682:web:5bad29bd4f71d82be6aff3",
+        measurementId: "G-2LKJFXNQ58",
+      };
+
+      const app = initializeApp(firebaseConfig);
+
+      import {
+        getDatabase,
+        ref,
+        child,
+        get,
+        set,
+        update,
+        remove,
+        onValue,
+        query,
+        orderByChild,
+        equalTo,
+      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+
+      const db = getDatabase();
+      const auth = getAuth();
+
+      let user = sessionStorage.getItem("user-uid");
+      let dateNb = Date.now();
+      let selectedClientId = null;
+      let isSimple = null;
+      let clientsData = {};
+      let carrieresData = {};
+      let machinesData = {};
+
+      //vérfication de la version de l'application
+      const versionRef = ref(db, "appInfo/version");
+      onValue(versionRef, (snapshot) => {
+        const latestVersion = snapshot.val();
+        const currentVersion = localStorage.getItem("appVersion");
+        if (currentVersion != latestVersion) {
+          localStorage.setItem("appVersion", latestVersion);
+          window.location.reload();
+        }
+      });
+
+      // vérification de l'authentification de l'utilisateur
+      function checkUserAuthentication() {
+        onAuthStateChanged(auth, (user) => {
+          if (user) {
+            console.log(user);
+          } else {
+            console.log("pas d'utilisateur");
+            window.location.href = "index.html";
+          }
+          if (sessionStorage.getItem("user-uid") == null) {
+            window.location.href = "index.html";
+          }
+        });
+      }
+
+      // récupération des clients
+      function fetchClients() {
+        const clientDataList = document.getElementById("clients");
+        const clientsRef = ref(db, "clients");
+
+        onValue(
+          clientsRef,
+          (usersSnapshot) => {
+            const clients = usersSnapshot.val() || {};
+
+            clientDataList.innerHTML = "";
+
+            const sortedClientIds = Object.keys(clients).sort((a, b) =>
+              clients[a].name.localeCompare(clients[b].name)
+            );
+
+            for (const clientId of sortedClientIds) {
+              const clientName = clients[clientId].name;
+              const option = document.createElement("option");
+              option.value = clientName;
+              option.dataset.clientId = clientId;
+              clientDataList.appendChild(option);
+            }
+          },
+          (error) => {
+            console.error("Error fetching clients:", error);
+          }
+        );
+      }
+
+      // enregistrement des données du rapport
+      function AddData() {
+        let client = document.getElementById("client") || "";
+        let Carriere = document.getElementById("Carriere") || "";
+        let date = document.getElementById("date").value || "";
+        let NbHTravail = document.getElementById("NbHTravail") || "";
+        let NbMF = document.getElementById("NbMF") || "";
+        let TDR = document.getElementById("TDR") || "";
+        let GdP = "";
+        if (document.getElementById("Gd").checked) {
+          GdP = "Gd";
+        } else if (document.getElementById("Panier").checked) {
+          GdP = "Panier";
+        }
+        let numF = document.getElementById("numF") || "";
+        let NbHD = document.getElementById("NbHD") || "";
+        let NbHF = document.getElementById("NbHF") || "";
+        let NbHM = document.getElementById("NbHM") || "";
+        let NbHA = document.getElementById("NbHA") || "";
+        let CommA = document.getElementById("CommA") || "";
+        let NbHP = document.getElementById("NbHP") || "";
+        let CommP = document.getElementById("CommP") || "";
+        let CT = document.getElementById("CT") || "";
+        let DT = document.getElementById("DT") || "";
+        let CG = document.getElementById("CG") || "";
+        let QG = document.getElementById("QG") || "";
+        let kilV = document.getElementById("kilV") || "";
+        let voiture = document.getElementById("voiture") || "";
+        let CommMF = document.getElementById("CommMF") || "";
+
+        set(ref(db, "rapport/" + dateNb), {
+          infos: {
+            client: client.value,
+            Carriere: Carriere.value,
+            date: date,
+            NbHTravail: NbHTravail.value,
+            NbMF: NbMF.value,
+            TDR: TDR.value,
+            GdP: GdP,
+            numF: numF.value,
+            NbHD: NbHD.value,
+            NbHF: NbHF.value,
+            NbHM: NbHM.value,
+            NbHA: NbHA.value,
+            CommA: CommA.value,
+            NbHP: NbHP.value,
+            CommP: CommP.value,
+            CommMF: CommMF.value,
+            CT: CT.value,
+            DT: DT.value,
+            CG: CG.value,
+            QG: QG.value,
+            kilV: kilV,
+            voiture: voiture,
+          },
+          date: date,
+          dateTimestamp: new Date().getTime(),
+          user: user,
+        })
+          .then(() => {
+            setTimeout(() => {
+              window.location.href = "Impression-rapport.html?id=" + dateNb;
+            }, 3000);
+            showMessage("Données sauvegardées avec succès !", "success");
+          })
+          .catch((error) => {
+            showMessage(
+              "Erreur lors de la sauvegarde des données : " + error.message,
+              "danger"
+            );
+          });
+      }
+
+      // affichage des messages
+      function showMessage(message, type) {
+        const messageContainer = document.getElementById("alert-container");
+        messageContainer.style.display = "block";
+        messageContainer.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                                  ${message}
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>`;
+        setTimeout(() => {
+          const alert = bootstrap.Alert.getInstance(
+            document.querySelector(".alert")
+          );
+          messageContainer.style.display = "none";
+          alert.close();
+        }, 5000);
+
+        setTimeout(() => {
+          location.reload();
+        }, 5000);
+      }
+
+      // vérification de l'authentification de l'utilisateur
+      function checkUserRole(userId) {
+        const userRef = ref(db, `users/${userId}`);
+        return get(userRef).then((snapshot) => {
+          const userData = snapshot.val();
+          console.log("Données utilisateur :", userData.role);
+          return (
+            userData.role === "cadre" ||
+            userData.role === "responsable exploitation" ||
+            userData.role === "directeur" ||
+            userData.role === "responsable agence"
+          );
+        });
+      }
+
+      // Gestion de l'état d'authentification
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          checkUserRole(user.uid)
+            .then((isCadre) => {
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = isCadre ? "block" : "none";
+              });
+            })
+            .catch((error) => {
+              console.error("Erreur lors de la vérification du rôle :", error);
+              const adminMenuItems =
+                document.querySelectorAll(".menu-item-admin");
+              adminMenuItems.forEach((item) => {
+                item.style.display = "none";
+              });
+            });
+        } else {
+          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
+          adminMenuItems.forEach((item) => {
+            item.style.display = "none";
+          });
+        }
+      });
+
+      // récupération des données des clients et des carrières
+      function fetchClientsAndCarrieres() {
+        const clientsRef = ref(db, "clients");
+        const carrieresRef = ref(db, "chantiers");
+        const machinesRef = ref(db, "machine");
+
+        get(clientsRef).then((clientsSnapshot) => {
+          clientsData = clientsSnapshot.val() || {};
+          populateClientsDataList();
+        });
+
+        get(carrieresRef).then((carrieresSnapshot) => {
+          carrieresData = carrieresSnapshot.val() || {};
+          populateCarrieresDataList();
+        });
+        get(machinesRef).then((machinesSnapshot) => {
+          machinesData = machinesSnapshot.val() || {};
+          populateMachineDataList();
+        });
+      }
+
+      //affichage des données des clients
+      function populateClientsDataList() {
+        const clientDataList = document.getElementById("clients");
+        clientDataList.innerHTML = "";
+
+        const sortedClientIds = Object.keys(clientsData).sort((a, b) =>
+          clientsData[a].name.localeCompare(clientsData[b].name)
+        );
+
+        for (const clientId of sortedClientIds) {
+          const clientName = clientsData[clientId].name;
+          const option = document.createElement("option");
+          option.value = clientName;
+          option.dataset.clientId = clientId;
+          clientDataList.appendChild(option);
+        }
+      }
+
+      //affichage des données des machines
+      function populateMachineDataList() {
+        const machineDataList = document.getElementById("machines");
+        const voitureDataList = document.getElementById("voitures");
+        machineDataList.innerHTML = "";
+        voitureDataList.innerHTML = "";
+
+        const sortedMachinesIds = Object.keys(machinesData).sort((a, b) =>
+          machinesData[a].Nmatériel.localeCompare(machinesData[b].Nmatériel)
+        );
+
+        for (const machineId of sortedMachinesIds) {
+          if (
+            machinesData[machineId].Nmatériel.startsWith("15") ||
+            machinesData[machineId].Nmatériel.startsWith("TMF") ||
+            machinesData[machineId].Nmatériel.startsWith("F")
+          ) {
+            const machineName = machinesData[machineId].Nmatériel;
+            const option = document.createElement("option");
+            option.value = machineName;
+            option.dataset.machineId = machineId;
+            machineDataList.appendChild(option);
+          } else {
+            const machineName = machinesData[machineId].Nmatériel;
+            const option = document.createElement("option");
+            option.value = machineName;
+            option.dataset.machineId = machineId;
+            voitureDataList.appendChild(option);
+          }
+        }
+      }
+
+      //affichage des données des carrières
+      function populateCarrieresDataList() {
+        const carriereDataList = document.getElementById("carrieres");
+        carriereDataList.innerHTML = "";
+
+        const sortedCarriereIds = Object.keys(carrieresData).sort((a, b) =>
+          carrieresData[a].name.localeCompare(carrieresData[b].name)
+        );
+
+        for (const carriereId of sortedCarriereIds) {
+          const carriereName = carrieresData[carriereId].name;
+          const option = document.createElement("option");
+          option.value = carriereName;
+          option.dataset.carriereId = carriereId;
+          carriereDataList.appendChild(option);
+        }
+      }
+
+      // fonction qui récupere le client selectionné et filtre les carrières par client
+      document.getElementById("client").addEventListener("input", () => {
+        const selectedClientName = document.getElementById("client").value;
+        const selectedClient = Object.values(clientsData).find(
+          (client) => client.name === selectedClientName
+        );
+
+        if (selectedClient) {
+          selectedClientId = selectedClient.id;
+          filterCarrieresByClient(selectedClientId);
+        }
+      });
+      document.getElementById("numF").addEventListener("input", () => {
+        const selectedMachineName = document.getElementById("numF").value;
+        const selectedMachine = Object.values(machinesData).find(
+          (machine) => machine.name === selectedMachineName
+        );
+
+        if (selectedMachine) {
+          populateMachineDataList();
+        }
+      });
+
+      // fonction qui filtre les carrières par client
+      function filterCarrieresByClient(clientId) {
+        const carriereDataList = document.getElementById("carrieres");
+        carriereDataList.innerHTML = "";
+
+        const filteredCarrieres = Object.values(carrieresData).filter(
+          (carriere) => carriere.clientId === clientId
+        );
+
+        const sortedCarriereIds = filteredCarrieres.sort((a, b) =>
+          a.name.localeCompare(b.name)
+        );
+
+        for (const carriere of sortedCarriereIds) {
+          const option = document.createElement("option");
+          option.value = carriere.name;
+          option.dataset.carriereId = carriere.id;
+          carriereDataList.appendChild(option);
+        }
+      }
+      // fonction qui verifie si le nom de la carriere existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkCarriereName() {
+        const selectedCarriereName = document.getElementById("Carriere").value;
+        const selectedCarriere = Object.values(carrieresData).find(
+          (carriere) => carriere.name === selectedCarriereName
+        );
+
+        if (selectedCarriere) {
+          document.getElementById("Carriere").classList.remove("is-invalid");
+          document.getElementById("Carriere").classList.add("is-valid");
+        } else {
+          document.getElementById("Carriere").classList.remove("is-valid");
+          document.getElementById("Carriere").classList.add("is-invalid");
+        }
+      }
+      // fonction qui verifie si le nom de la machine existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkMachineName() {
+        const selectedMachineName = document.getElementById("numF").value;
+        const selectedMachine = Object.values(machinesData).find(
+          (machine) => machine.name === selectedMachineName
+        );
+
+        if (selectedMachine) {
+          document.getElementById("numF").classList.remove("is-invalid");
+          document.getElementById("numF").classList.add("is-valid");
+        } else {
+          document.getElementById("numF").classList.remove("is-valid");
+          document.getElementById("numF").classList.add("is-invalid");
+        }
+      }
+      // fonction qui verifie si le nom de la voiture existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkVoitureName() {
+        const selectedVoitureName = document.getElementById("voiture").value;
+        const selectedVoiture = Object.values(machinesData).find(
+          (machine) => machine.name === selectedVoitureName
+        );
+
+        if (selectedVoiture) {
+          document.getElementById("voiture").classList.remove("is-invalid");
+          document.getElementById("voiture").classList.add("is-valid");
+        } else {
+          document.getElementById("voiture").classList.remove("is-valid");
+          document.getElementById("voiture").classList.add("is-invalid");
+        }
+      }
+      // fonction qui verifie si le nom du client existe et met une croix rouge si il n'existe pas et une coche verte si il existe
+      function checkClientName() {
+        const selectedClientName = document.getElementById("client").value;
+        const selectedClient = Object.values(clientsData).find(
+          (client) => client.name === selectedClientName
+        );
+
+        if (selectedClient) {
+          document.getElementById("client").classList.remove("is-invalid");
+          document.getElementById("client").classList.add("is-valid");
+        } else {
+          document.getElementById("client").classList.remove("is-valid");
+          document.getElementById("client").classList.add("is-invalid");
+        }
+      }
+
+      // fonction qui récupere le nom de la carriere selectionnée et affiche le nom du client
+      document.getElementById("Carriere").addEventListener("input", () => {
+        const selectedCarriereName = document.getElementById("Carriere").value;
+        const selectedCarriere = Object.values(carrieresData).find(
+          (carriere) => carriere.name === selectedCarriereName
+        );
+
+        if (selectedCarriere) {
+          checkCarriereName();
+          const clientName = clientsData[selectedCarriere.clientId].name;
+          document.getElementById("client").value = clientName;
+        }
+      });
+
+      // fonction qui initialise une version simplifiée du rapport avec moins d'étapes
+      document
+        .getElementById("simplifiedBtn")
+        .addEventListener("click", function () {
+          $("#reportTypeModal").modal("hide");
+          reportType = "simplified";
+          isSimple = true;
+          document.getElementById("step3").style.display = "none";
+          document.getElementById("step5").style.display = "none";
+          document.getElementById("step9").style.display = "none";
+          document.getElementById("step10").style.display = "none";
+          nextPrev(1);
+        });
+
+      // fonction qui initialise une version complète du rapport avec toutes les étapes
+      document
+        .getElementById("comprehensiveBtn")
+        .addEventListener("click", function () {
+          $("#reportTypeModal").modal("hide");
+          reportType = "comprehensive";
+          isSimple = false;
+          document.getElementById("step3").style.display = "inline";
+          document.getElementById("step5").style.display = "inline";
+          document.getElementById("step9").style.display = "inline";
+          document.getElementById("step10").style.display = "inline";
+          nextPrev(1);
+        });
+
+      submitBtn.addEventListener("click", AddData);
+      window.onload = function () {
+        fetchClients();
+        fetchClientsAndCarrieres();
+        checkUserAuthentication();
+      };
+    </script>
+
+    <script src="script.js"></script>
+  </body>
+</html>

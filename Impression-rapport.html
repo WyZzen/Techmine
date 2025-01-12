@@ -169,11 +169,8 @@
         const CommA = infos.CommA;
         const HPanne = infos.NbHP;
         const CommP = infos.CommP;
-        const today = new Date();
-        const day = String(today.getDate()).padStart(2, "0");
-        const month = String(today.getMonth() + 1).padStart(2, "0");
-        const year = today.getFullYear();
-        const formattedDate = `${day}/${month}/${year}`;
+        const dateRapport = snapshot.val().date;
+        const formattedDate = new Date(dateRapport).toLocaleDateString("fr-FR");
 
         return `${formattedDate}\nChantier: ${chantier}\nMl: ${NbMF}\n Commentaire: ${CommMF}\n HF: ${HForreuse}\nH arrêt: ${HArret}\nCommentaire: ${CommA}\nH Panne: ${HPanne}\nCommentaire: ${CommP}`;
       }
