@@ -93,13 +93,8 @@
                 >
               </li>
               <li class="menu-item-admin">
-                <a class="dropdown-item" href="ajout-client.html"
-                  >Gestion des Clients</a
-                >
-              </li>
-              <li class="menu-item-admin">
                 <a class="dropdown-item" href="ajout-chantier.html"
-                  >Gestion des chantiers</a
+                  >Gestion des clients/chantiers</a
                 >
               </li>
             </ul>
@@ -132,9 +127,17 @@
                 <form id="MainForm" class="m-5" method="post">
                   <div class="input-group mt-5">
                     <span class="input-group-text">Client</span>
-                    <select class="form-select" name="clientId" required>
-                      <!-- on injecte les clients ici -->
-                    </select>
+  <input
+    type="text"
+    id="clientInput"
+    class="form-control"
+    list="clientList"
+    placeholder="Sélectionnez ou ajoutez un client"
+    required
+  />
+  <datalist id="clientList">
+    <!-- Options injectées dynamiquement -->
+  </datalist>
                   </div>
                   <div class="input-group mt-5">
                     <span class="input-group-text">Nom</span>
@@ -287,19 +290,25 @@
 
       // fonction de recuperation de tout les clients pour les afficher dans le formulaire
       function getClients() {
-        const clientsRef = ref(db, "clients");
-        return get(clientsRef).then((snapshot) => {
-          const clients = snapshot.val();
-          const clientsSelect = document.querySelector("select[name=clientId]");
-          for (const clientId in clients) {
-            const client = clients[clientId];
-            const option = document.createElement("option");
-            option.value = clientId;
-            option.textContent = client.name;
-            clientsSelect.appendChild(option);
-          }
-        });
-      }
+  const clientsRef = ref(db, "clients");
+  return get(clientsRef).then((snapshot) => {
+    const clients = snapshot.val();
+    const clientsDatalist = document.getElementById("clientList");
+    for (const clientId in clients) {
+      const client = clients[clientId];
+      const option = document.createElement("option");
+      option.value = client.name; // Utilisez le nom comme valeur de l'option
+      option.dataset.clientId = clientId; // Stockez l'ID client pour référence
+      clientsDatalist.appendChild(option);
+    }
+  });
+}
+
+function createNewClient(clientName, secteur) {
+  const clientId = Math.random().toString(36).substr(2, 9); // Générer un nouvel ID
+  const clientRef = ref(db, "clients/" + clientId);
+  return set(clientRef, { name: clientName, secteur: secteur, id: clientId}).then(() => clientId); // Retourner l'ID du nouveau client
+}
       function getClientId(clientid) {
         const clientsRef = ref(db, "clients");
         return get(clientsRef).then((snapshot) => {
@@ -315,46 +324,47 @@
       }
       // fonction d'ajout d'un chantier
       function AddData(event) {
-        event.preventDefault();
-        const formData = new FormData(MainForm);
-        const name = formData.get("name");
-        const code = formData.get("code");
-        const secteur = formData.get("secteur");
-        const client = formData.get("clientId");
-        //on creer un id pour le chantier
-        const chantierId = Math.random().toString(36).substr(2, 9);
+  event.preventDefault();
+  const formData = new FormData(MainForm);
+  const name = formData.get("name");
+  const code = formData.get("code");
+  const secteur = formData.get("secteur");
+  const clientName = document.getElementById("clientInput").value.trim();
 
-        getClientId(client).then((clientId) => {
-          if (clientId) {
-            console.log(
-              "Données du formulaire :",
-              name,
-              code,
-              secteur,
-              clientId
-            );
-            const chantierRef = ref(db, "chantiers/" + chantierId);
-            set(chantierRef, {
-              name: name,
-              code: code,
-              secteur: secteur,
-              client: clientId,
-            })
-              .then(() => {
-                showMessage("Chantier ajouté avec succès", "success");
-              })
-              .catch((error) => {
-                console.error("Erreur lors de l'ajout du chantier :", error);
-                showMessage("Erreur lors de l'ajout du chantier", "danger");
-              });
-          } else {
-            showMessage("Client introuvable", "danger");
-          }
-        });
-      }
+  // Vérifiez si le client existe déjà dans la liste
+  const clientOption = Array.from(document.querySelectorAll("#clientList option")).find(
+    (option) => option.value.toLowerCase() === clientName.toLowerCase()
+  );
 
-      getClients();
-      MainForm.addEventListener("submit", AddData);
+  let clientIdPromise;
+  if (clientOption) {
+    clientIdPromise = Promise.resolve(clientOption.dataset.clientId); // ID existant
+  } else {
+    clientIdPromise = createNewClient(clientName, secteur); // Créer un nouveau client
+  }
+
+  clientIdPromise
+    .then((clientId) => {
+      const chantierId = Math.random().toString(36).substr(2, 9);
+      const chantierRef = ref(db, "chantiers/" + chantierId);
+      return set(chantierRef, {
+        name,
+        code,
+        secteur,
+        clientId: clientId,
+      });
+    })
+    .then(() => {
+      showMessage("Chantier ajouté avec succès", "success");
+    })
+    .catch((error) => {
+      console.error("Erreur lors de l'ajout du chantier :", error);
+      showMessage("Erreur lors de l'ajout du chantier", "danger");
+    });
+}
+
+getClients();
+MainForm.addEventListener("submit", AddData);
     </script>
   </body>
 </html>
