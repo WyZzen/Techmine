@@ -127,17 +127,17 @@
                 <form id="MainForm" class="m-5" method="post">
                   <div class="input-group mt-5">
                     <span class="input-group-text">Client</span>
-  <input
-    type="text"
-    id="clientInput"
-    class="form-control"
-    list="clientList"
-    placeholder="Sélectionnez ou ajoutez un client"
-    required
-  />
-  <datalist id="clientList">
-    <!-- Options injectées dynamiquement -->
-  </datalist>
+                    <input
+                      type="text"
+                      id="clientInput"
+                      class="form-control"
+                      list="clientList"
+                      placeholder="Sélectionnez ou ajoutez un client"
+                      required
+                    />
+                    <datalist id="clientList">
+                      <!-- Options injectées dynamiquement -->
+                    </datalist>
                   </div>
                   <div class="input-group mt-5">
                     <span class="input-group-text">Nom</span>
@@ -176,9 +176,100 @@
                   >
                     Créer un client
                   </button>
+                  <!-- <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#clientListModal"
+                  >
+                    Voir la liste des Clients
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#chantierListModal"
+                  >
+                    Voir la liste des Chantiers
+                  </button> -->
                 </form>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal : Liste des Clients -->
+    <div
+      class="modal fade"
+      id="clientListModal"
+      tabindex="-1"
+      aria-labelledby="clientListModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="clientListModalLabel">
+              Liste des Clients
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Secteur</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="clientListTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal : Liste des Chantiers -->
+    <div
+      class="modal fade"
+      id="chantierListModal"
+      tabindex="-1"
+      aria-labelledby="chantierListModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="chantierListModalLabel">
+              Liste des Chantiers
+            </h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Code</th>
+                  <th>Secteur</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="chantierListTableBody"></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -290,25 +381,29 @@
 
       // fonction de recuperation de tout les clients pour les afficher dans le formulaire
       function getClients() {
-  const clientsRef = ref(db, "clients");
-  return get(clientsRef).then((snapshot) => {
-    const clients = snapshot.val();
-    const clientsDatalist = document.getElementById("clientList");
-    for (const clientId in clients) {
-      const client = clients[clientId];
-      const option = document.createElement("option");
-      option.value = client.name; // Utilisez le nom comme valeur de l'option
-      option.dataset.clientId = clientId; // Stockez l'ID client pour référence
-      clientsDatalist.appendChild(option);
-    }
-  });
-}
+        const clientsRef = ref(db, "clients");
+        return get(clientsRef).then((snapshot) => {
+          const clients = snapshot.val();
+          const clientsDatalist = document.getElementById("clientList");
+          for (const clientId in clients) {
+            const client = clients[clientId];
+            const option = document.createElement("option");
+            option.value = client.name; // Utilisez le nom comme valeur de l'option
+            option.dataset.clientId = clientId; // Stockez l'ID client pour référence
+            clientsDatalist.appendChild(option);
+          }
+        });
+      }
 
-function createNewClient(clientName, secteur) {
-  const clientId = Math.random().toString(36).substr(2, 9); // Générer un nouvel ID
-  const clientRef = ref(db, "clients/" + clientId);
-  return set(clientRef, { name: clientName, secteur: secteur, id: clientId}).then(() => clientId); // Retourner l'ID du nouveau client
-}
+      function createNewClient(clientName, secteur) {
+        const clientId = Math.random().toString(36).substr(2, 9); // Générer un nouvel ID
+        const clientRef = ref(db, "clients/" + clientId);
+        return set(clientRef, {
+          name: clientName,
+          secteur: secteur,
+          id: clientId,
+        }).then(() => clientId); // Retourner l'ID du nouveau client
+      }
       function getClientId(clientid) {
         const clientsRef = ref(db, "clients");
         return get(clientsRef).then((snapshot) => {
@@ -324,47 +419,123 @@ function createNewClient(clientName, secteur) {
       }
       // fonction d'ajout d'un chantier
       function AddData(event) {
-  event.preventDefault();
-  const formData = new FormData(MainForm);
-  const name = formData.get("name");
-  const code = formData.get("code");
-  const secteur = formData.get("secteur");
-  const clientName = document.getElementById("clientInput").value.trim();
+        event.preventDefault();
+        const formData = new FormData(MainForm);
+        const name = formData.get("name");
+        const code = formData.get("code");
+        const secteur = formData.get("secteur");
+        const clientName = document.getElementById("clientInput").value.trim();
 
-  // Vérifiez si le client existe déjà dans la liste
-  const clientOption = Array.from(document.querySelectorAll("#clientList option")).find(
-    (option) => option.value.toLowerCase() === clientName.toLowerCase()
-  );
+        // Vérifiez si le client existe déjà dans la liste
+        const clientOption = Array.from(
+          document.querySelectorAll("#clientList option")
+        ).find(
+          (option) => option.value.toLowerCase() === clientName.toLowerCase()
+        );
 
-  let clientIdPromise;
-  if (clientOption) {
-    clientIdPromise = Promise.resolve(clientOption.dataset.clientId); // ID existant
-  } else {
-    clientIdPromise = createNewClient(clientName, secteur); // Créer un nouveau client
-  }
+        let clientIdPromise;
+        if (clientOption) {
+          clientIdPromise = Promise.resolve(clientOption.dataset.clientId); // ID existant
+        } else {
+          clientIdPromise = createNewClient(clientName, secteur); // Créer un nouveau client
+        }
 
-  clientIdPromise
-    .then((clientId) => {
-      const chantierId = Math.random().toString(36).substr(2, 9);
-      const chantierRef = ref(db, "chantiers/" + chantierId);
-      return set(chantierRef, {
-        name,
-        code,
-        secteur,
-        clientId: clientId,
-      });
-    })
-    .then(() => {
-      showMessage("Chantier ajouté avec succès", "success");
-    })
-    .catch((error) => {
-      console.error("Erreur lors de l'ajout du chantier :", error);
-      showMessage("Erreur lors de l'ajout du chantier", "danger");
-    });
-}
+        clientIdPromise
+          .then((clientId) => {
+            const chantierId = Math.random().toString(36).substr(2, 9);
+            const chantierRef = ref(db, "chantiers/" + chantierId);
+            return set(chantierRef, {
+              name,
+              code,
+              secteur,
+              clientId: clientId,
+            });
+          })
+          .then(() => {
+            showMessage("Chantier ajouté avec succès", "success");
+          })
+          .catch((error) => {
+            console.error("Erreur lors de l'ajout du chantier :", error);
+            showMessage("Erreur lors de l'ajout du chantier", "danger");
+          });
+      }
+      function openClientModal() {
+        console.log("La fonction openClientModal a été appelée."); // Log de début
+        const clientListTableBody = document.getElementById(
+          "clientListTableBody"
+        );
+        const clientsRef = ref(db, "clients");
 
-getClients();
-MainForm.addEventListener("submit", AddData);
+        clientListTableBody.innerHTML = ""; // Nettoyer le tableau au cas où
+        get(clientsRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              console.log("Données des clients récupérées :", snapshot.val());
+              // Ajout des clients au tableau
+            } else {
+              console.log("Aucun client trouvé.");
+            }
+          })
+          .catch((error) => {
+            console.error(
+              "Erreur lors de la récupération des clients :",
+              error
+            );
+          });
+      }
+
+      function openChantierModal() {
+        const chantierListTableBody = document.getElementById(
+          "chantierListTableBody"
+        );
+        const chantiersRef = ref(db, "chantiers");
+
+        chantierListTableBody.innerHTML = ""; // Nettoyer le tableau
+        get(chantiersRef)
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              const chantiers = snapshot.val();
+              Object.keys(chantiers).forEach((chantierId) => {
+                const chantier = chantiers[chantierId];
+                const row = document.createElement("tr");
+                row.innerHTML = `
+            <td>${chantier.name}</td>
+            <td>${chantier.code}</td>
+            <td>${chantier.secteur}</td>
+            <td>
+              <button class="btn btn-primary" onclick="editChantier('${chantierId}')">
+                Modifier
+              </button>
+            </td>
+          `;
+                chantierListTableBody.appendChild(row);
+              });
+              const modal = new bootstrap.Modal(
+                document.getElementById("chantierListModal")
+              );
+              modal.show();
+            } else {
+              console.log("Aucun chantier trouvé.");
+            }
+          })
+          .catch((error) =>
+            console.error(
+              "Erreur lors de la récupération des chantiers :",
+              error
+            )
+          );
+      }
+
+      function editClient(clientId) {
+        // Logique pour modifier un client
+      }
+
+      function editChantier(chantierId) {
+        // Logique pour modifier un chantier
+      }
+
+      getClients();
+      MainForm.addEventListener("submit", AddData);
     </script>
   </body>
 </html>
