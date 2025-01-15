@@ -87,61 +87,6 @@
   </head>
 
   <body class="text-center">
-    <!-- Barre de navigation -->
-    <header class="container-fluid py-3 shadow-sm">
-      <div
-        class="d-flex flex-column flex-md-row justify-content-between align-items-center"
-      >
-        <img
-          src="logo techmine.svg"
-          alt="Logo TechMine"
-          class="custom-height-logo"
-        />
-        <h1 class="fs-2 text-center" style="margin-right: 10%">
-          Gestion des Utilisateurs
-        </h1>
-        <div class="dropdown">
-          <button
-            class="btn btn-light border dropdown-toggle"
-            type="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <img
-              src="symbole-de-menu-pour-android.png"
-              alt="Menu"
-              class="custom-height-menu"
-            />
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="accueil.html">Accueil</a></li>
-            <li><a class="dropdown-item" href="rapport.html">Rapports</a></li>
-            <li>
-              <a class="dropdown-item" href="liste-rapport.html"
-                >Liste des Rapports</a
-              >
-            </li>
-            <li><hr class="dropdown-divider" /></li>
-            <li>
-              <a class="dropdown-item" href="machines.html"
-                >Gestion des Machines</a
-              >
-            </li>
-            <li class="dropdown-header">Administrateur</li>
-            <li>
-              <a class="dropdown-item" href="ajout-utilisateur.html"
-                >Gestion des Utilisateurs</a
-              >
-            </li>
-            <li class="menu-item-admin">
-              <a class="dropdown-item" href="ajout-chantier.html"
-                >Gestion des clients/chantiers</a
-              >
-            </li>
-          </ul>
-        </div>
-      </div>
-    </header>
 
     <!-- Contenu principal -->
     <main class="container my-5 thick-border">
@@ -400,7 +345,35 @@
     <script src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Firebase et scripts d'initialisation -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        fetch("header.html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.body.insertAdjacentHTML("afterbegin", data);
+    
+            const pageTitle = "Gestion des utilisateurs"; // Titre de la page
+            // Gestion du menu burger
+            const burger = document.querySelector(".burger");
+            const nav = document.querySelector(".nav-links");
+            if (burger && nav) {
+              burger.addEventListener("click", () => {
+                nav.classList.toggle("nav-active");
+              });
+            }
+            const divHeader = document.getElementById("div-header");
+            divHeader.classList.add("bg-primary");
+            // Mise à jour dynamique du titre
+            if (typeof pageTitle !== 'undefined') {
+              const titleElement = document.getElementById('page-title');
+              //on vide le titre
+              if (titleElement) {
+                titleElement.textContent = pageTitle; // Utiliser le titre défini pour la page
+              }
+            }
+          });
+      });
+    </script>
     <script
       type="module"
       src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"
@@ -417,6 +390,8 @@
       type="module"
       src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 
     <!-- Script principal -->
     <script type="module">
