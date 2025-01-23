@@ -16,7 +16,7 @@
       href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css"
       rel="stylesheet"
     />
-    
+
     <style>
       body {
         background-color: #0d6efd;
@@ -119,427 +119,428 @@
   </head>
   <body>
     <div class="container py-4">
-
       <div class="loading-overlay" id="loading-overlay">
         <div>Chargement...</div>
       </div>
 
       <form id="rapportForm">
-      <section class="form-section required">
-        <h2 class="form-title required">Informations Générales</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-user"></i> Client</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="client"
-                list="clients"
-                placeholder="Nom du client"
-                required
-              />
-              <datalist id="clients"></datalist>
+        <section class="form-section required">
+          <h2 class="form-title required">Informations Générales</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-user"></i> Client</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="client"
+                  list="clients"
+                  placeholder="Nom du client"
+                  required
+                />
+                <datalist id="clients"></datalist>
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-industry"></i> Carrière</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="Carriere"
-                list="carrieres"
-                placeholder="Nom de la carrière"
-                required
-              />
-              <datalist id="carrieres"></datalist>
-            </div>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-calendar-alt"></i> Date</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="date"
-                placeholder=""
-                required
-              />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-clock"></i> Heures Travail</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="NbHTravail"
-                placeholder="Nombre d'heures"
-                required
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section required">
-        <h2 class="form-title required">Détails de la Production</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-ruler"></i> Mètres Forés</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="NbMF"
-                placeholder="Nombre de mètres"
-                required
-              />
-            </div>
-          </div>
-
-          <div class="col">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-comment"></i> Commentaire</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="CommMF"
-                placeholder="Ajoutez un commentaire"
-                required
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="form-section">
-        <h2 class="form-title">Informations supplémentaire</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-road"></i> Temps de Route</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="TDR"
-                placeholder="Temps de route"
-              />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fas fa-hotel"></i>
-                Gd ou Panier
-              </span>
-              <div class="radio-group">
-                <input type="radio" id="Gd" name="GdPanier" />
-                <label for="Gd">Gd</label>
-                <input type="radio" id="Panier" name="GdPanier" />
-                <label for="Panier">Panier</label>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-industry"></i> Carrière</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Carriere"
+                  list="carrieres"
+                  placeholder="Nom de la carrière"
+                  required
+                />
+                <datalist id="carrieres"></datalist>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      <section class="form-section required">
-        <h2 class="form-title required">Informations Foreuse</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fas fa-truck"></i> Numéro Foreuse
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                id="numF"
-                list="machines"
-                placeholder="Numéro de la foreuse"
-                required
-              />
-              <datalist id="machines"></datalist>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-calendar-alt"></i> Date</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="date"
+                  placeholder=""
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-clock"></i> Heures Travail</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbHTravail"
+                  placeholder="Nombre d'heures"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fas fa-stopwatch"></i> Heures Marteau
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                id="NbHM"
-                placeholder="Nombre d'heures"
-                required
-              />
-            </div>
-          </div>
-        </div>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fas fa-clock"></i> Heure Début
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                id="NbHD"
-                placeholder="Compteur début"
-                required
-              />
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text">
-                <i class="fas fa-clock"></i> Heure Fin
-              </span>
-              <input
-                type="text"
-                class="form-control"
-                id="NbHF"
-                placeholder="Compteur fin"
-                required
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="form-section">
-        <h2 class="form-title">Informations Voiture</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-car"></i> Numéro Voiture</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="voiture"
-                list="voitures"
-                placeholder="Numéro de la voiture"
-              />
-              <datalist id="voitures"></datalist>
+        <section class="form-section required">
+          <h2 class="form-title required">Détails de la Production</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-ruler"></i> Mètres Forés</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbMF"
+                  placeholder="Nombre de mètres"
+                  required
+                />
+              </div>
             </div>
-          </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-tachometer-alt"></i> Kilométrage</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="kilV"
-                placeholder="Kilométrage"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section class="form-section required">
-        <h2 class="form-title required">Informations Arrêt</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-stop-circle"></i> Heures d'Arrêt</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="NbHA"
-                placeholder="Nombre d'heures d'arrêt"
-                required
-              />
+            <div class="col">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-comment"></i> Commentaire</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="CommMF"
+                  placeholder="Ajoutez un commentaire"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-comment"></i> Commentaire</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="CommA"
-                placeholder="Ajoutez un commentaire"
-                required
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="form-section required">
-        <h2 class="form-title required">Informations Panne</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-tools"></i> Heures de Panne</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="NbHP"
-                placeholder="Nombre d'heures de panne"
-                required
-              />
+        <section class="form-section">
+          <h2 class="form-title">Informations supplémentaire</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-road"></i> Temps de Route</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="TDR"
+                  placeholder="Temps de route"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-hotel"></i>
+                  Gd ou Panier
+                </span>
+                <div class="radio-group">
+                  <input type="radio" id="Gd" name="GdPanier" />
+                  <label for="Gd">Gd</label>
+                  <input type="radio" id="Panier" name="GdPanier" />
+                  <label for="Panier">Panier</label>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-comment"></i> Commentaire</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="CommP"
-                placeholder="Ajoutez un commentaire"
-                required
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="form-section required">
-        <h2 class="form-title required">Informations Perte</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-exclamation-triangle"></i> Perte Barre</span
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="nbPB"
-                placeholder="Nombre de barres perdues"
-                required
-              />
+        <section class="form-section required">
+          <h2 class="form-title required">Informations Foreuse</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-truck"></i> Numéro Foreuse
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="numF"
+                  list="machines"
+                  placeholder="Numéro de la foreuse"
+                  required
+                />
+                <datalist id="machines"></datalist>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-stopwatch"></i> Heures Marteau
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbHM"
+                  placeholder="Nombre d'heures"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-exclamation-triangle"></i> Perte
-                Taillant</span
-              >
-              <input
-                type="number"
-                class="form-control"
-                id="nbPT"
-                placeholder="Nombre de taillants perdus"
-                required
-              />
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-clock"></i> Heure Début
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbHD"
+                  placeholder="Compteur début"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text">
+                  <i class="fas fa-clock"></i> Heure Fin
+                </span>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbHF"
+                  placeholder="Compteur fin"
+                  required
+                />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-  
+        <section class="form-section">
+          <h2 class="form-title">Informations Voiture</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-car"></i> Numéro Voiture</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="voiture"
+                  list="voitures"
+                  placeholder="Numéro de la voiture"
+                />
+                <datalist id="voitures"></datalist>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-tachometer-alt"></i> Kilométrage</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="kilV"
+                  placeholder="Kilométrage"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <section class="form-section">
-        <h2 class="form-title">Informations Transfert</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-truck-moving"></i> Transporteur</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="CT"
-                placeholder="Nom du transporteur"
-              />
+        <section class="form-section required">
+          <h2 class="form-title required">Informations Arrêt</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-stop-circle"></i> Heures d'Arrêt</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbHA"
+                  placeholder="Nombre d'heures d'arrêt"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-comment"></i> Commentaire</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="CommA"
+                  placeholder="Ajoutez un commentaire"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-hourglass-half"></i> Durée</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="DT"
-                placeholder="Durée du transfert"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="form-section">
-        <h2 class="form-title">Informations GNR</h2>
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-gas-pump"></i> Fournisseur</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="CG"
-                placeholder="Nom du fournisseur"
-              />
+        <section class="form-section required">
+          <h2 class="form-title required">Informations Panne</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-tools"></i> Heures de Panne</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="NbHP"
+                  placeholder="Nombre d'heures de panne"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-comment"></i> Commentaire</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="CommP"
+                  placeholder="Ajoutez un commentaire"
+                  required
+                />
+              </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="input-group">
-              <span class="input-group-text"
-                ><i class="fas fa-balance-scale"></i> Quantité</span
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="QG"
-                placeholder="Quantité en litres"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <div class="text-end">
-        <button type="submit" class="btn btn-outline-primary" id="submit">
-          soumettre
-        </button>
-        <!-- <button type="button" class="btn btn-outline-secondary" id="second">
+        <section class="form-section required">
+          <h2 class="form-title required">Informations Perte</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-exclamation-triangle"></i> Perte Barre</span
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="nbPB"
+                  placeholder="Nombre de barres perdues"
+                  required
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-exclamation-triangle"></i> Perte
+                  Taillant</span
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  id="nbPT"
+                  placeholder="Nombre de taillants perdus"
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2 class="form-title">Informations Transfert</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-truck-moving"></i> Transporteur</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="CT"
+                  placeholder="Nom du transporteur"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-hourglass-half"></i> Durée</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="DT"
+                  placeholder="Durée du transfert"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2 class="form-title">Informations GNR</h2>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-gas-pump"></i> Fournisseur</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="CG"
+                  placeholder="Nom du fournisseur"
+                />
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text"
+                  ><i class="fas fa-balance-scale"></i> Quantité</span
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="QG"
+                  placeholder="Quantité en litres"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="text-end">
+          <button
+            type="submit"
+            class="btn btn-outline-white bg-white"
+            id="submit"
+          >
+            soumettre
+          </button>
+          <!-- <button type="button" class="btn btn-outline-secondary" id="second">
           Creer un deuxieme rapport
         </button> -->
-      </div>
-    </form>
+        </div>
+      </form>
     </div>
 
     <script src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -552,7 +553,7 @@
           .then((response) => response.text())
           .then((data) => {
             document.body.insertAdjacentHTML("afterbegin", data);
-    
+
             const divHeader = document.getElementById("div-header");
             divHeader.classList.add("bg-white");
             const pageTitle = "Accueil"; // Titre de la page
@@ -565,11 +566,9 @@
               });
             }
 
-
-    
             // Mise à jour dynamique du titre
-            if (typeof pageTitle !== 'undefined') {
-              const titleElement = document.getElementById('page-title');
+            if (typeof pageTitle !== "undefined") {
+              const titleElement = document.getElementById("page-title");
               //on vide le titre
               if (titleElement) {
                 titleElement.textContent = pageTitle; // Utiliser le titre défini pour la page
@@ -741,7 +740,6 @@
         const QG = document.getElementById("QG");
         const kilV = document.getElementById("kilV");
         const voiture = document.getElementById("voiture").value;
-
 
         set(ref(db, "rapport/" + dateNb), {
           infos: {
@@ -1063,13 +1061,11 @@
         AddData();
       });
 
-
       window.onload = function () {
         fetchClients();
         fetchClientsAndCarrieres();
         checkUserAuthentication();
       };
     </script>
-
   </body>
 </html>
