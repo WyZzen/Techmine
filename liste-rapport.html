@@ -797,6 +797,19 @@
         };
       });
     }
+    function checkUserAuthentication() {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log(user);
+        } else {
+          console.log("pas d'utilisateur");
+          window.location.href = "index.html";
+        }
+        if (sessionStorage.getItem("user-uid") == null) {
+          window.location.href = "index.html";
+        }
+      });
+    }
     //fonction pour créer un bouton de modification
     function createEditButton(dateNb) {
       const editButton = document.createElement("button");
@@ -963,5 +976,8 @@
         const blob = new Blob([wbout], { type: "application/octet-stream" });
         saveAs(blob, "rapports.xlsx");
       });
+    window.onload = function () {
+      checkUserAuthentication();
+    };
   </script>
 </html>

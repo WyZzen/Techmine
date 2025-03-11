@@ -710,7 +710,11 @@
         </section>
 
         <div class="text-end">
-          <button type="submit" class="btn btn-outline-light bg-white">
+          <button
+            type="submit"
+            id="submit"
+            class="btn btn-outline-light bg-white"
+          >
             Valider
           </button>
         </div>
@@ -875,23 +879,24 @@
       });
     </script>
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js";
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
       import {
         getDatabase,
         ref,
         get,
         set,
-        onValue,
-      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-database.js";
+        query,
+        orderByChild,
+      } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
       import {
         getAuth,
         onAuthStateChanged,
-      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js";
+      } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
       import {
         getStorage,
         ref as storageRef,
         uploadBytes,
-      } from "https://www.gstatic.com/firebasejs/9.1.0/firebase-storage.js";
+      } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyA5KivS1hhrIufEYwt8T8MN1hguKa3aSMY",
@@ -907,196 +912,217 @@
 
       const app = initializeApp(firebaseConfig);
       const db = getDatabase();
-      const storage = getStorage();
       const auth = getAuth(app);
+      const storage = getStorage(app);
 
-      let selectedClientId = null;
-      let submitBtn = document.getElementById("submit");
-      let selectedFiles = [];
-      let validateFiles = document.getElementById("submit");
+      let clientsData = {};
+      let chantiersData = {};
       let newNumber;
 
-      // Sections
-      const forageSection = document.querySelector(
-        "section.form-section:nth-of-type(2)"
-      ); // Section Forage
-      const minageSection = document.querySelector(
-        "section.form-section:nth-of-type(3)"
-      ); // Section Minage
-      const autreSection = document.querySelector(
-        "section.form-section:nth-of-type(4)"
-      ); // Section Autre
+      document.addEventListener("DOMContentLoaded", async () => {
+        await initApplication();
+        initDatePickers();
+        initModal();
+        initFormValidation();
+      });
 
-      // Gestion de la sélection au chargement de la page
-      document.addEventListener("DOMContentLoaded", () => {
-        const modal = new bootstrap.Modal(
-          document.getElementById("choiceModal")
+      async function initApplication() {
+        await checkAuthState();
+        await loadClients();
+        await loadChantiers();
+        initFormListeners();
+      }
+
+      async function checkAuthState() {
+        return new Promise((resolve) => {
+          onAuthStateChanged(auth, (user) => {
+            if (!user) window.location.href = "index.html";
+            resolve();
+          });
+        });
+      }
+
+      async function loadClients() {
+        const snapshot = await get(ref(db, "clients"));
+        if (snapshot.exists()) {
+          clientsData = snapshot.val();
+          populateDatalist("clients", clientsData);
+        }
+      }
+
+      async function loadChantiers() {
+        const snapshot = await get(ref(db, "chantiers"));
+        if (snapshot.exists()) {
+          chantiersData = snapshot.val();
+          populateDatalist("chantiers", chantiersData);
+        }
+      }
+
+      function populateDatalist(datalistId, data) {
+        const datalist = document.getElementById(datalistId);
+        datalist.innerHTML = Object.values(data)
+          .map((item) => `<option value="${item.nom}">`)
+          .join("");
+      }
+
+      function initFormListeners() {
+        document.getElementById("client").addEventListener("input", (e) => {
+          const client = Object.values(clientsData).find(
+            (c) => c.nom === e.target.value
+          );
+          if (client) filterChantiers(client.id);
+        });
+
+        document
+          .getElementById("attachementForm")
+          .addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await handleFormSubmit();
+          });
+      }
+
+      function filterChantiers(clientId) {
+        const filtered = Object.values(chantiersData)
+          .filter((c) => c.clientId === clientId)
+          .map((c) => c.nom);
+
+        document.getElementById("chantiers").innerHTML = filtered
+          .map((c) => `<option value="${c}">`)
+          .join("");
+      }
+
+      async function handleFormSubmit() {
+        showLoading(true);
+
+        try {
+          const data = collectFormData();
+          validateForm(data);
+
+          newNumber = await getNewAttachementNumber();
+          await saveAttachement(data, newNumber);
+          await uploadAttachedFiles(newNumber);
+
+          showSuccess(newNumber);
+        } catch (error) {
+          showError(error.message);
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function collectFormData() {
+        return {
+          client: document.getElementById("client").value,
+          chantier: document.getElementById("chantier").value,
+          observation: document.getElementById("observation").value,
+          perteOutillage: document.querySelector(
+            'input[name="perteOutillage"]:checked'
+          )?.value,
+          // Ajouter tous les autres champs du formulaire...
+        };
+      }
+
+      function validateForm(data) {
+        if (!data.client || !data.chantier) {
+          throw new Error("Client et chantier sont obligatoires");
+        }
+        // Ajouter les autres validations nécessaires
+      }
+
+      async function getNewAttachementNumber() {
+        const snapshot = await get(
+          query(ref(db, "Attachement"), orderByChild("date"))
         );
+        if (!snapshot.exists()) return 10000;
+
+        const numbers = Object.keys(snapshot.val())
+          .map(Number)
+          .filter((n) => !isNaN(n));
+
+        return Math.max(...numbers) + 1;
+      }
+
+      async function saveAttachement(data, number) {
+        await set(ref(db, `Attachement/${number}`), {
+          ...data,
+          user: auth.currentUser.uid,
+          date: new Date().toISOString(),
+          status: "pending",
+        });
+      }
+
+      async function uploadAttachedFiles(number) {
+        const files = document.getElementById("fileUpload").files;
+        if (files.length === 0) return;
+
+        return Promise.all(
+          Array.from(files).map((file) => {
+            const ref = storageRef(
+              storage,
+              `attachments/${number}/${file.name}`
+            );
+            return uploadBytes(ref, file);
+          })
+        );
+      }
+
+      function initDatePickers() {
+        $("#dateForage, #dateMinage").daterangepicker({
+          locale: { format: "DD-MM-YYYY" },
+          autoUpdateInput: false,
+        });
+      }
+
+      function initModal() {
+        const modal = new bootstrap.Modal("#choiceModal");
         modal.show();
 
         document
           .getElementById("chooseForage")
           .addEventListener("click", () => {
-            minageSection.style.display = "none";
-            autreSection.style.display = "none";
+            document
+              .querySelectorAll("#minageSection, #autreSection")
+              .forEach((el) => (el.style.display = "none"));
             modal.hide();
           });
 
         document
           .getElementById("chooseMinage")
           .addEventListener("click", () => {
-            forageSection.style.display = "none";
+            document.querySelector("#forageSection").style.display = "none";
             modal.hide();
           });
-
-        fetchClientsAndCarrieres();
-        checkUserAuthentication();
-      });
-
-      // Vérification de la version de l'application
-      const versionRef = ref(db, "appInfo/version");
-      onValue(versionRef, (snapshot) => {
-        const latestVersion = snapshot.val();
-        const currentVersion = localStorage.getItem("appVersion");
-        if (currentVersion != latestVersion) {
-          localStorage.setItem("appVersion", latestVersion);
-          window.location.reload();
-        }
-      });
-
-      // Vérification de l'authentification de l'utilisateur
-      function checkUserRole(userId) {
-        const userRef = ref(db, `users/${userId}`);
-        return get(userRef).then((snapshot) => {
-          const userData = snapshot.val();
-          console.log("Données utilisateur :", userData.nom);
-          return (
-            userData.role === "cadre" ||
-            userData.role === "responsable exploitation" ||
-            userData.role === "directeur" ||
-            userData.role === "responsable agence"
-          );
-        });
       }
 
-      function checkUserAuthentication() {
-        onAuthStateChanged(auth, (user) => {
-          if (user) {
-            console.log(user);
-          } else {
-            console.log("pas d'utilisateur");
-            window.location.href = "index.html";
-          }
-          if (sessionStorage.getItem("user-uid") == null) {
-            window.location.href = "index.html";
-          }
-        });
-      }
-
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          checkUserRole(user.uid)
-            .then((isCadre) => {
-              const adminMenuItems =
-                document.querySelectorAll(".menu-item-admin");
-              adminMenuItems.forEach((item) => {
-                item.style.display = isCadre ? "block" : "none";
-              });
-            })
-            .catch((error) => {
-              console.error("Erreur lors de la vérification du rôle :", error);
-              const adminMenuItems =
-                document.querySelectorAll(".menu-item-admin");
-              adminMenuItems.forEach((item) => {
-                item.style.display = "none";
-              });
+      function initFormValidation() {
+        document
+          .querySelectorAll(".form-section.required input")
+          .forEach((input) => {
+            input.addEventListener("invalid", () => {
+              input.parentElement.classList.add("is-invalid");
             });
-        } else {
-          const adminMenuItems = document.querySelectorAll(".menu-item-admin");
-          adminMenuItems.forEach((item) => {
-            item.style.display = "none";
-          });
-        }
-      });
-
-      async function getLastAttachementNumber() {
-        const snapshot = await get(ref(db, "Attachement"));
-        if (!snapshot.exists()) {
-          return 9999;
-        }
-        const attachements = snapshot.val();
-        const numbers = Object.keys(attachements).map((key) => parseInt(key));
-        return Math.max(...numbers);
-      }
-
-      async function AddData() {
-        if (!allStepsValid()) {
-          showMessageError(
-            "Veuillez valider toutes les étapes avant de soumettre.",
-            "warning"
-          );
-          return;
-        }
-
-        // Collecte des données ici (idem à l'ancien code)
-        const lastNumber = await getLastAttachementNumber();
-        const newNumber = lastNumber + 1;
-
-        const date = new Date().toLocaleDateString("fr-FR");
-        let user = sessionStorage.getItem("user-uid");
-
-        set(ref(db, "Attachement/" + newNumber), {
-          // Objets des données
-        })
-          .then(() => {
-            showMessage(
-              "Données sauvegardées avec succès !",
-              "success",
-              newNumber
-            );
-          })
-          .catch((error) => {
-            showMessage(
-              "Erreur lors de la sauvegarde des données : " + error.message,
-              "danger"
-            );
           });
       }
 
-      function fetchClientsAndCarrieres() {
-        const clientsRef = ref(db, "Clients");
-        onValue(clientsRef, (snapshot) => {
-          const clients = snapshot.val();
-          const clientsList = document.getElementById("clients");
-          clientsList.innerHTML = "";
-          for (const [key, value] of Object.entries(clients)) {
-            const option = document.createElement("option");
-            option.value = value.nom;
-            clientsList.appendChild(option);
-          }
-
-          const carrieresRef = ref(db, "Carrieres");
-          onValue(carrieresRef, (snapshot) => {
-            const carrieres = snapshot.val();
-            const carrieresList = document.getElementById("chantiers");
-            carrieresList.innerHTML = "";
-            for (const [key, value] of Object.entries(carrieres)) {
-              const option = document.createElement("option");
-              option.value = value.nom;
-              carrieresList.appendChild(option);
-            }
-          });
-        });
+      function showLoading(show) {
+        document.getElementById("loading-overlay").style.display = show
+          ? "flex"
+          : "none";
       }
 
-      function showMessage(message, type, newNumber) {
-        const messageDiv = document.getElementById("message");
-        messageDiv.classList.remove("d-none");
-        messageDiv.classList.add(`alert-${type}`);
-        messageDiv.innerHTML = message;
-        if (newNumber) {
-          messageDiv.innerHTML += `<br />Numéro d'attachement : ${newNumber}`;
-        }
+      function showSuccess(number) {
+        window.location.href = `Impression-attachement.html?number=${number}`;
+      }
+
+      function showError(message) {
+        const alertDiv = document.getElementById("message");
+        alertDiv.textContent = message;
+        alertDiv.classList.remove("d-none", "alert-success");
+        alertDiv.classList.add("alert-danger");
+
+        setTimeout(() => {
+          alertDiv.classList.add("d-none");
+        }, 5000);
       }
     </script>
   </body>
